@@ -1,4 +1,4 @@
-# taro_rn_app 简易教程
+# Taro_rn_app 简易教程
 
 ## Taro RN端架构
 
@@ -9,7 +9,8 @@
 [Taro 安装及使用](https://nervjs.github.io/taro/docs/GETTING-STARTED.html)
 
 ## 项目架构
-```
+
+```shell
 .rn_temp //编译后的代码及应用文件在根目录的 .rn_temp 目录下
 ├── app.js
 ├── app.json
@@ -31,7 +32,7 @@
 
 ```
 
-## Run
+## 准备工作
 
 ``` shell
 #安装依赖
@@ -64,4 +65,21 @@ taro 会自动开启一个终端，用来监听文件改动
 [IOS jsbundle 编译打包](http://127.0.0.1:8081/index.bundle?platform=ios&dev=true)
 
 [Android jsbundle 编译打包](http://127.0.0.1:8081/index.bundle?platform=android&dev=true)
+
+## IOS运行
+
+```shell
+cd app_shell
+yarn
+cnpm i
+npm i
+react-native run-ios
+```
+
+`这里需要注意的是 jsBundle 的 moduleName，默认的 moduleName 为 "taro-demo"，需要和 .rn_temp/app.json 里面的 name 字段保持一致。该配置在 AppDelegate.m 文件中。`
+
+打开 Xcode 打开文件 taroDemo.xcodeproj
+[![2019-05-05%2015.56.02.png](https://raw.githubusercontent.com/itsonglei/taro_rn_app/master/img/2019-05-05%2015.56.02.png)](https://raw.githubusercontent.com/itsonglei/taro_rn_app/master/img/2019-05-05%2015.56.02.png)
+[![2019-05-05%2015.56.48.png](https://raw.githubusercontent.com/itsonglei/taro_rn_app/master/img/2019-05-05%2015.56.48.png)](https://raw.githubusercontent.com/itsonglei/taro_rn_app/master/img/2019-05-05%2015.56.48.png)
+[![2019-05-05%2015.58.30.png](https://raw.githubusercontent.com/itsonglei/taro_rn_app/master/img/2019-05-05%2015.58.30.png)](https://raw.githubusercontent.com/itsonglei/taro_rn_app/master/img/2019-05-05%2015.58.30.png)
 

@@ -2,3 +2,5 @@ node_modules
 package-lock.json
 yarn.lock
 .rn_temp/
+app_shell/yarn.lock
+.rn_temp/yarn.lock
