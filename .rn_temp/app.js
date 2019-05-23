@@ -1,5 +1,6 @@
 var _class, _temp;
 
+import { Provider as TCRNProvider } from '@tarojs/components-rn';
 import TaroRouter from '@tarojs/taro-router-rn';
 import pagesIndexIndex from './pages/index/index';
 import Taro from '@tarojs/taro-rn';
@@ -31,7 +32,9 @@ let App = (_temp = _class = class App extends Component {
   // 在 App 类中的 render() 函数没有实际作用
   // 请勿修改此函数
   render() {
-    return <RootStack />;
+    return <TCRNProvider>
+                  <RootStack />
+                </TCRNProvider>;
   }
 }, _class.config = {
   window: {
