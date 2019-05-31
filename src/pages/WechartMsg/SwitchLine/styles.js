@@ -1,0 +1,33 @@
+import px from '../../Biz/px.js';
+export default {
+    shopLine:{
+        borderBottomColor:'#f5f5f5',
+        borderBottomStyle:'solid',
+        borderBottomWidth:px(2),
+        paddingLeft:24,
+        paddingRight:24,
+        paddingTop:18,
+        paddingBottom:18,
+        backgroundColor:'#fff',
+        flexDirection:'row',
+        alignItems:'center',
+        width:px(750),
+        marginTop:24
+    },
+    titleText:{
+        color:'#000',
+        fontSize:px(28),
+        fontWeight:'600'
+    },
+    descText:{
+        color:'#666',
+        fontSize:px(24),
+        marginLeft:px(24)
+    },
+    switchLine:{
+        flex:1,
+        flexDirection:'row',
+        justifyContent:'flex-end',
+        alignItems:'center',
+    }
+};

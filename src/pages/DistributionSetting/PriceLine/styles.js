@@ -1,0 +1,37 @@
+import px from '../../../Biz/px.js';
+export default {
+    commonLine:{
+        flex:1,
+        borderBottomStyle:'solid',
+        borderBottomWidth:px(2),
+        borderBottomColor:'#e7e7e9',
+        marginLeft:px(24),
+        paddingTop:px(24),
+        paddingBottom:px(20)
+    },
+    commonRight:{
+        flex:1,
+        flexDirection:'row',
+        justifyContent:'flex-end',
+        paddingRight:px(24)
+    },
+    smallText:{
+        fontSize:px(28),
+        color:'#4A4A4A',
+    },
+    smallInput:{
+        width:px(132),
+        height:px(56),
+        borderColor:'#DCDEE3',
+        borderStyle:'solid',
+        borderWidth:px(2)
+    },
+    radioLine:{
+        flexDirection:'row',
+        alignItems:'center'
+    },
+    input:{
+        flexDirection:'row',
+        alignItems:'center'
+    }
+}

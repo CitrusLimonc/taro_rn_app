@@ -1,0 +1,35 @@
+import px from '../../Biz/px.js';
+export default {
+    productLine:{
+        backgroundColor:'#ffffff',
+        paddingLeft:px(32),
+        paddingRight:px(32),
+        paddingTop:px(20),
+        paddingBottom:px(20),
+        width:px(750),
+        flexDirection:'row'
+    },
+    productImg:{
+        width:px(140),
+        height:px(140),
+        alignItems:'center',
+        justifyContent:'center',
+        borderColor:'#f5f5f5',
+        borderStyle:'solid',
+        borderWidth:px(2)
+    },
+    notTag:{
+        backgroundColor:'rgba(255,96,0,0.8)',
+        width:px(140),
+        height:px(36),
+        position:'absolute',
+        bottom:px(0),
+        left:px(0),
+        alignItems:'center',
+        justifyContent:'center'
+    },
+    tagText:{
+        color:'rgba(255,255,255,0.8)',
+        fontSize:px(24)
+    }
+}
