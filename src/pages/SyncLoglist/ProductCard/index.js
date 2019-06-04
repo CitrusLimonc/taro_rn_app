@@ -3,6 +3,7 @@ import { View, Text, Image } from '@tarojs/components';
 import {IsEmpty} from '../../../Public/Biz/IsEmpty.js';
 import ItemIcon from '../../../Component/ItemIcon';
 import styles from './styles';
+import px from '../../../Biz/px.js';
 /**
  * @author wzm
  * 库存预警日志卡片

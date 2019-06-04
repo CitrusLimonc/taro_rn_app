@@ -1,6 +1,7 @@
 import Taro, { Component, Config } from '@tarojs/taro';
 import {View,Text,Checkbox,Image,Button} from '@tarojs/components';
 import styles from './styles';
+import px from '../../../Biz/px.js';
 /*
 * @author cy
 * 店铺卡片

@@ -3,7 +3,6 @@ export default {
     commonLine:{
         flex:1,
         flexDirection:'row',
-        borderBottomStyle:'solid',
         borderBottomWidth:px(2),
         borderBottomColor:'#e7e7e9',
         alignItems:'center',

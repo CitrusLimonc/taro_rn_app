@@ -1,4 +1,4 @@
-import px from '../../Biz/px.js';
+import px from '../../../Biz/px.js';
 export default {
     maskStyle:{
         backgroundColor:'rgba(0,0,0,0.5)'
@@ -28,7 +28,6 @@ export default {
         alignItems:'center',
         justifyContent:'center',
         borderColor:'#eeefee',
-        borderStyle:'solid',
         borderWidth:px(2),
         marginLeft:px(20),
         marginTop:px(20)
@@ -43,7 +42,6 @@ export default {
         alignItems:'center',
         justifyContent:'center',
         borderColor:'#ff6000',
-        borderStyle:'solid',
         borderWidth:px(2),
         marginLeft:px(20),
         marginTop:px(20)
@@ -69,7 +67,6 @@ export default {
         flexDirection:'row',
         borderTopWidth: px(1),
         borderTopColor: '#DCDDE3',
-        borderTopStyle: 'solid'
     },
     filterFootLeft:{
         flex:1,
@@ -163,7 +160,6 @@ export default {
         flexDirection:'row',
         height:px(88),
         borderBottomWidth:2,
-        borderBottomStyle:'solid',
         borderBottomColor:'#f5f5f5'
     },
     filterLine:{
@@ -171,7 +167,6 @@ export default {
         paddingBottom:px(24),
         borderBottomWidth:px(2),
         borderBottomColor:'#f5f5f5',
-        borderBottomStyle:'solid'
     },
     selectTouch:{
         position:'absolute',

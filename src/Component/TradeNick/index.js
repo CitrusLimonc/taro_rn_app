@@ -1,5 +1,6 @@
 import Taro, { Component, Config } from '@tarojs/taro';
 import { View , Text ,Image} from '@tarojs/components';
+import Event from 'ay-event';
 import {UitlsRap} from '../../Public/Biz/UitlsRap.js';
 import ItemIcon from '../ItemIcon';
 import px from '../../Biz/px.js';
@@ -31,7 +32,7 @@ export default class WangWang extends Component{
                 });
             });
         }else{
-            // RAP.emit('App.openwc',loginid);
+            Event.emit('App.openwc',loginid);
         }
 
     }
@@ -42,13 +43,13 @@ export default class WangWang extends Component{
         switch (status) {
             case '取消订单':
             case '申请退款':{
-                // RAP.emit('App.update_lastPayOrders',{
-                //     lastPayOrders:orderId,
-                //     lastTaoTid:tid,
-                //     lastShopId:shopId,
-                //     lastShopName:shopName,
-                //     updateOrderStatus:status
-                // });
+                Event.emit('App.update_lastPayOrders',{
+                    lastPayOrders:orderId,
+                    lastTaoTid:tid,
+                    lastShopId:shopId,
+                    lastShopName:shopName,
+                    updateOrderStatus:status
+                });
                 // let ofurls = RAP.biz.getBizInfoUrl('orderDetail', { 'orderId': orderId, 'sys_page': 1 });
                 // RAP.navigator.push({url: ofurls});
             } break;

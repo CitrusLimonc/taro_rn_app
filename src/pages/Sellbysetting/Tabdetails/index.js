@@ -2,6 +2,7 @@ import Taro, { Component, Config } from '@tarojs/taro';
 import { View, Text ,ScrollView,Image} from '@tarojs/components';
 import styles from './styles';
 import {GoToView} from '../../../Public/Biz/GoToView.js';
+import px from '../../../Biz/px.js';
 
 /**
  * @author wzm

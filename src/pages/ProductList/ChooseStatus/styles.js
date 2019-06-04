@@ -8,7 +8,6 @@ export default {
         paddingLeft: px(20),
         paddingRight: px(20),
         borderBottomColor:'#e5e5e5',
-        borderBottomStyle:'solid',
         borderBottomWidth:px(2)
     },
     cancelBtn:{
@@ -19,7 +18,6 @@ export default {
         height: px(70),
         marginRight:px(20),
         borderWidth:px(2),
-        borderStyle:'solid',
         borderColor:'#DCDEE3',
         backgroundColor: '#ffffff',
         borderRadius: px(8),

@@ -6,7 +6,6 @@ export default {
         alignItems: 'center',
         borderBottomWidth:px(1),
         borderBottomColor:'#e5e5e5',
-        borderBottomStyle:'solid',
         height: px(75),
         paddingLeft: px(24),
         paddingRight: px(24),

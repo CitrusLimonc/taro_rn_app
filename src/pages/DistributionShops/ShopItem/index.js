@@ -1,11 +1,12 @@
 import Taro, { Component, Config } from '@tarojs/taro';
-
 import {View,Text,Checkbox,Image,Button} from '@tarojs/components';
+import Event from 'ay-event';
 import {IsEmpty} from '../../../Public/Biz/IsEmpty.js';
 import styles from './styles';
 import { SyncShop,GetOrderState } from '../../../Biz/Apis';
 import {NetWork} from '../../../Public/Common/NetWork/NetWork.js';
 import {Domain} from '../../../Env/Domain';
+import px from '../../../Biz/px.js';
 
 
 /*
@@ -19,7 +20,7 @@ export default class ShopItem extends Component {
             isrunning:'0',
             starttime:'',
         };
-        // RAP.on('App.getrunning',(data) => {
+        // Event.on('App.getrunning',(data) => {
         //     let self = this;
         //     this.getrunning();
         // });
@@ -139,5 +140,5 @@ export default class ShopItem extends Component {
                 </View>
             </View>
         );
-    }
+    }s
 }

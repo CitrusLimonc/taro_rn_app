@@ -15,7 +15,6 @@ export default {
         alignItems:'center',
         justifyContent:'center',
         borderColor:'#f5f5f5',
-        borderStyle:'solid',
         borderWidth:px(2)
     },
     notTag:{

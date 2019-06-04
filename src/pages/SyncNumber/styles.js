@@ -64,7 +64,6 @@ export default {
     },
     shopLine:{
         borderBottomColor:'#f5f5f5',
-        borderBottomStyle:'solid',
         borderBottomWidth:px(2),
         height:170,
         paddingLeft:24,
@@ -86,7 +85,6 @@ export default {
         height:96,
         flexDirection:'row',
         borderTopColor:'#e5e5e5',
-        borderTopStyle:'solid',
         borderTopWidth:px(1)
     },
     footLeft:{
@@ -126,7 +124,6 @@ export default {
         width:px(306),
         height:px(96),
         borderTopWidth:px(2),
-        borderStyle:'solid',
         borderColor:'#DCDEE3',
         alignItems:'center',
         justifyContent:'center',
@@ -136,7 +133,6 @@ export default {
         width:px(306),
         height:px(96),
         borderTopWidth:px(1),
-        borderTopStyle:'solid',
         borderTopColor:'#DCDEE3',
         alignItems:'center',
         justifyContent:'center',
@@ -162,7 +158,6 @@ export default {
         width:80,
         height:80,
         borderRadius:8,
-        borderStyle:'solid',
         borderWidth:2,
         borderColor:'#E5E5E5',
         marginTop:24,
@@ -174,7 +169,6 @@ export default {
         width:80,
         height:80,
         borderRadius:8,
-        borderStyle:'solid',
         borderWidth:2,
         borderColor:'#0077FF',
         marginTop:24,
@@ -189,7 +183,6 @@ export default {
     },
     borderLine:{
         borderBottomColor:'#E5E5E5',
-        borderBottomStyle:'solid',
         borderBottomWidth:2,
         marginTop:56,
         paddingBottom:8
@@ -220,16 +213,12 @@ export default {
         width:500,
         height:50,
         borderBottomColor:'#333333',
-        borderBottomStyle:'solid',
         borderBottomWidth:2,
         borderTopColor:'#E5E5E5',
-        borderTopStyle:'solid',
         borderTopWidth:0,
         borderLeftColor:'#E5E5E5',
-        borderLeftStyle:'solid',
         borderLeftWidth:0,
         borderRightColor:'#E5E5E5',
-        borderRightStyle:'solid',
         borderRightWidth:0,
 
     },

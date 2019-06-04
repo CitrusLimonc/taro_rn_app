@@ -2,6 +2,7 @@
 
 import Taro, { Component, Config } from '@tarojs/taro';
 import { View,Text } from '@tarojs/components';
+import Event from 'ay-event';
 import { GetOrderInfo } from '../../../Biz/Apis.js';
 import ItemIcon from '../../../Component/ItemIcon';
 import { GoToView } from '../../../Public/Biz/GoToView.js';
@@ -31,25 +32,25 @@ export default class Head extends Component{
         this.allshops=0;
         this.token = 0;
         let self =this;
-        // RAP.on('APP.reload_headorderlist',(data)=>{
-        //     console.log('APP.reload_headorderlist')
-        //     this.token=this.token*1+1;
-        //     console.log('kankanjici',this.token,this.allshops);
-        //     if(this.token==this.allshops){
-        //         self.loadData();
-        //     }
-        // });
-        // RAP.on('APP.get_allshops',(data)=>{
-        //     console.log('APP.reload_headorderlist')
-        //     self.allshops = data.total;
-        // });
+        Event.on('APP.reload_headorderlist',(data)=>{
+            console.log('APP.reload_headorderlist')
+            this.token=this.token*1+1;
+            console.log('kankanjici',this.token,this.allshops);
+            if(this.token==this.allshops){
+                self.loadData();
+            }
+        });
+        Event.on('APP.get_allshops',(data)=>{
+            console.log('APP.reload_headorderlist')
+            self.allshops = data.total;
+        });
 
-        // RAP.on('APP.reload_wechart_msg',(data)=>{
-        //     self.setState({
-        //         isOpen:data.isOpen,
-        //         needShow:data.needShow
-        //     });
-        // });
+        Event.on('APP.reload_wechart_msg',(data)=>{
+            self.setState({
+                isOpen:data.isOpen,
+                needShow:data.needShow
+            });
+        });
     }
 
     componentWillMount(){
@@ -108,7 +109,7 @@ export default class Head extends Component{
     //跳转到订单列表
     goList=(v)=>{
         console.log("golist",v);
-        // RAP.emit('App.Simple',{activeKey:{key:'order'},state:v});
+        Event.emit('App.Simple',{activeKey:{key:'order'},state:v});
     }
 
     //获取列表和用户设置

@@ -1,5 +1,6 @@
 import Taro, { Component, Config } from '@tarojs/taro';
 import { View ,Button} from '@tarojs/components';
+import Event from 'ay-event';
 import {IsEmpty} from '../../Public/Biz/IsEmpty.js';
 import {GoToView} from '../../Public/Biz/GoToView.js';
 import {LocalStore} from '../../Public/Biz/LocalStore';
@@ -31,36 +32,36 @@ export default class ButtonsGroup extends Component{
         const { data} = this.props;
         const self = this;
 
-        // RAP.on('App.checkorderok',(res)=>{
-        //     //确定收款
-        //     if(res.tid == data.tid){
-        //         NetWork.Get({
-        //             url:'Orderreturn/confirmReceive',
-        //             params:{
-        //                 orderId:data.tid,
-        //             }
-        //         },(res)=>{
-        //             if(res.code==200){
-        //                 Taro.showToast({
-        //                     title: '确认付款成功',
-        //                     icon: 'none',
-        //                     duration: 2000
-        //                 });
-        //                 this.setState({
-        //                     paytime:'now',
-        //                 })
-        //                 // RAP.emit('App.hidecheckorder');
-        //             }else{
-        //                 Taro.showToast({
-        //                     title: '确认付款失败',
-        //                     icon: 'none',
-        //                     duration: 2000
-        //                 });
-        //                 // RAP.emit('App.hidecheckorder');
-        //             }
-        //         });
-        //     }
-        // });
+        Event.on('App.checkorderok',(res)=>{
+            //确定收款
+            if(res.tid == data.tid){
+                NetWork.Get({
+                    url:'Orderreturn/confirmReceive',
+                    params:{
+                        orderId:data.tid,
+                    }
+                },(res)=>{
+                    if(res.code==200){
+                        Taro.showToast({
+                            title: '确认付款成功',
+                            icon: 'none',
+                            duration: 2000
+                        });
+                        this.setState({
+                            paytime:'now',
+                        })
+                        Event.emit('App.hidecheckorder');
+                    }else{
+                        Taro.showToast({
+                            title: '确认付款失败',
+                            icon: 'none',
+                            duration: 2000
+                        });
+                        Event.emit('App.hidecheckorder');
+                    }
+                });
+            }
+        });
     };
 
     componentWillMount(){
@@ -161,14 +162,14 @@ export default class ButtonsGroup extends Component{
                 //     console.log('alibaba.alipay.url.get',rsp);
                 //     if (!IsEmpty(rsp.success) && (rsp.success == true || rsp.success == 'true')) {
                 if (!IsEmpty(orderIdList)) {
-                    // RAP.emit('App.update_lastPayOrders',{
-                    //     lastPayOrders:orderIdList[0],
-                    //     lastTaoTid:data.tid,
-                    //     lastShopId:data.shop_id,
-                    //     lastShopName:data.shopName,
-                    //     updateOrderStatus:'向供应商付款'
-                    // });
-                    // console.log('firstOrder',firstOrder);
+                    Event.emit('App.update_lastPayOrders',{
+                        lastPayOrders:orderIdList[0],
+                        lastTaoTid:data.tid,
+                        lastShopId:data.shop_id,
+                        lastShopName:data.shopName,
+                        updateOrderStatus:'向供应商付款'
+                    });
+                    console.log('firstOrder',firstOrder);
                     // let ofurls = RAP.biz.getBizInfoUrl('orderDetail', { 'orderId': orderIdList[0], 'sys_page': 1 });
                     // RAP.navigator.push({url: ofurls});
                 } else {
@@ -225,13 +226,13 @@ export default class ButtonsGroup extends Component{
                     }
                 }
                 if (orderId!='') {
-                    // RAP.emit('App.update_lastPayOrders',{
-                    //     lastPayOrders:orderId,
-                    //     lastTaoTid:data.tid,
-                    //     lastShopId:data.shop_id,
-                    //     lastShopName:data.shopName,
-                    //     updateOrderStatus:'申请退款'
-                    // });
+                    Event.emit('App.update_lastPayOrders',{
+                        lastPayOrders:orderId,
+                        lastTaoTid:data.tid,
+                        lastShopId:data.shop_id,
+                        lastShopName:data.shopName,
+                        updateOrderStatus:'申请退款'
+                    });
                     // let ofurls = RAP.biz.getBizInfoUrl('orderDetail', { 'orderId': orderId, 'sys_page': 1 });
                     // RAP.navigator.push({url: ofurls});
                 } else {
@@ -256,13 +257,13 @@ export default class ButtonsGroup extends Component{
                     }
                 }
                 if (orderId!='') {
-                    // RAP.emit('App.update_lastPayOrders',{
-                    //     lastPayOrders:orderId,
-                    //     lastTaoTid:data.tid,
-                    //     lastShopId:data.shop_id,
-                    //     lastShopName:data.shopName,
-                    //     updateOrderStatus:'确认收货'
-                    // });
+                    Event.emit('App.update_lastPayOrders',{
+                        lastPayOrders:orderId,
+                        lastTaoTid:data.tid,
+                        lastShopId:data.shop_id,
+                        lastShopName:data.shopName,
+                        updateOrderStatus:'确认收货'
+                    });
                     // let ofurls = RAP.biz.getBizInfoUrl('orderDetail', { 'orderId': orderId, 'sys_page': 1 });
                     // RAP.navigator.push({url: ofurls});
                 } else {
@@ -286,13 +287,13 @@ export default class ButtonsGroup extends Component{
                     }
                 }
                 if (orderId!='') {
-                    // RAP.emit('App.update_lastPayOrders',{
-                    //     lastPayOrders:orderId,
-                    //     lastTaoTid:data.tid,
-                    //     lastShopId:data.shop_id,
-                    //     lastShopName:data.shopName,
-                    //     updateOrderStatus:'评价'
-                    // });
+                    Event.emit('App.update_lastPayOrders',{
+                        lastPayOrders:orderId,
+                        lastTaoTid:data.tid,
+                        lastShopId:data.shop_id,
+                        lastShopName:data.shopName,
+                        updateOrderStatus:'评价'
+                    });
                     // let ofurls = RAP.biz.getBizInfoUrl('orderDetail', { 'orderId': orderId, 'sys_page': 1 });
                     // RAP.navigator.push({url: ofurls});
                 } else {
@@ -305,11 +306,11 @@ export default class ButtonsGroup extends Component{
             } break;
             case '关闭订单':{
                 // this.refs.closeorderone.show();
-                // RAP.emit('App.opencloseorder',{tid:data.tid});
+                Event.emit('App.opencloseorder',{tid:data.tid});
             } break;
             case '确认已收款':{
                 // this.refs.checkorderone.show();
-                // RAP.emit('App.opencheckorder',{tid:data.tid});
+                Event.emit('App.opencheckorder',{tid:data.tid});
             } break;
             default:break;
         }
@@ -360,14 +361,14 @@ export default class ButtonsGroup extends Component{
         let tid = data.tid;
 
         if (sendType == 'needAuth') {
-            // RAP.emit('App.showReAuthDialog',{
-            //     'title':'开启自动发货',
-            //     'cancelText':'手动发货',
-            //     'okText':'授权“爱用交易”',
-            //     'content':'请您授权“爱用交易”，获取淘宝店铺订单，同步采购单物流状态'
-            // });
+            Event.emit('App.showReAuthDialog',{
+                'title':'开启自动发货',
+                'cancelText':'手动发货',
+                'okText':'授权“爱用交易”',
+                'content':'请您授权“爱用交易”，获取淘宝店铺订单，同步采购单物流状态'
+            });
         } else if (sendType == 'needAuth-gx' || sendType == 'needAuth-pdd') {
-            // RAP.emit('App.choose_send_tid',{tid:tid});
+            Event.emit('App.choose_send_tid',{tid:tid});
         } else {
             //直接发货
             this.props.sendGood(tid);

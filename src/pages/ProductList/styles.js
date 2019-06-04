@@ -10,7 +10,6 @@ export default {
         top:px(16),
         borderLeftWidth:px(1),
         borderLeftColor:'#999',
-        borderLeftStyle:'solid',
         backgroundColor:'#fff'
     },
     refresh: {
@@ -43,14 +42,12 @@ export default {
         left: px(0),
         right: px(0),
         borderTopColor:'#e5e5e5',
-        borderTopStyle:'solid',
         borderTopWidth:px(2)
     },
     footBtn:{
         flex:1,
         borderRightWidth:px(2),
         borderRightColor:'#e5e5e5',
-        borderRightStyle:'solid',
         alignItems:'center',
         justifyContent: 'center',
         height: px(80)
@@ -97,7 +94,6 @@ export default {
         paddingLeft: px(25),
         paddingRight: px(100),
         borderBottomColor:'#e5e5e5',
-        borderBottomStyle:'solid',
         borderBottomWidth:px(1)
     },
     selectInput:{
@@ -166,14 +162,12 @@ export default {
         alignItems:'center',
         justifyContent:'center',
         borderTopColor:'#f5f5f5',
-        borderTopStyle:'solid',
         borderTopWidth:px(2)
     },
     submitBtn:{
         width:px(306),
         height:px(96),
         borderTopWidth:px(1),
-        borderTopStyle:'solid',
         borderTopColor:'#DCDEE3',
         alignItems:'center',
         justifyContent:'center',
@@ -193,7 +187,6 @@ export default {
         width:px(306),
         height:px(96),
         borderTopWidth:px(2),
-        borderStyle:'solid',
         borderColor:'#DCDEE3',
         alignItems:'center',
         justifyContent:'center',

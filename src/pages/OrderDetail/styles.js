@@ -9,7 +9,7 @@ export default {
         justifyContent: 'center',
         paddingRight: px(24),
         paddingLeft: px(24),
-        height:96,
+        height:px(96),
     },
     headText:{
         color: 'rgba(255,255,255,0.8)',

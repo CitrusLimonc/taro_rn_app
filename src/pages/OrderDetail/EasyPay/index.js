@@ -3,7 +3,7 @@
 import Taro, { Component, Config } from '@tarojs/taro';
 import { View, Text } from '@tarojs/components';
 import {IsEmpty} from '../../../Public/Biz/IsEmpty.js';
-import px from '../../Biz/px.js';
+import px from '../../../Biz/px.js';
 /*
 * 付款信息
 */
@@ -29,7 +29,7 @@ export default class EasyPay extends Component {
             let int=totalmoney.split('.');
             return (
                <View style={styles.cal_view}>
-                   <Text style={{fontSize:32,color:'#4a4a4a'}}>退款总额：</Text>
+                   <Text style={{fontSize:px(32),color:'#4a4a4a'}}>退款总额：</Text>
                    <View style={[styles.item_right]}>
                       <Text style={styles.text_black36}>{newpro.length}</Text>
                       <Text style={styles.text_black24}> 种货品 共 </Text>
@@ -55,7 +55,7 @@ export default class EasyPay extends Component {
                    <Text style={[styles.text_black36]}>{total}</Text>
                    <Text style={styles.text_black24}> 件 合计(含运费)：</Text>
                    <Text style={styles.text_or36}>{`¥ ${int[0]}.`}</Text>
-                   <Text style={[styles.text_or24,{paddingTop:12}]}>{IsEmpty(int[1])?'00':int[1]}</Text>
+                   <Text style={[styles.text_or24,{paddingTop:px(12)}]}>{IsEmpty(int[1])?'00':int[1]}</Text>
                </View>
             );
       }
@@ -78,7 +78,6 @@ const styles = {
     width: px(134),
     height: px(42),
     borderRadius: px(6),
-    borderStyle:'solid',
     borderWidth: px(2),
     borderColor: '#3089DC',
     flexDirection: 'row',

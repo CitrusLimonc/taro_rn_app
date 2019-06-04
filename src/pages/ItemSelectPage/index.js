@@ -1,5 +1,6 @@
 import Taro, { Component, Config } from '@tarojs/taro';
 import { View, Text, ScrollView,Input} from '@tarojs/components';
+import Event from 'ay-event';
 import GoodsProductMap from '../../Component/GoodsProductMap';
 import ItemIcon from '../../Component/ItemIcon';
 import {LocalStore} from '../../Public/Biz/LocalStore.js';
@@ -9,6 +10,7 @@ import {IsEmpty} from '../../Public/Biz/IsEmpty.js';
 import {NetWork} from '../../Public/Common/NetWork/NetWork.js';
 import styles from './styles';
 import {DoBeacon} from '../../Public/Biz/DoBeacon';
+import px from '../../Biz/px.js';
 
 /**
  * @author cy
@@ -150,9 +152,9 @@ export default class ItemSelectPage extends Component {
             };
             LocalStore.Set({'homeSubjectKey_distributor':val});
             if(this.type == 'recycle'){
-                // RAP.emit('App.recylelist_search',data);
+                Event.emit('App.recylelist_search',data);
             }else{
-                // RAP.emit('App.list_search',data);
+                Event.emit('App.list_search',data);
             }
             GoToView({page_status:'pop'});
         }
@@ -215,9 +217,9 @@ export default class ItemSelectPage extends Component {
                 };
                 LocalStore.Set({'homeSubjectKey_distributor':self.state.searchValue});
                 if(self.type == 'recycle'){
-                    // RAP.emit('App.recylelist_search',data);
+                    Event.emit('App.recylelist_search',data);
                 }else{
-                    // RAP.emit('App.list_search',data);
+                    Event.emit('App.list_search',data);
                 }
                 GoToView({page_status:'pop'});
             }
@@ -317,7 +319,7 @@ export default class ItemSelectPage extends Component {
             doms.push(
                 <View style={{flex:1,alignItems:'center',justifyContent:'center'}} onClick={()=>{this.changeTabber(item)}}>
                     <View style={lastTabStatus == item.name ? styles.activeTabBox:styles.normalTabBox}>
-                        <Text style={lastTabStatus == item.name ? {fontSize:28,color:'#ff6000'}:{fontSize:28,color:'#333333'}}>
+                        <Text style={lastTabStatus == item.name ? {fontSize:px(28),color:'#ff6000'}:{fontSize:px(28),color:'#333333'}}>
                         {item.name}
                         </Text>
                         {
@@ -325,11 +327,11 @@ export default class ItemSelectPage extends Component {
                             <View style={{flexDirection:'column',alignItems:'center',justifyContent:'center'}}>
                                 <ItemIcon
                                 code={"\ue74c"}
-                                iconStyle={[{fontSize:28,color:'#666666'},!IsEmpty(item.descendOrder) && item.descendOrder == false ? {color:'#ff6000'}:{}]}
+                                iconStyle={[{fontSize:px(28),color:'#666666'},!IsEmpty(item.descendOrder) && item.descendOrder == false ? {color:'#ff6000'}:{}]}
                                 />
                                 <ItemIcon
                                 code={"\ue74d"}
-                                iconStyle={[{fontSize:28,color:'#666666'},!IsEmpty(item.descendOrder) && item.descendOrder == true ? {color:'#ff6000'}:{}]}
+                                iconStyle={[{fontSize:px(28),color:'#666666'},!IsEmpty(item.descendOrder) && item.descendOrder == true ? {color:'#ff6000'}:{}]}
                                 boxStyle={{marginTop:px(-24)}}
                                 />
                             </View>
@@ -488,7 +490,7 @@ export default class ItemSelectPage extends Component {
                             </View>
                             <ListView
                             ref="itemListView"
-                            style={{flex:1,marginTop:24}}
+                            style={{flex:1,marginTop:px(24)}}
                             dataSource={['null']}
                             renderHeader={this.renderHeader}
                             renderRow={this.renderRow}

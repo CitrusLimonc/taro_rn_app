@@ -14,10 +14,8 @@ export default {
         flexDirection:'row',
         height: px(100),
         alignItems: 'center',
-        borderTopStyle:'solid',
         borderTopWidth:px(2),
         borderTopColor:'#f5f5f5',
-        borderBottomStyle:'solid',
         borderBottomWidth:px(2),
         borderBottomColor:'#f5f5f5',
         paddingRight: px(20),
@@ -58,7 +56,6 @@ export default {
         alignItems: 'center',
         justifyContent: 'center',
         height: px(70),
-        borderBottomStyle:'solid',
         borderBottomWidth:px(2),
         borderBottomColor:'#fff'
     },
@@ -68,7 +65,6 @@ export default {
         alignItems: 'center',
         justifyContent: 'center',
         height: px(70),
-        borderBottomStyle:'solid',
         borderBottomWidth:px(2),
         borderBottomColor:'#ff6000'
     },
@@ -92,7 +88,6 @@ export default {
     statusBtn:{
         width: px(156),
         height: px(56),
-        borderStyle:'solid',
         borderWidth:px(2),
         borderColor:'#ff6000',
         borderRadius: px(5),
@@ -106,7 +101,6 @@ export default {
     },
     statusLine:{
         flexDirection: 'row',
-        borderBottomStyle:'solid',
         borderBottomWidth:px(2),
         borderBottomColor:'#ceced2',
         marginLeft: px(20),
@@ -116,7 +110,6 @@ export default {
     },
     middleLine:{
         flexDirection: 'row',
-        borderBottomStyle:'solid',
         borderBottomWidth:px(2),
         borderBottomColor:'#f5f5f5',
         marginLeft: px(20),
@@ -132,7 +125,6 @@ export default {
         paddingRight: px(20)
     },
     tags:{
-        borderStyle:'solid',
         borderWidth:px(2),
         borderColor:'#e6e6e6',
         borderRadius: px(5),
@@ -160,7 +152,6 @@ export default {
         fontWeight: '300'
     },
     tables:{
-        borderStyle:'solid',
         borderWidth:px(2),
         borderColor:'#e3e3e3',
         backgroundColor: '#F8F8F8',
@@ -188,7 +179,6 @@ export default {
     },
     firstLine:{
         backgroundColor: '#f5f5f5',
-        borderStyle:'solid',
         borderWidth:px(2),
         borderColor:'#f0f0f0',
         marginLeft: px(-1),
@@ -200,7 +190,6 @@ export default {
     },
     nextLine:{
         backgroundColor: '#fff',
-        borderStyle:'solid',
         borderWidth:px(2),
         borderColor:'#f0f0f0',
         marginLeft: px(-1),
@@ -212,7 +201,6 @@ export default {
     },
     firstColumn:{
         backgroundColor: '#fff',
-        borderStyle:'solid',
         borderWidth:px(2),
         borderColor:'#f0f0f0',
         marginLeft: px(-1),
@@ -224,14 +212,9 @@ export default {
     smallImg:{
         width:px(127),
         height:px(127),
-        // borderStyle:'solid',
-        // borderWidth:px(2),
-        // borderColor:'#e7e7e7',
-        // borderRadius:px(5)
     },
     smallimgBox:{
         borderColor:'#EEEEEE',
-        borderStyle:'solid',
         borderWidth:px(2),
         width: px(131),
         height: px(131),
@@ -241,14 +224,9 @@ export default {
     bigImg:{
         width:px(274),
         height:px(274),
-        // borderStyle:'solid',
-        // borderWidth:px(2),
-        // borderColor:'#e7e7e7',
-        // borderRadius:px(5)
     },
     bigimgBox:{
         borderColor:'#EEEEEE',
-        borderStyle:'solid',
         borderWidth:px(2),
         width: px(278),
         height: px(278),
@@ -256,10 +234,10 @@ export default {
         alignItems:'center'
     },
     copyIcon:{
-        fontSize:28,
+        fontSize:px(28),
         color: '#3089DC',
-        height: 28,
-        width: 28,
+        height: px(28),
+        width: px(28),
     },
     pictureBox:{
         width:px(750),
@@ -285,15 +263,14 @@ export default {
         alignItems:'center',
         justifyContent:'center',
         borderTopColor:'#f5f5f5',
-        borderTopStyle:'solid',
         borderTopWidth:px(2)
     },
     supplierBox:{
         backgroundColor:'#ffffff',
-        paddingTop:24,
-        paddingLeft:24,
-        paddingRight:24,
-        paddingBottom:24,
+        paddingTop:px(24),
+        paddingLeft:px(24),
+        paddingRight:px(24),
+        paddingBottom:px(24),
         flex:1
     },
     buttons:{
@@ -301,13 +278,12 @@ export default {
         justifyContent: 'center',
         height: px(48),
         borderWidth:px(2),
-        borderStyle:'solid',
         borderColor:'#DCDEE3',
         backgroundColor: '#ffffff',
         borderRadius: px(8),
         flexDirection: 'row',
-        paddingLeft:18,
-        paddingRight:18
+        paddingLeft:px(18),
+        paddingRight:px(18)
     },
     buttonText:{
         fontSize: px(28),
@@ -315,10 +291,10 @@ export default {
     },
     midLine:{
         width:px(750),
-        height:60,
+        height:px(60),
         flexDirection:'row',
         alignItems:'center',
-        paddingLeft:24,
+        paddingLeft:px(24),
         backgroundColor:'#f5f5f5'
     },
     mask:{
@@ -328,9 +304,9 @@ export default {
         width: px(750),
         position:'absolute',
         height:px(750),
-        left:0,
-        right:0,
-        bottom:0
+        left:px(0),
+        right:px(0),
+        bottom:px(0)
     },
     body: {
         flex:1,
@@ -342,35 +318,32 @@ export default {
         alignItems: 'center',
         justifyContent: 'center',
         borderBottomColor:'#eeeeee',
-        borderBottomStyle:'solid',
         borderBottomWidth:px(1),
     },
     textHead:{
         color:'#3d4145',
-        fontSize:32,
+        fontSize:px(32),
     },
     attrLine:{
         flexDirection:'row',
-        marginLeft:24,
-        marginRight:24,
+        marginLeft:px(24),
+        marginRight:px(24),
         borderBottomColor:'#e5e5e5',
-        borderBottomStyle:'solid',
         borderBottomWidth:px(1),
-        height:72,
+        height:px(72),
         alignItems:'center'
     },
     attrText:{
         overflow:'hidden',
         textOverflow:'ellipsis',
         whiteSpace:'nowrap',
-        fontSize:28,
+        fontSize:px(28),
         color:'#4a4a4a'
     },
     footer: {
         borderTopColor:'#dddddd',
         flexDirection:'row',
-        borderTopStyle:'solid',
-        borderTopWidth:1,
+        borderTopWidth:px(1),
         alignItems: 'center',
         justifyContent: 'flex-end',
         height: px(94)
@@ -404,7 +377,6 @@ export default {
         width:px(306),
         height:px(96),
         borderTopWidth:px(1),
-        borderTopStyle:'solid',
         borderTopColor:'#DCDEE3',
         alignItems:'center',
         justifyContent:'center',
@@ -424,7 +396,6 @@ export default {
         width:px(306),
         height:px(96),
         borderTopWidth:px(2),
-        borderStyle:'solid',
         borderColor:'#DCDEE3',
         alignItems:'center',
         justifyContent:'center',
@@ -434,10 +405,16 @@ export default {
         width:px(306),
         height:px(96),
         borderTopWidth:px(1),
-        borderTopStyle:'solid',
         borderTopColor:'#DCDEE3',
         alignItems:'center',
         justifyContent:'center',
         borderBottomRightRadius:px(8)
+    },
+    smallTag:{
+        fontSize:px(24),
+        color:'#9B9B9B',
+        fontWeight:'600',
+        marginLeft:px(5),
+        marginRight:px(5)
     }
 }

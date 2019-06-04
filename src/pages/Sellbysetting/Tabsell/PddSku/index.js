@@ -3,7 +3,7 @@ import { View, Text ,Input} from '@tarojs/components';
 import styles from './styles';
 import ItemIcon from '../../../../Component/ItemIcon';
 import {IsEmpty} from '../../../../Public/Biz/IsEmpty';
-
+import px from '../../../../Biz/px.js';
 
 /**
  * @author wzm

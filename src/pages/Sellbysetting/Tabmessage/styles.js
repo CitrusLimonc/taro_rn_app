@@ -1,45 +1,45 @@
-import px from '../../Biz/px.js';
+import px from '../../../Biz/px.js';
 export default {
     commonLine:{
         flex:1,
         backgroundColor:'#EEEEEE',
     },
     title:{
-        height:176,
-        padding:24,
+        height:px(176),
+        padding:px(24),
         backgroundColor:'#ffffff',
     },
     titleTop:{
         fontFamily: 'PingFangSC-Regular',
-        fontSize: 28,
+        fontSize: px(28),
         color: '#999999',
     },
     titleText:{
         fontFamily: 'PingFangSC-Regular',
-        fontSize: 28,
+        fontSize: px(28),
         color: '#333333',
-        marginTop:18,
+        marginTop:px(18),
     },
     lineText:{
         fontFamily: 'PingFangSC-Regular',
-        fontSize: 28,
+        fontSize: px(28),
         color: '#333333',
         flex:1,
     },
     lineTextgray:{
         fontFamily: 'PingFangSC-Regular',
-        fontSize: 28,
+        fontSize: px(28),
         color: '#999999',
         flex:1,
     },
     line:{
         flexDirection:'row',
         alignItems:'center',
-        height:82,
+        height:px(82),
         backgroundColor:'#ffffff',
-        marginTop:2,
-        paddingLeft:24,
-        paddingRight:24,
+        marginTop:px(2),
+        paddingLeft:px(24),
+        paddingRight:px(24),
     },
     mask:{
         backgroundColor:'transparent'// 可以修改默认的灰底
@@ -48,9 +48,9 @@ export default {
         width: px(750),
         position:'absolute',
         height:px(750),
-        left:0,
-        right:0,
-        bottom:0
+        left:px(0),
+        right:px(0),
+        bottom:px(0)
     },
     body: {
         flex:1,
@@ -62,35 +62,32 @@ export default {
         alignItems: 'center',
         justifyContent: 'center',
         borderBottomColor:'#eeeeee',
-        borderBottomStyle:'solid',
         borderBottomWidth:px(1),
     },
     textHead:{
         color:'#3d4145',
-        fontSize:32,
+        fontSize:px(32),
     },
     attrLine:{
         flexDirection:'row',
-        marginLeft:24,
-        marginRight:24,
+        marginLeft:px(24),
+        marginRight:px(24),
         borderBottomColor:'#e5e5e5',
-        borderBottomStyle:'solid',
         borderBottomWidth:px(1),
-        height:72,
+        height:px(72),
         alignItems:'center'
     },
     attrText:{
         overflow:'hidden',
         textOverflow:'ellipsis',
         whiteSpace:'nowrap',
-        fontSize:28,
+        fontSize:px(28),
         color:'#4a4a4a'
     },
     footer: {
         borderTopColor:'#dddddd',
         flexDirection:'row',
-        borderTopStyle:'solid',
-        borderTopWidth:1,
+        borderTopWidth:px(1),
         alignItems: 'center',
         justifyContent: 'flex-end',
         height: px(94)
@@ -124,7 +121,6 @@ export default {
         width:px(306),
         height:px(96),
         borderTopWidth:px(1),
-        borderTopStyle:'solid',
         borderTopColor:'#DCDEE3',
         alignItems:'center',
         justifyContent:'center',
@@ -144,7 +140,6 @@ export default {
         width:px(306),
         height:px(96),
         borderTopWidth:px(2),
-        borderStyle:'solid',
         borderColor:'#DCDEE3',
         alignItems:'center',
         justifyContent:'center',
@@ -154,7 +149,6 @@ export default {
         width:px(306),
         height:px(96),
         borderTopWidth:px(1),
-        borderTopStyle:'solid',
         borderTopColor:'#DCDEE3',
         alignItems:'center',
         justifyContent:'center',
@@ -162,12 +156,11 @@ export default {
     },
     radioLine:{
         flexDirection:'row',
-        height:96,
+        height:px(96),
         flex:1,
         alignItems:'center',
         paddingLeft:px(24),
         borderBottomColor:'#f5f5f5',
-        borderBottomStyle:'solid',
         borderBottomWidth:px(2),
         paddingRight:px(24)
     },

@@ -1,5 +1,6 @@
 import Taro, { Component, Config } from '@tarojs/taro';
 import {View,Text,Image} from '@tarojs/components';
+import Event from 'ay-event';
 import TradeNick from '../../../Component/TradeNick';
 import TradeSellerMemo from '../../../Component/TradeSellerMemo';
 import TradeGoodsList from '../../../Component/TradeGoodsList';
@@ -11,7 +12,7 @@ import {LocalStore} from '../../../Public/Biz/LocalStore.js';
 import {IsEmpty} from '../../../Public/Biz/IsEmpty.js';
 import {ReviewPurcharse} from '../../../Public/Biz/ReviewPurcharse.js';
 import styles from './styles.js';
-
+import px from '../../../Biz/px.js';
 /**
 * @author cy
 * 单个订单的显示
@@ -50,10 +51,10 @@ export default class OrderCard extends Component{
     //复制订单号
     copyTid = (text) =>{
         const { order } = this.props;
-        // RAP.emit('App.trclbd',{
-        //     msg:text,
-        //     cal:'订单号已复制'
-        // })
+        Event.emit('App.trclbd',{
+            msg:text,
+            cal:'订单号已复制'
+        })
     }
     //获取订单时间
     calTime(status,testdata){
@@ -166,10 +167,10 @@ export default class OrderCard extends Component{
                                 <Text style={styles.number}
                                 onClick={()=>{
                                     if (!IsEmpty(subOrder.order.tid)) {
-                                        // RAP.emit('App.trclbd',{
-                                        //     msg:subOrder.order.tid,
-                                        //     cal:'订单号已复制'
-                                        // });
+                                        Event.emit('App.trclbd',{
+                                            msg:subOrder.order.tid,
+                                            cal:'订单号已复制'
+                                        });
                                     }
                                 }}
                                 >{subOrder.order.tid ? subOrder.order.tid:'暂无'}</Text>
@@ -325,7 +326,7 @@ export default class OrderCard extends Component{
                 */}
                 <View style={styles.orderNum}>
                     <Text style={styles.orderText}>订 单 号  ：</Text>
-                    <Image src={shopTypePicture} style={{width:48,height:48}}/>
+                    <Image src={shopTypePicture} style={{width:px(48),height:px(48)}}/>
                     <Text style={styles.number}>{idStr}</Text>
                     <View onClick={()=>{this.copyTid(order.tid)}}>
                         <Image style={[styles.new,{marginLeft:px(12)}]} src='https://q.aiyongbao.com/trade/web/images/qap_img/mobile/fz_new.png' />

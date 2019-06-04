@@ -1,8 +1,9 @@
 import Taro, { Component, Config } from '@tarojs/taro';
 import {View,Text} from '@tarojs/components';
+import Event from 'ay-event';
 import styles from './styles';
 import ItemIcon from '../../../Component/ItemIcon';
-
+import px from '../../../Biz/px.js';
 
 /*
 * @author SmingPro
@@ -27,10 +28,10 @@ export default class EvaluationIcon extends Component {
 	//点击五角星操作
 	clickicon = (num) => {
 		let self = this;
-		// RAP.emit('App.check_eva', {
-		// 	type: self.type,
-		// 	num: num
-		// });
+		Event.emit('App.check_eva', {
+			type: self.type,
+			num: num
+		});
 	}
 	/**
 	 * 显示评分五角星
@@ -82,14 +83,14 @@ export default class EvaluationIcon extends Component {
         return (
             <View style={{
 				width:px(750),
-				height:60,
-				marginTop:  24,
-				marginBottom:  24,
+				height:px(60),
+				marginTop: px(24),
+				marginBottom: px(24),
 				flexDirection: 'row',
 				alignItems: 'center',
 			}}>
 				{jsx}
-				<View style={{justifyContent: 'flex-end',alignItems: 'center',}}><Text style={{color:this.icon_color,fontSize:26}}>{this.icon_text}</Text></View>
+				<View style={{justifyContent: 'flex-end',alignItems: 'center',}}><Text style={{color:this.icon_color,fontSize:px(26)}}>{this.icon_text}</Text></View>
 			</View>
         );
     }

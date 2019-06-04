@@ -1,10 +1,11 @@
 import Taro, { Component, Config } from '@tarojs/taro';
-import {View,Text,Image,Dialog,Input,Button} from '@tarojs/components';
+import {View,Text,Image,Input,Button,ScrollView} from '@tarojs/components';
+import Event from 'ay-event';
 import ItemIcon from '../../Component/ItemIcon';
 import AiyongDialog from '../../Component/AiyongDialog';
 import SureDialog from '../../Component/SureDialog';
 import ChooseSkuDialog from '../../Component/ChooseSkuDialog';
-// import Floattop from '../../Public/Components/Floattop';
+import Floattop from '../../Public/Components/Floattop';
 import {NetWork} from '../../Public/Common/NetWork/NetWork.js';
 import {GoToView} from '../../Public/Biz/GoToView.js';
 import {IsEmpty} from '../../Public/Biz/IsEmpty.js';
@@ -93,19 +94,19 @@ export default class DistributionShops extends Component {
         this.isfromself = '';
         this.type = "";
         let self = this;
-        // RAP.on('back',function(e){
-        //     if (self.state.fromPage == 'orderList') {
-        //         RAP.emit('App.update_shop_orders',{});
-        //     }
-        //     self.openQuestionnaire();
-        //     // GoToView({page_status:'pop'});
-        // });
-        // RAP.on('App.getrunning',(data) => {
-        //     let self = this;
-        //     self.setState({
-        //         chooseList:[],
-        //     })
-        // });
+        Event.on('back',function(e){
+            if (self.state.fromPage == 'orderList') {
+                Event.emit('App.update_shop_orders',{});
+            }
+            self.openQuestionnaire();
+            // GoToView({page_status:'pop'});
+        });
+        Event.on('App.getrunning',(data) => {
+            let self = this;
+            self.setState({
+                chooseList:[],
+            })
+        });
 
     }
 
@@ -178,7 +179,7 @@ export default class DistributionShops extends Component {
                                 isLoading:false
                             });
                             if(iswd==1){
-                                // RAP.emit('App.checkwc');
+                                Event.emit('App.checkwc');
                                 let chooseList = [];
                                 chooseList = self.state.chooseList;
                                 let shopdata = result;
@@ -229,24 +230,24 @@ export default class DistributionShops extends Component {
 
 
         //选中微店,去掉淘宝店选择
-        // RAP.on('App.checkwc',(data) => {
-        //     let chooseList = [];
-        //     chooseList = self.state.chooseList;
-        //     let shopdata = self.state.shopList;
-        //     for(let i=0;i<shopdata.length;i++){
-        //         if(shopdata[i].shop_type=='taobao'){
-        //             let number = chooseList.indexOf(shopdata[i].id);
-        //             if( number > -1){
-        //                 chooseList.splice(number,1);
-        //             }
-        //         }else if(shopdata[i].shop_type=='wc'){
-        //             chooseList.push(shopdata[i].id);
-        //         }
-        //     }
-        //     this.setState({
-        //         chooseList:chooseList
-        //     })
-        // });
+        Event.on('App.checkwc',(data) => {
+            let chooseList = [];
+            chooseList = self.state.chooseList;
+            let shopdata = self.state.shopList;
+            for(let i=0;i<shopdata.length;i++){
+                if(shopdata[i].shop_type=='taobao'){
+                    let number = chooseList.indexOf(shopdata[i].id);
+                    if( number > -1){
+                        chooseList.splice(number,1);
+                    }
+                }else if(shopdata[i].shop_type=='wc'){
+                    chooseList.push(shopdata[i].id);
+                }
+            }
+            this.setState({
+                chooseList:chooseList
+            })
+        });
 
     }
     //获取店铺类型的列表
@@ -419,7 +420,7 @@ export default class DistributionShops extends Component {
 
         //重新获取数据
         self.getShops((result)=>{
-            // RAP.emit('App.getrunning');
+            Event.emit('App.getrunning');
             self.setState({
                 shopList:result,
                 isRefreshing:false,
@@ -1055,45 +1056,44 @@ export default class DistributionShops extends Component {
 
 
     render() {
-        const foot = <View  style={{height:px(90),flexDirection: 'row',borderTopWidth: px(1),borderTopColor:'#e5e5e5'}}>
-                        <View onClick={()=>{this.refs.aydialog.hide();}} style={{backgroundColor:'#fff',borderBottomLeftRadius: px(10),justifyContent:'center',alignItems: 'center',flex:1}}>
-                            <Text style={{fontSize:px(32)}}>取消</Text>
-                        </View>
-                        <View onClick={()=>{this.refs.aydialog.hide();this.deleteshop()}} style={{backgroundColor:'#FF6000',borderBottomRightRadius: px(10),justifyContent:'center',alignItems: 'center',flex:1}}>
-                            <Text style={{fontSize:px(32),color:'#fff'}}>删除店铺</Text>
-                        </View>
-                    </View>
+        let foot = (
+            <View  style={{height:px(90),flexDirection: 'row',borderTopWidth: px(1),borderTopColor:'#e5e5e5'}}>
+                <View onClick={()=>{this.refs.aydialog.hide();}} style={{backgroundColor:'#fff',borderBottomLeftRadius: px(10),justifyContent:'center',alignItems: 'center',flex:1}}>
+                    <Text style={{fontSize:px(32)}}>取消</Text>
+                </View>
+                <View onClick={()=>{this.refs.aydialog.hide();this.deleteshop()}} style={{backgroundColor:'#FF6000',borderBottomRightRadius: px(10),justifyContent:'center',alignItems: 'center',flex:1}}>
+                    <Text style={{fontSize:px(32),color:'#fff'}}>删除店铺</Text>
+                </View>
+            </View>
+        );
         let listDom = '';
         let foots = '';
-        const {shopList,lastShopType,chooseList,isLoading,fromPage,from,questionnaireMsg,showWarning,imageUrl} = this.state;
+        let {shopList,lastShopType,chooseList,isLoading,fromPage,from,questionnaireMsg,showWarning,imageUrl} = this.state;
         if (isLoading) {
             listDom = '';
         } else {
             if (IsEmpty(shopList)) {
-                listDom =
-                <ListView
-                dataSource={['null']}
-                renderHeader={this.renderHeader}
-                renderRow={this.renderNull}
-                showScrollbar={false}
-                style={{backgroundColor:'#ffffff'}}
-                />;
+                listDom =(
+                    <ScrollView ref='mylist' scrollY = {true} style={{flex:1,backgroundColor:'#f5f5f5'}} scrollWithAnimation>
+                        {this.renderNull()}
+                    </ScrollView>
+                );
             } else {
-                listDom =
-                <ListView
-                ref='mylist'
-                dataSource={this.state.shopList}
-                renderRow={this.renderRow}
-                renderHeader={this.renderHeader}
-                showScrollbar={false}
-                style={{backgroundColor:'#ffffff'}}
-                />;
+                listDom =(
+                    <ScrollView ref='mylist' scrollY = {true} style={{flex:1,backgroundColor:'#f5f5f5'}} scrollWithAnimation>
+                        {
+                            this.state.shopList.map((item,key)=>{
+                                return this.renderRow(item,key)
+                            })
+                        }
+                    </ScrollView>
+                );
             }
 
             if (fromPage == 'orderList') {
                 foots =
                 <View style={styles.footRight} onClick={()=>{
-                    // RAP.emit('App.update_shop_orders',{});
+                    Event.emit('App.update_shop_orders',{});
                     GoToView({page_status:'pop'});
                 }}>
                     <Text style={{fontSize:px(32),color:'#ffffff'}}>返回</Text>
@@ -1148,14 +1148,14 @@ export default class DistributionShops extends Component {
             return (
                 <View>
                     <Floattop/>
-                    <AlertBanner where='shop'/>
+                    {/* <AlertBanner where='shop'/> */}
                     <View style={styles.topLine}>
                         <Text style={{fontSize:px(32),color:'#4a4a4a'}}>{from=='my' ? '管理您要铺货的店铺' : '请选择要铺货的店铺'}</Text>
                         <View style={{flex:1,alignItems:'flex-end'}} onClick={()=>{this.addShops()}}>
                             <ItemIcon code={"\ue6b9"} iconStyle={styles.addIcon} onClick={()=>{this.addShops()}}/>
                         </View>
                     </View>
-                    <Modal.AyDialog ref='aydialog'/>
+                    {/* <Modal.AyDialog ref='aydialog'/> */}
                     {listDom}
                     <View style={styles.footLine}>
                         {/*<View style={styles.footLeft}>
@@ -1163,7 +1163,7 @@ export default class DistributionShops extends Component {
                         </View>*/}
                         {foots}
                     </View>
-                    <Dialog ref={"addDialog"} duration={1000} maskStyle={styles.maskStyle} contentStyle={styles.modal2Style} maskClosable={false}>
+                    {/* <Dialog ref={"addDialog"} duration={1000} maskStyle={styles.maskStyle} contentStyle={styles.modal2Style} maskClosable={false}>
                         <View style={styles.dialogContent}>
                             <View style={styles.dialogBody}>
                                 <Text style={{fontSize:px(28),color:'#787993'}}>选择店铺类型</Text>
@@ -1201,7 +1201,7 @@ export default class DistributionShops extends Component {
                                     </View>)}
                             </View>
                         </View>
-                    </Dialog>
+                    </Dialog> */}
                     <AiyongDialog
                     maskClosable={true}
                     ref={"lotsku"}
@@ -1218,7 +1218,7 @@ export default class DistributionShops extends Component {
                     lastShopType={this.state.lastShopType}
                     authorizationLink={this.authorizationLink}
                     />
-                    <ChooseSkuDialog ref={"skuDialog"}
+                    {/* <ChooseSkuDialog ref={"skuDialog"}
                     offerId={this.offerId}
                     updateStates={this.updateStates}
                     from="chooseMore"
@@ -1226,8 +1226,8 @@ export default class DistributionShops extends Component {
                     showLoading={()=>{Taro.showLoading({ title: '加载中...' });}}
                     hideLoading={()=>{Taro.hideLoading();}}
                     skuDistribute = {this.skuDistribute}
-                    />
-                    <Dialog ref={"tellDialog"} duration={1000} maskStyle={styles.maskStyle} contentStyle={styles.modal2Style}>
+                    /> */}
+                    {/* <Dialog ref={"tellDialog"} duration={1000} maskStyle={styles.maskStyle} contentStyle={styles.modal2Style}>
                         <View style={styles.dialogContent}>
                             <View style={{flexDirection:'row',justifyContent:'center'}}>
                                 <Text style={{marginTop:px(15),fontSize:px(38),color:'#4A4A4A'}}>锁定运费模板公告</Text>
@@ -1241,10 +1241,9 @@ export default class DistributionShops extends Component {
                                 </View>
                             </View>
                         </View>
-                    </Dialog>
-                    <Dialog ref={"questionnaire"} duration={1000} closable={true} maskClosable={false} maskStyle={styles.maskStyle} contentStyle={styles.modalStyle}>
+                    </Dialog> */}
+                    {/* <Dialog ref={"questionnaire"} duration={1000} closable={true} maskClosable={false} maskStyle={styles.maskStyle} contentStyle={styles.modalStyle}>
                         <View style={{flex:1,borderRadius: px(8),backgroundColor: '#fff',width: px(590),alignItems:'center',paddingBottom:px(24)}}>
-                            {/* <ItemIcon code={"\ue6b9"} iconStyle={{height:px(20),width:px(20),position:'absolute',right:px(0),top:px(0)}} /> */}
                             <Image src={questionnaireMsg.pic} style={{height:238,width:590}}></Image>
                             {
                                 !IsEmpty(questionnaireMsg.message) ?
@@ -1264,7 +1263,7 @@ export default class DistributionShops extends Component {
                             <ItemIcon code={"\ue69a"}  iconStyle={styles.close}/>
                         </View>
     
-                    </Dialog>
+                    </Dialog> */}
                 </View>
             );
         }

@@ -6,7 +6,6 @@ export default {
 		flexDirection: 'row',
 		borderTopWidth: px(1),
 		borderTopColor: '#e5e5e5',
-		borderTopStyle: 'solid'
 	},
 	zdy_l: {
 		flex: 1,

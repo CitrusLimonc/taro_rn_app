@@ -5,7 +5,6 @@ export default {
         height: px(40),
         borderWidth:px(1),
         borderColor:'#979797',
-        borderStyle:'solid',
     },
     layGrid:{
         flexDirection: 'row',
@@ -16,7 +15,6 @@ export default {
         paddingBottom:px(15),
         marginLeft:px(24),
         borderBottomWidth: px(1),
-        borderBottomStyle:'solid',
         borderBottomColor:'#e5e5e5',
         backgroundColor: '#ffffff',
     },

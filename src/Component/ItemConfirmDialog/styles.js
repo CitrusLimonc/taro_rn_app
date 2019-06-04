@@ -18,7 +18,6 @@ export default {
     saveBtn:{
         backgroundColor: 'rgba(0,0,0,0)',
         borderWidth:px(1),
-        borderStyle:'solid',
         borderColor:'#ffffff',
         width: px(250),
         height: px(70),
@@ -40,7 +39,6 @@ export default {
     textarea:{
         height:px(135),
         borderWidth:px(1),
-        borderStyle:'solid',
         borderColor:'#C4C6CF',
         borderRadius: px(8),
         flex: 1,
@@ -78,7 +76,6 @@ export default {
         width:px(306),
         height:px(96),
         borderTopWidth:px(2),
-        borderStyle:'solid',
         borderColor:'#DCDEE3',
         alignItems:'center',
         justifyContent:'center',
@@ -88,7 +85,6 @@ export default {
         width:px(306),
         height:px(96),
         borderTopWidth:px(1),
-        borderTopStyle:'solid',
         borderTopColor:'#DCDEE3',
         alignItems:'center',
         justifyContent:'center',

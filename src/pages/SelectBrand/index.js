@@ -1,11 +1,13 @@
 import Taro, { Component, Config } from '@tarojs/taro';
 import { View, Text,Input} from '@tarojs/components';
+import Event from 'ay-event';
 import {LocalStore} from '../../Public/Biz/LocalStore.js';
 import {GoToView} from '../../Public/Biz/GoToView.js';
 import {IsEmpty} from '../../Public/Biz/IsEmpty.js';
 import {NetWork} from '../../Public/Common/NetWork/NetWork.js';
 import {Parse2json} from '../../Public/Biz/Parse2json.js';
 import styles from './styles';
+import px from '../../Biz/px.js';
 /**
  * @author cy
  * 搜索品牌页
@@ -51,7 +53,7 @@ export default class SelectBrand extends Component {
 
     //返回上一页并带回数据
     goBack = (item) =>{
-        // RAP.emit('APP.add_search_back',item);
+        Event.emit('APP.add_search_back',item);
         GoToView({page_status:'pop'});
     }
 

@@ -1,12 +1,11 @@
-import px from '../../Biz/px.js';
+import px from '../../../../Biz/px.js';
 export default {
     body:{
-        paddingLeft:24,
-        paddingRight:24,
-        paddingBottom:24,
-        paddingTop:24,
+        paddingLeft:px(24),
+        paddingRight:px(24),
+        paddingBottom:px(24),
+        paddingTop:px(24),
         backgroundColor:'#f5f5f5',
-        borderBottomStyle:'solid',
         borderBottomWidth:px(1),
         borderBottomColor:'#CCCCCC',
     },
@@ -26,16 +25,16 @@ export default {
     },
     skuoneMidtextLeft:{
         fontFamily: 'PingFangSC-Regular',
-        fontSize: 28,
+        fontSize: px(28),
         color: '#999999',
     },
     skuoneMidtextRight:{
         fontFamily: 'PingFangSC-Regular',
-        fontSize: 28,
+        fontSize: px(28),
         color: '#333333',
     },
     skuoneMidtextRightinput:{
-        height:48,
-        width:150,
+        height:px(48),
+        width:px(150),
     },
 }

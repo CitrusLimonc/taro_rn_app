@@ -15,14 +15,12 @@ export default {
         height:185,
         width:185,
         borderColor:'#e5e5e5',
-        borderStyle:'solid',
         borderWidth:px(1),
     },
     Picone:{
         height:185,
         width:185,
         borderColor:'#e5e5e5',
-        borderStyle:'solid',
         borderWidth:px(1),
     },
     PiconePic:{
@@ -38,13 +36,8 @@ export default {
         height:185,
         width:185,
         borderColor:'#e5e5e5',
-        borderStyle:'solid',
         borderWidth:px(0),
     },
-
-
-
-
     firstLine:{
         height:44,
         width:700,

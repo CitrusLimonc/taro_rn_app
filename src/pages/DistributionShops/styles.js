@@ -15,7 +15,6 @@ export default {
     },
     shopLine:{
         borderBottomColor:'#f5f5f5',
-        borderBottomStyle:'solid',
         borderBottomWidth:px(2),
         height:px(170),
         paddingLeft:px(24),
@@ -30,14 +29,13 @@ export default {
         borderRadius:px(8)
     },
     footLine:{
-        position:'fixed',
+        position:'absolute',
         bottom:px(0),
         left:px(0),
         right:px(0),
         height:px(96),
         flexDirection:'row',
         borderTopColor:'#e5e5e5',
-        borderTopStyle:'solid',
         borderTopWidth:px(1)
     },
     footLeft:{
@@ -83,7 +81,6 @@ export default {
         width:px(306),
         height:px(96),
         borderTopWidth:px(2),
-        borderStyle:'solid',
         borderColor:'#DCDEE3',
         alignItems:'center',
         justifyContent:'center',
@@ -93,7 +90,6 @@ export default {
         width:px(306),
         height:px(96),
         borderTopWidth:px(1),
-        borderTopStyle:'solid',
         borderTopColor:'#DCDEE3',
         alignItems:'center',
         justifyContent:'center',
@@ -103,7 +99,6 @@ export default {
         flex:1,
         height:px(96),
         borderTopWidth:px(1),
-        borderTopStyle:'solid',
         borderTopColor:'#DCDEE3',
         alignItems:'center',
         justifyContent:'center',
@@ -129,7 +124,6 @@ export default {
         width:px(80),
         height:px(80),
         borderRadius:px(8),
-        borderStyle:'solid',
         borderWidth:px(2),
         borderColor:'#E5E5E5',
         marginTop:px(24),
@@ -141,7 +135,6 @@ export default {
         width:px(80),
         height:px(80),
         borderRadius:px(8),
-        borderStyle:'solid',
         borderWidth:px(2),
         borderColor:'#0077FF',
         marginTop:px(24),
@@ -156,7 +149,6 @@ export default {
     },
     borderLine:{
         borderBottomColor:'#E5E5E5',
-        borderBottomStyle:'solid',
         borderBottomWidth:px(2),
         marginTop:px(56),
         paddingBottom:px(8)
@@ -187,16 +179,12 @@ export default {
         width:px(500),
         height:px(50),
         borderBottomColor:'#333333',
-        borderBottomStyle:'solid',
         borderBottomWidth:px(2),
         borderTopColor:'#E5E5E5',
-        borderTopStyle:'solid',
         borderTopWidth:px(0),
         borderLeftColor:'#E5E5E5',
-        borderLeftStyle:'solid',
         borderLeftWidth:px(0),
         borderRightColor:'#E5E5E5',
-        borderRightStyle:'solid',
         borderRightWidth:px(0),
 
     },

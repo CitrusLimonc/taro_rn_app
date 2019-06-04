@@ -1,5 +1,6 @@
 import Taro, { Component, Config } from '@tarojs/taro';
 import {View,Text} from '@tarojs/components';
+import Event from 'ay-event';
 import {GetQueryString} from '../../Public/Biz/GetQueryString.js';
 import styles from './styles';
 import GoodsProductMap from '../../Component/GoodsProductMap';
@@ -7,6 +8,7 @@ import ItemIcon from '../../Component/ItemIcon';
 import {Modal} from '../../Public/Components/Modal';
 import { GoToView } from '../../Public/Biz/GoToView.js';
 import { NetWork } from '../../Public/Common/NetWork/NetWork.js';
+import px from '../../Biz/px.js';
 /**
  * @author SmingPro
  * 货源推荐
@@ -171,7 +173,7 @@ export default class SupplierDetails extends Component {
 				icon: 'none',
 				duration: 2000
 			});
-			// RAP.emit('App.RefreshSupplierList');
+			Event.emit('App.RefreshSupplierList');
 			GoToView({ page_status: 'pop' });
 		},(error)=>{
 			console.error(error);

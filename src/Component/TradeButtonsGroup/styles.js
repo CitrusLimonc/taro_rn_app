@@ -47,7 +47,6 @@ export default {
         fontWeight:'300',
         lineHeight: px(100),
         borderBottomWidth: px(1),
-        borderBottomStyle: 'solid',
         borderBottomColor: '#e5e5e5',
         backgroundColor:'#fff',
     },
@@ -69,7 +68,6 @@ export default {
         alignItems: 'center',
         justifyContent:'space-between',
         borderBottomWidth: px(1),
-        borderBottomStyle: 'solid',
         borderBottomColor: '#e5e5e5',
         paddingTop:px(10),
         paddingRight:px(20),
@@ -107,7 +105,6 @@ export default {
     footer: {
         borderTopColor:'#dddddd',
         flexDirection:'row',
-        borderTopStyle:'solid',
         borderTopWidth:1,
         alignItems: 'center',
         justifyContent: 'flex-end',

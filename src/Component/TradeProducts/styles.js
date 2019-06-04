@@ -8,7 +8,6 @@ export default {
         borderRadius:px(5),
         borderWidth:px(2),
         borderColor:'#fff',
-        borderStyle:'solid',
 
     },
     rx_head:{

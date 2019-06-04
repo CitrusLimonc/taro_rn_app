@@ -12,7 +12,6 @@ export default {
         paddingRight:24,
         borderLeftWidth:px(1),
         borderLeftColor:'#999',
-        borderLeftStyle:'solid',
         backgroundColor:'#fff'
     },
     refresh: {
@@ -45,14 +44,12 @@ export default {
         left: px(0),
         right: px(0),
         borderTopColor:'#e5e5e5',
-        borderTopStyle:'solid',
         borderTopWidth:px(2)
     },
     footBtn:{
         flex:1,
         borderRightWidth:px(2),
         borderRightColor:'#e5e5e5',
-        borderRightStyle:'solid',
         alignItems:'center',
         justifyContent: 'center',
         height: px(80)
@@ -99,7 +96,6 @@ export default {
         paddingLeft: px(25),
         paddingRight: px(100),
         borderBottomColor:'#e5e5e5',
-        borderBottomStyle:'solid',
         borderBottomWidth:px(1)
     },
     selectInput:{
@@ -169,14 +165,12 @@ export default {
         alignItems:'center',
         justifyContent:'center',
         borderTopColor:'#f5f5f5',
-        borderTopStyle:'solid',
         borderTopWidth:px(2)
     },
     submitBtn:{
         width:px(306),
         height:px(96),
         borderTopWidth:px(1),
-        borderTopStyle:'solid',
         borderTopColor:'#DCDEE3',
         alignItems:'center',
         justifyContent:'center',
@@ -196,7 +190,6 @@ export default {
         width:px(306),
         height:px(96),
         borderTopWidth:px(2),
-        borderStyle:'solid',
         borderColor:'#DCDEE3',
         alignItems:'center',
         justifyContent:'center',
@@ -208,15 +201,11 @@ export default {
         alignItems:'center',
         backgroundColor:'#ffffff',
         borderBottomColor:'#e5e5e5',
-        borderBottomStyle:'solid',
         borderBottomWidth:px(1)
     },
     headLeft:{
         width:px(560),
         height:px(64),
-        // borderWidth:px(1),
-        // borderStyle:'solid',
-        // borderColor:'#cccccc',
         marginLeft:px(20),
         marginRight:px(20),
         marginTop:px(14),
@@ -244,7 +233,6 @@ export default {
     },
     headRight:{
         borderLeftColor:'#e5e5e5',
-        borderLeftStyle:'solid',
         borderLeftWidth:px(1),
         flexDirection:'row',
         alignItems:'center',

@@ -1,4 +1,4 @@
-import px from '../../Biz/px.js';
+import px from '../../../Biz/px.js';
 export default {
     tabbar:{
         flexDirection: 'row',
@@ -12,7 +12,6 @@ export default {
         alignItems: 'center',
         justifyContent: 'center',
         height: px(70),
-        borderBottomStyle:'solid',
         borderBottomWidth:px(2),
         borderBottomColor:'#fff'
     },
@@ -24,7 +23,6 @@ export default {
         alignItems: 'center',
         justifyContent: 'center',
         height: px(70),
-        borderBottomStyle:'solid',
         borderBottomWidth:px(2),
         borderBottomColor:'#ff6000'
     },
@@ -49,7 +47,6 @@ export default {
     statusBtn:{
         width: px(156),
         height: px(56),
-        borderStyle:'solid',
         borderWidth:px(2),
         borderColor:'#ff6000',
         borderRadius: px(8),
@@ -63,7 +60,6 @@ export default {
     },
     statusLine:{
         flexDirection: 'row',
-        borderBottomStyle:'solid',
         borderBottomWidth:px(1),
         borderBottomColor:'#e5e5e5',
         marginLeft: px(20),
@@ -73,7 +69,6 @@ export default {
     },
     statusLinenoboder:{
         flexDirection: 'row',
-        borderBottomStyle:'solid',
         borderBottomWidth:'0px',
         borderBottomColor:'#e5e5e5',
         marginLeft: px(20),
@@ -83,7 +78,6 @@ export default {
     },
     middleLine:{
         flexDirection: 'row',
-        borderBottomStyle:'solid',
         borderBottomWidth:px(1),
         borderBottomColor:'#e5e5e5',
         marginLeft: px(20),
@@ -99,7 +93,6 @@ export default {
         paddingRight: px(20)
     },
     tags:{
-        borderStyle:'solid',
         borderWidth:px(2),
         borderColor:'#e6e6e6',
         borderRadius: px(8),
@@ -127,7 +120,6 @@ export default {
         fontWeight: '300'
     },
     tables:{
-        borderStyle:'solid',
         borderWidth:px(2),
         borderColor:'#e3e3e3',
         backgroundColor: '#F8F8F8',
@@ -155,7 +147,6 @@ export default {
     },
     firstLine:{
         backgroundColor: '#f5f5f5',
-        borderStyle:'solid',
         borderWidth:px(2),
         borderColor:'#f0f0f0',
         marginLeft: px(-1),
@@ -167,7 +158,6 @@ export default {
     },
     nextLine:{
         backgroundColor: '#fff',
-        borderStyle:'solid',
         borderWidth:px(2),
         borderColor:'#f0f0f0',
         marginLeft: px(-1),
@@ -179,7 +169,6 @@ export default {
     },
     firstColumn:{
         backgroundColor: '#fff',
-        borderStyle:'solid',
         borderWidth:px(2),
         borderColor:'#f0f0f0',
         marginLeft: px(-1),
@@ -206,7 +195,6 @@ export default {
         alignItems:'center',
         justifyContent:'center',
         borderTopColor:'#f5f5f5',
-        borderTopStyle:'solid',
         borderTopWidth:px(2)
     },
     modal2Style:{
@@ -218,7 +206,7 @@ export default {
         fontSize:px(28),
         color:'#4A4A4A',
         marginLeft:px(20),
-        width:524,
+        width:px(524),
         overflow:'hidden',
         textOverflow:'ellipsis',
         whiteSpace:'nowrap'

@@ -1,4 +1,4 @@
-import px from '../../Biz/px.js';
+import px from '../../../Biz/px.js';
 export default  {
     listContainer:{
         height:px(70),
@@ -28,28 +28,27 @@ export default  {
     arrowDown:{
         alignItems:'center',
         justifyContent:'center',
-        width:99,
-        height:60,
+        width:px(99),
+        height:px(60),
         position:'absolute',
-        right:0,
-        top:5,
+        right:px(0),
+        top:px(5),
         borderLeftWidth:px(1),
         borderLeftColor:'#e5e5e5',
-        borderLeftStyle:'solid',
         backgroundColor:'#fff'
     },
     mask:{
-        marginTop:100,
+        marginTop:px(100),
         flex:1,
         backgroundColor:'rgba(0,0,0,0.7)',
         justifyContent: 'flex-start',
     },
     body:{
         width: px(750),
-        paddingTop:12,
-        paddingBottom:12,
-        paddingRight:24,
-        paddingLeft:24,
+        paddingTop:px(12),
+        paddingBottom:px(12),
+        paddingRight:px(24),
+        paddingLeft:px(24),
         backgroundColor: '#ffffff',
     },
     arrowUp:{
@@ -73,7 +72,6 @@ export default  {
         justifyContent:'center',
         alignItems:'center',
         borderWidth:px(2),
-        borderStyle:'solid',
         borderColor:'#e8e8e8',
         borderRadius:px(8),
         marginTop:px(10),
@@ -85,7 +83,6 @@ export default  {
         justifyContent:'center',
         alignItems:'center',
         borderWidth:px(2),
-        borderStyle:'solid',
         borderColor:'#e8e8e8',
         borderRadius:px(8),
         marginTop:px(10),

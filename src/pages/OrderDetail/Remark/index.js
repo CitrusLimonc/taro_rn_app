@@ -2,7 +2,7 @@
 
 import Taro, { Component, Config } from '@tarojs/taro';
 import { View, Text } from '@tarojs/components';
-import px from '../../Biz/px.js';
+import px from '../../../Biz/px.js';
 /*
 * @author cy
 * 留言

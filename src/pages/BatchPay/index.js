@@ -1,5 +1,6 @@
 import Taro, { Component, Config } from '@tarojs/taro';
 import { View, Text,Image} from '@tarojs/components';
+import Event from 'ay-event';
 import {IsEmpty} from '../../Public/Biz/IsEmpty.js';
 import {NetWork} from '../../Public/Common/NetWork/NetWork.js';
 import styles from './styles';
@@ -233,7 +234,7 @@ export default class BatchPay extends Component {
                     <Image src='https://q.aiyongbao.com/1688/web/img/preview/orderNull.png'  style={{width:px(226),height:px(124)}}/>
                     <Text style={{fontSize:px(24),color:'#666',marginTop:px(40)}}>您还没有待付款的采购单</Text>
                     <Text style={{fontSize:px(28),color:'#3089DC',marginTop:px(24)}} onClick={()=>{
-                        // RAP.emit('App.Simple',{activeKey:{key:'order'},state:'待采购'});
+                        Event.emit('App.Simple',{activeKey:{key:'order'},state:'待采购'});
                         GoToView({page_status:'pop'});
                     }}>查看待确认的采购单</Text>
                 </View>

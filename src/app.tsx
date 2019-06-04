@@ -1,4 +1,4 @@
-import Taro, { Component, Config } from '@tarojs/taro'
+import Taro, { Component, Config } from '@tarojs/taro';
 import Index from './pages/index'
 
 import './app.scss'
@@ -35,7 +35,6 @@ class App extends Component {
           'pages/EvaluationFeedback/index',
           'pages/Gocum/index',
           'pages/GoodsSource/index',
-          'pages/HomePage/index',
           'pages/index/index',
           'pages/Intowd/index',
           'pages/ItemDetail/index',

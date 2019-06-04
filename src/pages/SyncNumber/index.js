@@ -1,5 +1,6 @@
 import Taro, { Component, Config } from '@tarojs/taro';
 import {ScrollView,Switch,View,Text,Radio} from '@tarojs/components';
+import Event from 'ay-event';
 import ItemIcon from '../../Component/ItemIcon';
 import SureDialog from '../../Component/SureDialog';
 import {NetWork} from '../../Public/Common/NetWork/NetWork.js';
@@ -12,7 +13,7 @@ import { GetSyncSetting } from '../../Biz/Apis';
 import {Domain} from '../../Env/Domain';
 import ShopItem from './ShopItem';
 import {DoBeacon} from '../../Public/Biz/DoBeacon';
-
+import px from '../../Biz/px.js';
 
 /*
  * 库存预警
@@ -45,17 +46,17 @@ export default class SyncNumber extends Component {
         this.lastShopId = ''; //当前店铺id
         this.authorizationLink = '';
         const self = this;
-        // RAP.on('back',function(e){
-        //     let swibutton = self.state.switchbutton;
-        //     self.savesetting(swibutton,function(rsp){
-        //         Taro.showToast({
-		// 			title: rsp.value,
-		// 			icon: 'none',
-		// 			duration: 2000
-		// 		});
-        //         GoToView({page_status:'pop'});
-        //     });
-        // });
+        Event.on('back',function(e){
+            let swibutton = self.state.switchbutton;
+            self.savesetting(swibutton,function(rsp){
+                Taro.showToast({
+					title: rsp.value,
+					icon: 'none',
+					duration: 2000
+				});
+                GoToView({page_status:'pop'});
+            });
+        });
     }
 
     // config: Config = {

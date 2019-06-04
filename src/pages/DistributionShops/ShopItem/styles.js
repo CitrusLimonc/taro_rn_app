@@ -2,7 +2,6 @@ import px from '../../../Biz/px.js';
 export default {
     shopLine:{
         borderBottomColor:'#f5f5f5',
-        borderBottomStyle:'solid',
         borderBottomWidth:px(2),
         height:px(170),
         paddingLeft:px(24),

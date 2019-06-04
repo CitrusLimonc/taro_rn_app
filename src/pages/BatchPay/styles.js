@@ -9,7 +9,6 @@ export default {
         paddingLeft: px(12),
         paddingRight: px(100),
         borderBottomColor:'#e5e5e5',
-        borderBottomStyle:'solid',
         borderBottomWidth:px(1)
     },
     selectLeft:{
@@ -28,12 +27,10 @@ export default {
         top:px(16),
         borderLeftWidth:px(1),
         borderLeftColor:'#999',
-        borderLeftStyle:'solid',
         backgroundColor:'#fff'
     },
     tabBox:{
         borderBottomColor:'#ff6000',
-        borderBottomStyle:'solid',
         borderBottomWidth:px(4),
         paddingLeft:px(12),
         paddingRight:px(12),

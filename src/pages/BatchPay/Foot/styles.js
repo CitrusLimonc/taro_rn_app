@@ -15,7 +15,6 @@ export default {
         backgroundColor:'#ffffff',
         height: px(60),
         borderTopColor:'#e5e5e5',
-        borderTopStyle:'solid',
         borderTopWidth:px(2),
         paddingRight:px(24),
         paddingLeft:px(24),

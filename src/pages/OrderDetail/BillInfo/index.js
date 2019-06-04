@@ -2,8 +2,9 @@
 
 import Taro, { Component, Config } from '@tarojs/taro';
 import { View, Text,Image } from '@tarojs/components';
+import Event from 'ay-event';
 import {IsEmpty} from '../../../Public/Biz/IsEmpty.js';
-import px from '../../Biz/px.js';
+import px from '../../../Biz/px.js';
 
 /*
 * 发票信息
@@ -16,10 +17,10 @@ export default class BillInfo extends Component {
 
     copyBill(){
         const { data } = this.props;
-        // RAP.emit('App.trclbd',{
-        //     msg:data.taxpayerIdentify,
-        //     cal:'买家税号已复制'
-        // })
+        Event.emit('App.trclbd',{
+            msg:data.taxpayerIdentify,
+            cal:'买家税号已复制'
+        })
     }
 
     render() {

@@ -2,6 +2,7 @@
 
 import Taro, { Component, Config } from '@tarojs/taro';
 import { View,Text } from '@tarojs/components';
+import Event from 'ay-event';
 import { GetGoodsLog } from '../../../Biz/Apis.js';
 import { IsEmpty } from '../../../Public/Biz/IsEmpty.js';
 import { GoToView } from '../../../Public/Biz/GoToView.js';
@@ -89,7 +90,7 @@ export default class Body extends Component{
                 GoToView({status:'DistributionLog',query:{status:logStatus,fromPage:'distributeIndex'}});
             break;
             case '货源推荐':
-                // RAP.emit('App.Simple',{activeKey:{key:'source'}});
+                Event.emit('App.Simple',{activeKey:{key:'source'}});
             break;
             case '我的供应商':
                 GoToView({status:'SupplierList'});

@@ -1,6 +1,7 @@
 import Taro, { Component, Config } from '@tarojs/taro';
 import { View,Text,Image,Progress,Checkbox,ScrollView} from '@tarojs/components';
-import {AtModal, AtModalHeader, AtModalContent, AtModalAction} from 'taro-ui';
+import Event from 'ay-event';
+// import {AtModal, AtModalHeader, AtModalContent, AtModalAction} from 'taro-ui';
 import ProductStatus from './ProductStatus';
 import ProductCard from './ProductCard';
 import ChooseStatus from './ChooseStatus';
@@ -67,43 +68,43 @@ export default class ProductList extends Component{
         this.type = 'product';
         let self = this;
         //重新加载商品列表
-        // RAP.on('App.product_list_reload',(data)=>{
-        //     let param={
-        //         pageNo:1,
-        //         pageSize:self.state.pageSize
-        //     };
-        //     self.getData(param);
-        // });
+        Event.on('App.product_list_reload',(data)=>{
+            let param={
+                pageNo:1,
+                pageSize:self.state.pageSize
+            };
+            self.getData(param);
+        });
         //首页小卡片进入 修改默认显示的店铺
         this.catchflag = true;
-        // RAP.on('App.item_list_get_data',(data)=>{
-        //     self.catchflag = false;
-        //     self.state.lastShop = data;
-        //     console.log('item_list_get_data',data);
-        //     let param={
-        //         shopId:data.id,
-        //         shopType:data.shop_type,
-        //         shopName:data.shop_name,
-        //         pageNo:1,
-        //         pageSize:self.state.pageSize,
-        //         status:data.type,
-        //     };
-        //     // if(data.type == 'noamount'){
-        //     //     let param = {status:'已缺货',itemTotal:0};
-        //     //     self.changeStaus(param)
-        //     // }else{
-        //     //     Taro.showLoading({ title: '加载中...' });
-        //     // }
-        //     self.getData(param);
+        Event.on('App.item_list_get_data',(data)=>{
+            self.catchflag = false;
+            self.state.lastShop = data;
+            console.log('item_list_get_data',data);
+            let param={
+                shopId:data.id,
+                shopType:data.shop_type,
+                shopName:data.shop_name,
+                pageNo:1,
+                pageSize:self.state.pageSize,
+                status:data.type,
+            };
+            // if(data.type == 'noamount'){
+            //     let param = {status:'已缺货',itemTotal:0};
+            //     self.changeStaus(param)
+            // }else{
+            //     Taro.showLoading({ title: '加载中...' });
+            // }
+            self.getData(param);
 
-        // });
-        // RAP.on('back',function(e){
-        //     console.log('shifourecycle',self.type);
-        //     if(self.type=="recycle"){
-        //         self.state.subjectKey='';
-        //     }
-        //     GoToView({page_status:'pop'});
-        // });
+        });
+        Event.on('back',function(e){
+            console.log('shifourecycle',self.type);
+            if(self.type=="recycle"){
+                self.state.subjectKey='';
+            }
+            GoToView({page_status:'pop'});
+        });
 
     }
 
@@ -121,18 +122,18 @@ export default class ProductList extends Component{
         }else{
             typename = 'App.list_search';
         }
-        // RAP.on(typename,(data)=>{
-        //     let param={
-        //         pageNo:1,
-        //         pageSize:self.state.pageSize
-        //     };
-        //     if (!IsEmpty(data.subjectKey)) {
-        //         param.subjectKey = data.subjectKey;
-        //         self.state.subjectKey = data.subjectKey;
-        //     }
-        //     Taro.showLoading({ title: '加载中...' });
-        //     self.getData(param);
-        // });
+        Event.on(typename,(data)=>{
+            let param={
+                pageNo:1,
+                pageSize:self.state.pageSize
+            };
+            if (!IsEmpty(data.subjectKey)) {
+                param.subjectKey = data.subjectKey;
+                self.state.subjectKey = data.subjectKey;
+            }
+            Taro.showLoading({ title: '加载中...' });
+            self.getData(param);
+        });
     }
 
     componentDidMount(){
@@ -575,6 +576,7 @@ export default class ProductList extends Component{
 
         return (
             <ProductCard
+            key={index}
             headType={this.state.headType}
             buttons={true}
             item={items}
@@ -637,7 +639,7 @@ export default class ProductList extends Component{
 
     //跳转到搜索页面
     goToSelect = () =>{
-        // RAP.emit('App.DoBeacon',{event:"180313-listpage-searchbar"});
+        Event.emit('App.DoBeacon',{event:"180313-listpage-searchbar"});
         if (this.state.subjectKey!='') {
             LocalStore.Set({'search_list_subjectkey':this.state.subjectKey});
 

@@ -2,6 +2,7 @@
 
 import Taro, { Component, Config } from '@tarojs/taro';
 import { View, Text,Image,Button,NumberPicker} from '@tarojs/components';
+import Event from 'ay-event';
 import {IsEmpty} from '../../../../Public/Biz/IsEmpty.js';
 import ItemIcon from '../../../../Component/ItemIcon';
 import TradeNick from '../../../../Component/TradeNick';
@@ -9,6 +10,7 @@ import ChooseSkuDialog from '../../../../Component/ChooseSkuDialog';
 import {LocalStore} from '../../../../Public/Biz/LocalStore.js';
 import {GoToView} from '../../../../Public/Biz/GoToView.js';
 import {NetWork} from '../../../../Public/Common/NetWork/NetWork.js';
+import px from '../../../../Biz/px.js';
 import styles from './styles.js';
 
 /*
@@ -254,7 +256,7 @@ export default class SubCard extends Component {
     //按钮操作
     btnOptions = (status,tradeNick) =>{
         if (status != '确认采购单' && status != '查看详情' && status != '提醒发货' && status != '重新采购') {
-            RAP.emit('App.pay_update_order_1688',{
+            Event.emit('App.pay_update_order_1688',{
                 tid:this.state.item.order.tid,
                 shopId:this.state.shopId,
                 taoTid:this.state.tid,
@@ -307,13 +309,13 @@ export default class SubCard extends Component {
                 // });
             } break;
             case '申请退款':{
-                // RAP.emit('App.pay_update_order_1688',{
-                //     tid:this.state.item.order.tid,
-                //     shopId:this.state.shopId,
-                //     taoTid:this.state.tid,
-                //     shopType:this.state.shopType,
-                //     shopName:this.state.shopName
-                // });
+                Event.emit('App.pay_update_order_1688',{
+                    tid:this.state.item.order.tid,
+                    shopId:this.state.shopId,
+                    taoTid:this.state.tid,
+                    shopType:this.state.shopType,
+                    shopName:this.state.shopName
+                });
                 // let ofurls = RAP.biz.getBizInfoUrl('orderDetail', { 'orderId': this.state.item.order.tid, 'sys_page': 1 });
                 // RAP.navigator.push({url: ofurls});
             } break;
@@ -357,7 +359,7 @@ export default class SubCard extends Component {
 
             } break;
             case '提醒发货':{
-                // RAP.emit('App.openwc',tradeNick);
+                Event.emit('App.openwc',tradeNick);
             } break;
             case '取消订单':{
                 // let ofurls = RAP.biz.getBizInfoUrl('orderDetail', { 'orderId': this.state.item.order.tid, 'sys_page': 1 });
@@ -388,8 +390,8 @@ export default class SubCard extends Component {
                     Taro.hideLoading();
                     if (!IsEmpty(rsp.code) && rsp.code == 200) {
                         //重新加载订单
-                        // RAP.emit('App.redetail',{});
-                        // RAP.emit('App.update_shop_orders',{});
+                        Event.emit('App.redetail',{});
+                        Event.emit('App.update_shop_orders',{});
                         Taro.showToast({
                             title: '成功',
                             icon: 'none',
@@ -512,13 +514,13 @@ export default class SubCard extends Component {
                                         if (key == this.state.lastLogist) {
                                             return (
                                                 <View style={styles.tabbarActive} onClick={()=>{this.setState({lastLogist:key})}}>
-                                                    <Text style={{color:'#ff6000',fontSize:24}}>运单{key+1}</Text>
+                                                    <Text style={{color:'#ff6000',fontSize:px(24)}}>运单{key+1}</Text>
                                                 </View>
                                             )
                                         } else {
                                             return (
                                                 <View style={styles.tabbar} onClick={()=>{this.setState({lastLogist:key})}}>
-                                                    <Text style={{color:'#4a4a4a',fontSize:24}}>运单{key+1}</Text>
+                                                    <Text style={{color:'#4a4a4a',fontSize:px(24)}}>运单{key+1}</Text>
                                                 </View>
                                             )
                                         }
@@ -530,20 +532,20 @@ export default class SubCard extends Component {
                         }
                         <View style={styles.logistCard}>
                             <View style={{flexDirection:'row'}}>
-                                <Text style={{color:'#9B9B9B',fontSize:24}}>发货方式:</Text>
-                                <Text style={{color:'#4A4A4A',fontSize:24}}>物流公司</Text>
+                                <Text style={{color:'#9B9B9B',fontSize:px(24)}}>发货方式:</Text>
+                                <Text style={{color:'#4A4A4A',fontSize:px(24)}}>物流公司</Text>
                             </View>
                             <View style={{flexDirection:'row'}}>
-                                <Text style={{color:'#9B9B9B',fontSize:24}}>物流公司:</Text>
-                                <Text style={{color:'#4A4A4A',fontSize:24}}>{logisticName}</Text>
+                                <Text style={{color:'#9B9B9B',fontSize:px(24)}}>物流公司:</Text>
+                                <Text style={{color:'#4A4A4A',fontSize:px(24)}}>{logisticName}</Text>
                             </View>
                             <View style={{flexDirection:'row'}}>
-                                <Text style={{color:'#9B9B9B',fontSize:24}}>运单编号:</Text>
-                                <Text style={{color:'#4A4A4A',fontSize:24}}>{invoices[this.state.lastLogist].logisticsBillNo}</Text>
+                                <Text style={{color:'#9B9B9B',fontSize:px(24)}}>运单编号:</Text>
+                                <Text style={{color:'#4A4A4A',fontSize:px(24)}}>{invoices[this.state.lastLogist].logisticsBillNo}</Text>
                             </View>
                             <View style={{flexDirection:'row'}}>
-                                <Text style={{color:'#9B9B9B',fontSize:24}}>物流状态:</Text>
-                                <Text style={{color:'#36AE5E',fontSize:24,width:560}}>
+                                <Text style={{color:'#9B9B9B',fontSize:px(24)}}>物流状态:</Text>
+                                <Text style={{color:'#36AE5E',fontSize:px(24),width:px(560)}}>
                                     {logisticsSteps[logisticsSteps.length-1].remark}
                                 </Text>
                             </View>
@@ -563,20 +565,20 @@ export default class SubCard extends Component {
                 return (
                     <View style={styles.logistCard}>
                         <View style={{flexDirection:'row'}}>
-                            <Text style={{color:'#9B9B9B',fontSize:24}}>发货方式:</Text>
-                            <Text style={{color:'#4A4A4A',fontSize:24}}>物流公司</Text>
+                            <Text style={{color:'#9B9B9B',fontSize:px(24)}}>发货方式:</Text>
+                            <Text style={{color:'#4A4A4A',fontSize:px(24)}}>物流公司</Text>
                         </View>
                         <View style={{flexDirection:'row'}}>
-                            <Text style={{color:'#9B9B9B',fontSize:24}}>物流公司:</Text>
-                            <Text style={{color:'#4A4A4A',fontSize:24}}>{logisticName}</Text>
+                            <Text style={{color:'#9B9B9B',fontSize:px(24)}}>物流公司:</Text>
+                            <Text style={{color:'#4A4A4A',fontSize:px(24)}}>{logisticName}</Text>
                         </View>
                         <View style={{flexDirection:'row'}}>
-                            <Text style={{color:'#9B9B9B',fontSize:24}}>运单编号:</Text>
-                            <Text style={{color:'#4A4A4A',fontSize:24}}>{invoices[0].logisticsBillNo}</Text>
+                            <Text style={{color:'#9B9B9B',fontSize:px(24)}}>运单编号:</Text>
+                            <Text style={{color:'#4A4A4A',fontSize:px(24)}}>{invoices[0].logisticsBillNo}</Text>
                         </View>
                         <View style={{flexDirection:'row'}}>
-                            <Text style={{color:'#9B9B9B',fontSize:24}}>物流状态:</Text>
-                            <Text style={{color:'#36AE5E',fontSize:24,width:560}}>
+                            <Text style={{color:'#9B9B9B',fontSize:px(24)}}>物流状态:</Text>
+                            <Text style={{color:'#36AE5E',fontSize:px(24),width:px(560)}}>
                                 {logisticsSteps[logisticsSteps.length-1].remark}
                             </Text>
                         </View>
@@ -601,7 +603,7 @@ export default class SubCard extends Component {
             card = (
                 <View style={styles.card}>
                     <View style={styles.firstLine}>
-                        <View style={{flexDirection:'row',alignItems:'center'}} onClick={()=>{/*RAP.emit('App.trclbd',{msg:item.order.tid,cal:'订单号已复制'});*/}}>
+                        <View style={{flexDirection:'row',alignItems:'center'}} onClick={()=>{Event.emit('App.trclbd',{msg:item.order.tid,cal:'订单号已复制'});}}>
                             <Text style={{fontSize:px(28),color:'#4A4A4A'}}>采购单号：{item.order.tid}</Text>
                             <Image style={[styles.copyIcon,{marginLeft:px(24)}]}
                             src='https://q.aiyongbao.com/trade/web/images/qap_img/mobile/fz_new.png'
@@ -666,7 +668,7 @@ export default class SubCard extends Component {
                                 return (
                                     <View style={styles.cardLine} onClick={()=>{this.btnOptions('查看详情')}}>
                                         <View style={styles.img}>
-                                            <Image resizeMode={"contain"} src={offerPicUrl} style={{width:120,height:120}}/>
+                                            <Image resizeMode={"contain"} src={offerPicUrl} style={{width:px(120),height:px(120)}}/>
                                             {opview}
                                         </View>
                                         <View style={{flex:1,marginLeft:px(24)}}>

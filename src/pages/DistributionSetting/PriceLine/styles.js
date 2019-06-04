@@ -2,7 +2,6 @@ import px from '../../../Biz/px.js';
 export default {
     commonLine:{
         flex:1,
-        borderBottomStyle:'solid',
         borderBottomWidth:px(2),
         borderBottomColor:'#e7e7e9',
         marginLeft:px(24),
@@ -23,7 +22,6 @@ export default {
         width:px(132),
         height:px(56),
         borderColor:'#DCDEE3',
-        borderStyle:'solid',
         borderWidth:px(2)
     },
     radioLine:{

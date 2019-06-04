@@ -4,7 +4,6 @@ export default {
 		backgroundColor: '#f8f8f8',
 		height: px(48),
 		borderColor: '#eeeeee',
-		borderStyle: 'solid',
 		borderWidth: px(2),
 		alignItems: 'center',
 		justifyContent: 'center'
@@ -12,7 +11,6 @@ export default {
 	tableBodyLine: {
 		backgroundColor:'#fff',
         borderColor:'#eeeeee',
-        borderStyle:'solid',
         borderWidth:px(2),
         marginTop:px(-2),
         alignItems:'center',
@@ -21,10 +19,10 @@ export default {
 	},
 	paginationStyle: {
 		position: 'absolute',
-		width: 700,
-		height: 100,
-		left: 0,
-		bottom: 0,
+		width: px(700),
+		height: px(100),
+		left: px(0),
+		bottom: px(0),
 		color: 'rgba(255, 255, 255 ,0.5)',
 		itemColor: '#fffaaa',
 		itemSelectedColor: '#f1f1f1'
@@ -43,7 +41,7 @@ export default {
 		alignItems: 'center',
 	},
 	right_text: {
-		fontSize: 32,
+		fontSize: px(32),
 		color: '#ffffff',
 	},
 }

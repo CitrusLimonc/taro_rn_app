@@ -1,6 +1,7 @@
 import Taro, { Component, Config } from '@tarojs/taro';
 import { View, Text ,Input,Button} from '@tarojs/components';
 import styles from './styles';
+import px from '../../../../Biz/px.js';
 
 /**
  * @author wzm
@@ -100,7 +101,7 @@ export default class PddHeader extends Component {
                         <Text style={styles.skuoneMidtextLeft}>单买价:&nbsp;</Text>
                         <Input ref="input2" type={'number'} maxLength={7} style={styles.skuoneMidtextRightinput} onChange={(value,e)=>{this.changePrice(value,'single')}} defaultValue={price} />
                     </View>
-                    <Button style={{height:50, width:150,marginLeft:px(18)}} type="secondary" onClick={()=>{this.blurInput()}}>批量修改</Button>
+                    <Button style={{height:px(50), width:px(150),marginLeft:px(18)}} type="secondary" onClick={()=>{this.blurInput()}}>批量修改</Button>
                 </View>
             </View>
         );

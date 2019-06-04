@@ -2,7 +2,6 @@ import px from '../../Biz/px.js';
 export default {
     firstLine:{
         flexDirection: 'row',
-        borderBottomStyle:'solid',
         borderBottomWidth:px(2),
         borderBottomColor:'#f5f5f5',
         backgroundColor: '#fff',
@@ -14,7 +13,6 @@ export default {
     normalLine:{
         height: px(80),
         marginLeft: px(20),
-        borderBottomStyle:'solid',
         borderBottomWidth:px(2),
         borderBottomColor:'#f5f5f5',
         justifyContent: 'center'
@@ -44,7 +42,6 @@ export default {
         flex: 1,
         backgroundColor:'#f2f3f7',
         borderRadius:px(8),
-        // alignItems:'center',
         paddingLeft:px(2),
         paddingRight:px(2)
     },
@@ -62,7 +59,6 @@ export default {
         marginLeft: px(20),
         height: px(74),
         alignItems: 'center',
-        borderBottomStyle:'solid',
         borderBottomWidth:px(2),
         borderBottomColor:'#f5f5f5'
     },
@@ -82,7 +78,6 @@ export default {
     },
     wrap:{
         flexDirection: 'row',
-        borderBottomStyle:'solid',
         borderBottomWidth:px(2),
         borderBottomColor:'#f5f5f5',
         backgroundColor: '#fff',
@@ -92,7 +87,7 @@ export default {
         height:px(92)
     },
     refresh: {
-        height: 80,
+        height: px(80),
         width: px(750),
         backgroundColor: '#ffffff',
         justifyContent: 'center',
@@ -102,14 +97,13 @@ export default {
         color: '#3089dc',
     },
     brandLine:{
-        height:78,
+        height:px(78),
         flex:1,
         flexDirection:'row',
         alignItems:'center',
         borderBottomColor:'#f5f5f5',
-        borderBottomStyle:'solid',
         borderBottomWidth:px(2),
-        paddingLeft:24,
-        paddingRight:24
+        paddingLeft:px(24),
+        paddingRight:px(24)
     }
 }

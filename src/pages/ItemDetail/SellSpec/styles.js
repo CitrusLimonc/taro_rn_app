@@ -1,4 +1,4 @@
-import px from '../../Biz/px.js';
+import px from '../../../Biz/px.js';
 export default {
     tabbar:{
         flexDirection: 'row',
@@ -12,7 +12,6 @@ export default {
         alignItems: 'center',
         justifyContent: 'center',
         height: px(70),
-        borderBottomStyle:'solid',
         borderBottomWidth:px(2),
         borderBottomColor:'#fff'
     },
@@ -24,7 +23,6 @@ export default {
         alignItems: 'center',
         justifyContent: 'center',
         height: px(70),
-        borderBottomStyle:'solid',
         borderBottomWidth:px(2),
         borderBottomColor:'#ff6000'
     },
@@ -49,7 +47,6 @@ export default {
     statusBtn:{
         width: px(156),
         height: px(56),
-        borderStyle:'solid',
         borderWidth:px(2),
         borderColor:'#ff6000',
         borderRadius: px(8),
@@ -63,7 +60,6 @@ export default {
     },
     statusLine:{
         flexDirection: 'row',
-        borderBottomStyle:'solid',
         borderBottomWidth:px(2),
         borderBottomColor:'#ceced2',
         marginLeft: px(20),
@@ -73,7 +69,6 @@ export default {
     },
     middleLine:{
         flexDirection: 'row',
-        borderBottomStyle:'solid',
         borderBottomWidth:px(2),
         borderBottomColor:'#f5f5f5',
         marginLeft: px(20),
@@ -111,7 +106,6 @@ export default {
         fontWeight: '300'
     },
     tables:{
-        borderStyle:'solid',
         borderWidth:px(2),
         borderColor:'#e3e3e3',
         backgroundColor: '#F8F8F8',
@@ -139,7 +133,6 @@ export default {
     },
     firstLine:{
         backgroundColor: '#f5f5f5',
-        borderStyle:'solid',
         borderWidth:px(2),
         borderColor:'#f0f0f0',
         marginLeft: px(-1),
@@ -151,7 +144,6 @@ export default {
     },
     nextLine:{
         backgroundColor: '#fff',
-        borderStyle:'solid',
         borderWidth:px(2),
         borderColor:'#f0f0f0',
         marginLeft: px(-1),
@@ -163,7 +155,6 @@ export default {
     },
     firstColumn:{
         backgroundColor: '#fff',
-        borderStyle:'solid',
         borderWidth:px(2),
         borderColor:'#f0f0f0',
         marginLeft: px(-1),
@@ -184,7 +175,6 @@ export default {
         backgroundColor:'#f8f8f8',
         height:px(48),
         borderColor:'#eeeeee',
-        borderStyle:'solid',
         borderWidth:px(2),
         alignItems:'center',
         justifyContent:'center'
@@ -192,7 +182,6 @@ export default {
     tableBodyLine:{
         backgroundColor:'#fff',
         borderColor:'#eeeeee',
-        borderStyle:'solid',
         borderWidth:px(2),
         marginTop:px(-2),
         alignItems:'center',

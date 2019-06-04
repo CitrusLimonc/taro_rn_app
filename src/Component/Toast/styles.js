@@ -60,7 +60,6 @@ export default{
         paddingRight:px(30),
         borderTopWidth:px(1),
         borderTopColor:'#DCDEE3',
-        borderTopStyle:'solid',
         flexDirection:'row',
         justifyContent:'center',
         alignItems:'center',

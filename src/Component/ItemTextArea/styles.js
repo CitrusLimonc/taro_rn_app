@@ -20,7 +20,6 @@ export default {
         paddingLeft:px(15),
         color: '#9b9b9b',
         borderWidth:px(2),
-        borderStyle:'solid',
         borderColor:'#C4C6CF',
         borderRadius: px(8),
         fontSize: px(28),

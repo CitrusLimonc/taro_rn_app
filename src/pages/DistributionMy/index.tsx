@@ -1,5 +1,5 @@
 import Taro, { Component, Config } from '@tarojs/taro';
-import { View,Text,Image} from '@tarojs/components';
+import { View,Text,Image,Input} from '@tarojs/components';
 import {GoToView} from '../../Public/Biz/GoToView.js';
 import { LocalStore } from '../../Public/Biz/LocalStore.js';
 import TradeAyTabber from '../../Component/TradeAyTabber/index.js';
@@ -7,6 +7,7 @@ import ItemIcon from '../../Component/ItemIcon';
 import { UitlsRap } from '../../Public/Biz/UitlsRap.js';
 import {DoBeacon} from '../../Public/Biz/DoBeacon.js';
 import { NetWork } from '../../Public/Common/NetWork/NetWork.js';
+import { IsEmpty } from '../../Public/Biz/IsEmpty.js';
 import px from '../../Biz/px.js';
 import styles from './styles.js';
 
@@ -42,23 +43,25 @@ export default class DistributionMy extends Component <{}, {}>{
         let self = this;
         let now = new Date();
         //获取到期时间
-        // NetWork.Get({
-        //     url:'m1688/get_service_end',
-        //     data:{
-        //         type:"distribute"
-        //     }
-        // },(res)=>{
-        //     let gmtServiceEnd='';
-            // gmtServiceEnd=res.gmtServiceEnd.slice(0,10);
+        NetWork.Get({
+            url:'m1688/get_service_end',
+            data:{
+                type:"distribute"
+            }
+        },(res)=>{
+            let gmtServiceEnd='2019-06-30';
+            if (!IsEmpty(res.gmtServiceEnd)) {
+                gmtServiceEnd=res.gmtServiceEnd.slice(0,10);
+            }
             self.setState({
-                distribute:'1321414',
+                distribute:gmtServiceEnd,
                 companyname:'',
                 toux:'',
                 loginId:'萌晓月cy',
             });
-        // },(error)=>{
-        //     alert(JSON.stringify(error));
-        // });
+        },(error)=>{
+            console.log(error);
+        });
     }
 
     //切换tab
@@ -183,7 +186,7 @@ export default class DistributionMy extends Component <{}, {}>{
         let checkview = this.getCheckView(checked);
         return (
             <View style={{flex:1,backgroundColor:'#F5F5F5'}}>
-               <View style={styles.head}>
+                <View style={styles.head}>
                     <Image style={styles.img} src={`https://q.aiyongbao.com/1688/web/img/niutou.png`}/>
                     <Image style={styles.img2} src={`https://cbu01.alicdn.com/club/upload/pic/user/b/2/b/-/${toux}_s.jpeg`}/>
                     <View style={styles.mid_view}>
@@ -195,12 +198,12 @@ export default class DistributionMy extends Component <{}, {}>{
                         <Text style={{marginLeft:px(5),color:'#FFFFFF',fontSize: px(28)}}>联系客服</Text>
                         <ItemIcon iconStyle={styles.new} code={"\ue6a7"}/>
                     </View>
-               </View>
-               <View style={{backgroundColor:'#fff'}}>
-                   <TradeAyTabber taps={tap_check} checkStatus={this.checkStatus}/>
-               </View>
-               <View style={styles.grey_view}/>
-               {checkview}
+                </View>
+                <View style={{backgroundColor:'#fff'}}>
+                    <TradeAyTabber taps={tap_check} checkStatus={this.checkStatus}/>
+                </View>
+                <View style={styles.grey_view}/>
+                {checkview}
             </View>
         );
     }

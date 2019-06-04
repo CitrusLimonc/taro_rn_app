@@ -2,6 +2,7 @@
 
 import Taro, { Component, Config } from '@tarojs/taro';
 import { View,Text } from '@tarojs/components';
+import Event from 'ay-event';
 import { IsEmpty } from '../../../Public/Biz/IsEmpty.js';
 import { NetWork } from '../../../Public/Common/NetWork/NetWork.js';
 import Item from './item';
@@ -20,9 +21,9 @@ export default class List extends Component{
         this.info = '';
 
         let self = this;
-        // RAP.on('APP.reload_shoplist_info',(data)=>{
-        //     self.loadData();
-        // });
+        Event.on('APP.reload_shoplist_info',(data)=>{
+            self.loadData();
+        });
     }
 
     componentDidMount(){
@@ -52,7 +53,7 @@ export default class List extends Component{
             data:{}
         },(shopRes)=>{
             if(!IsEmpty(shopRes.result) && shopRes.result.length > 0){
-                // RAP.emit('APP.get_allshops',{total:shopRes.result.length});
+                Event.emit('APP.get_allshops',{total:shopRes.result.length});
                 let shopList = shopRes.result;
                 let shopIds = [];
                 for(let i in shopList){

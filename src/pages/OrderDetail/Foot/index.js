@@ -2,6 +2,7 @@
 
 import Taro, { Component, Config } from '@tarojs/taro';
 import { View, Text } from '@tarojs/components';
+import Event from 'ay-event';
 import {IsEmpty} from '../../../Public/Biz/IsEmpty.js';
 import {GoToView} from '../../../Public/Biz/GoToView.js';
 import {LocalStore} from '../../../Public/Biz/LocalStore.js';
@@ -57,7 +58,7 @@ export default class Foot extends Component {
                     data:datas,
                 })
                 self.refs.checkorderone.hide();
-                // RAP.emit('App.update_shop_orders',{});
+                Event.emit('App.update_shop_orders',{});
             }else{
                 Taro.showToast({
                     title: '确认付款失败',
@@ -259,14 +260,14 @@ export default class Foot extends Component {
                 //     console.log('alibaba.alipay.url.get',rsp);
                 //     if (!IsEmpty(rsp.success) && (rsp.success == true || rsp.success == 'true')) {
                 if (!IsEmpty(orderIdList)) {
-                    // RAP.emit('App.pay_update_order_1688',{
-                    //     tid:firstPayOrderId,
-                    //     shopId:data.shop_id,
-                    //     taoTid:data.tid,
-                    //     shopType:data.shop_type,
-                    //     shopName:data.shopName,
-                    //     updateOrderStatus:'向供应商付款'
-                    // });
+                    Event.emit('App.pay_update_order_1688',{
+                        tid:firstPayOrderId,
+                        shopId:data.shop_id,
+                        taoTid:data.tid,
+                        shopType:data.shop_type,
+                        shopName:data.shopName,
+                        updateOrderStatus:'向供应商付款'
+                    });
                     // // console.log('firstOrder',firstOrder);
                     // let ofurls = RAP.biz.getBizInfoUrl('orderDetail', { 'orderId': firstPayOrderId, 'sys_page': 1 });
                     // RAP.navigator.push({url: ofurls});
@@ -308,14 +309,14 @@ export default class Foot extends Component {
                     }
                 }
                 if (orderId!='') {
-                    // RAP.emit('App.pay_update_order_1688',{
-                    //     tid:orderId,
-                    //     shopId:data.shop_id,
-                    //     taoTid:data.tid,
-                    //     shopType:data.shop_type,
-                    //     shopName:data.shopName,
-                    //     updateOrderStatus:'申请退款'
-                    // });
+                    Event.emit('App.pay_update_order_1688',{
+                        tid:orderId,
+                        shopId:data.shop_id,
+                        taoTid:data.tid,
+                        shopType:data.shop_type,
+                        shopName:data.shopName,
+                        updateOrderStatus:'申请退款'
+                    });
                     // let ofurls = RAP.biz.getBizInfoUrl('orderDetail', { 'orderId': orderId, 'sys_page': 1 });
                     // RAP.navigator.push({url: ofurls});
                 } else {
@@ -338,14 +339,14 @@ export default class Foot extends Component {
                     }
                 }
                 if (orderId!='') {
-                    // RAP.emit('App.pay_update_order_1688',{
-                    //     tid:orderId,
-                    //     shopId:data.shop_id,
-                    //     taoTid:data.tid,
-                    //     shopType:data.shop_type,
-                    //     shopName:data.shopName,
-                    //     updateOrderStatus:'确认收货'
-                    // });
+                    Event.emit('App.pay_update_order_1688',{
+                        tid:orderId,
+                        shopId:data.shop_id,
+                        taoTid:data.tid,
+                        shopType:data.shop_type,
+                        shopName:data.shopName,
+                        updateOrderStatus:'确认收货'
+                    });
                     // let ofurls = RAP.biz.getBizInfoUrl('orderDetail', { 'orderId': orderId, 'sys_page': 1 });
                     // RAP.navigator.push({url: ofurls});
                 } else {

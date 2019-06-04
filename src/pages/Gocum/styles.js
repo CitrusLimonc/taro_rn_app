@@ -3,76 +3,75 @@ export default {
     body:{
         alignItems: 'flex-start',
         flex:1,
-        padding:24,
+        padding:px(24),
         backgroundColor:'#ffffff',
     },
     TopBody:{
         width:px(750),
-        height:108,
+        height:px(108),
         flexDirection:'row',
         alignItems:'center',
     },
     TopBodyPic:{
-        width:70,
-        height:70,
+        width:px(70),
+        height:px(70),
     },
     TopBodyText:{
         marginLeft:px(16),
-        fontSize:40,
+        fontSize:px(40),
         fontFamily: 'PingFangSC-Regular',
         color: '#000000',
     },
     TipText:{
-        fontSize:24,
+        fontSize:px(24),
         fontFamily: 'PingFangSC-Regular',
         color: '#666666',
     },
     TitleText:{
-        fontSize:28,
+        fontSize:px(28),
         fontFamily: 'PingFangSC-Regular',
         color: '#333333',  
-        marginTop:24,
-        marginBottom:24,
+        marginTop:px(24),
+        marginBottom:px(24),
     },
     TitleBody:{
         flexDirection:'row',
         alignItems:'center',
-        marginBottom:40,
+        marginBottom:px(40),
     },
     TitleInput:{
-        fontSize:24,
+        fontSize:px(24),
         fontFamily: 'PingFangSC-Regular',
         color: '#999999',
-        width:526,
-        height:70,
+        width:px(526),
+        height:px(70),
         borderColor:'#E5E5E5',
-        borderStyle:'solid',
         borderWidth:px(1),
         
     },
     TitleButton:{
-        width:150,
-        height:56,
-        marginLeft:24,
+        width:px(150),
+        height:px(56),
+        marginLeft:px(24),
     },
     TipRed:{
-        fontSize:20,
+        fontSize:px(20),
         color:'red'
     },
     wangwangbody:{
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems:'center',
-        marginTop:80,
+        marginTop:px(80),
     },
     wangwangLeft:{
         color: '#999999',
-        fontSize: 28,
+        fontSize: px(28),
 
     },
     wangwangRight:{
         color: '#2DA9F7',
-        fontSize: 28,
+        fontSize: px(28),
 
     },
     wangwangicon:{

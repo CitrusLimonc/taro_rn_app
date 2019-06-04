@@ -5,6 +5,7 @@ import GoodsProductMap from '../../Component/GoodsProductMap';
 import {GoToView} from '../../Public/Biz/GoToView.js';
 import styles from './styles.js';
 import { NetWork } from '../../Public/Common/NetWork/NetWork.js';
+import px from '../../Biz/px.js';
 
 /**
  * @author wzm

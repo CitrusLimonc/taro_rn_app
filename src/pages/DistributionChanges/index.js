@@ -1,5 +1,6 @@
 import Taro, { Component, Config } from '@tarojs/taro';
 import { View, Text , Dialog, Button ,ScrollView,Radio,Checkbox,Input} from '@tarojs/components';
+import Event from 'ay-event';
 import ItemIcon from '../../Component/ItemIcon';
 import {IsEmpty} from '../../Public/Biz/IsEmpty.js';
 import {LocalStore} from '../../Public/Biz/LocalStore.js';
@@ -7,6 +8,7 @@ import {NetWork} from '../../Public/Common/NetWork/NetWork.js';
 import {Parse2json} from '../../Public/Biz/Parse2json.js';
 import {GoToView} from '../../Public/Biz/GoToView.js';
 import styles from './styles';
+import px from '../../Biz/px.js';
 /**
  * @author cy
  * 铺货修改页面（属性）
@@ -27,17 +29,17 @@ export default class DistributionChanges extends Component {
         this.attributes = [];
         let self = this;
         //从搜索页面返回刷新数据
-        // RAP.on('App.add_search_back',(data) => {
-        //     self.attributes.map((item,key)=>{
-        //         if (item.name == '品牌') {
-        //             self.attributes[key].value = data.value;
-        //             self.attributes[key].showValue = data.displayName;
-        //         }
-        //     });
-        //     this.setState({
-        //         attributes:self.attributes
-        //     });
-        // });
+        Event.on('App.add_search_back',(data) => {
+            self.attributes.map((item,key)=>{
+                if (item.name == '品牌') {
+                    self.attributes[key].value = data.value;
+                    self.attributes[key].showValue = data.displayName;
+                }
+            });
+            this.setState({
+                attributes:self.attributes
+            });
+        });
     }
 
     // config: Config = {
@@ -465,9 +467,9 @@ export default class DistributionChanges extends Component {
                     this.refs.submitDialog.show();
                 } else {
                     if (this.state.fromPage == 'log') {
-                        // RAP.emit('APP.change_attr_log',{logId:this.state.logId});
+                        Event.emit('APP.change_attr_log',{logId:this.state.logId});
                     } else {
-                        // RAP.emit('APP.change_attr_back',{shopId:this.state.shopId});
+                        Event.emit('APP.change_attr_back',{shopId:this.state.shopId});
                     }
                     GoToView({page_status:'pop'});
                 }

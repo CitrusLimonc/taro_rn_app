@@ -4,7 +4,7 @@ import styles from './styles';
 import ItemIcon from '../../../../Component/ItemIcon';
 import {NetWork} from '../../../../Public/Common/NetWork/NetWork.js';
 import {IsEmpty} from '../../../../Public/Biz/IsEmpty';
-
+import px from '../../../../Biz/px.js';
 
 /**
  * @author wzm

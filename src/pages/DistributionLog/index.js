@@ -1,5 +1,6 @@
 import Taro, { Component, Config } from '@tarojs/taro';
 import { View, Text , Image, Dialog, Input, Button } from '@tarojs/components';
+import Event from 'ay-event';
 import ChooseSkuDialog from '../../Component/ChooseSkuDialog';
 import SideDialog from './SideDialog';
 import ItemIcon from '../../Component/ItemIcon';
@@ -57,31 +58,31 @@ export default class DistributionLog extends Component {
         this.shopList=[];
         let self = this;
         //修改完属性同步信息
-        // RAP.on('App.change_attr_log',(data) => {
-        //     self.setState({
-        //         showLoading:true
-        //     });
-        //     Taro.showLoading({ title: '加载中...' });
-        //     self.getDistributeLog(1,(result)=>{
-        //         if(IsEmpty(result.result)){
-        //             self.dataSourceIsEmpty = true;
-        //         }
-        //         self.setState({
-        //             dataSource : result.result,
-        //             showLoading:false
-        //         });
-        //         Taro.hideLoading();
-        //     });
-        // });
+        Event.on('App.change_attr_log',(data) => {
+            self.setState({
+                showLoading:true
+            });
+            Taro.showLoading({ title: '加载中...' });
+            self.getDistributeLog(1,(result)=>{
+                if(IsEmpty(result.result)){
+                    self.dataSourceIsEmpty = true;
+                }
+                self.setState({
+                    dataSource : result.result,
+                    showLoading:false
+                });
+                Taro.hideLoading();
+            });
+        });
 
         //返回操作
-        // RAP.on('back',function(e){
-        //     if(self.fromPage == 'distributionresult'){
-        //         GoToView({page_status:'popTo',pop_index:2});
-        //     }else{
-        //         GoToView({page_status:'pop'});
-        //     }
-        // });
+        Event.on('back',function(e){
+            if(self.fromPage == 'distributionresult'){
+                GoToView({page_status:'popTo',pop_index:2});
+            }else{
+                GoToView({page_status:'pop'});
+            }
+        });
 
     }
 
@@ -812,7 +813,7 @@ export default class DistributionLog extends Component {
                         } else {
                             if (this.fromPage == 'distributeResult') {
                                 console.log('list',list);
-                                // RAP.emit('APP.log_distribute_redo',{list:list,offerId:item.origin_num_iid,supplierMemberId:item.origin_id,logId:item.id});
+                                Event.emit('APP.log_distribute_redo',{list:list,offerId:item.origin_num_iid,supplierMemberId:item.origin_id,logId:item.id});
                                 GoToView({page_status:'pop'});
                             } else {
                                 LocalStore.Set({'go_to_distribution_list':JSON.stringify(list)});
@@ -831,7 +832,7 @@ export default class DistributionLog extends Component {
                     });
                 } else {
                     if (this.fromPage == 'distributeResult') {
-                        // RAP.emit('APP.log_distribute_redo',{list:list,offerId:item.origin_num_iid,logId:item.id});
+                        Event.emit('APP.log_distribute_redo',{list:list,offerId:item.origin_num_iid,logId:item.id});
                         GoToView({page_status:'pop'});
                     } else {
                         LocalStore.Set({'go_to_distribution_list':JSON.stringify(list)});
@@ -1319,7 +1320,7 @@ export default class DistributionLog extends Component {
                                         <Button size="small"
                                         type="secondary"
                                         onClick={()=>{
-                                            RAP.emit('App.checkwc');
+                                            Event.emit('App.checkwc');
                                             GoToView({status:'DistributionShops',query:{iswd:1}});
 
                                         }}

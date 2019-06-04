@@ -21,7 +21,7 @@ export default {
 		justifyContent: 'center',
 		marginLeft: px(20),
 		borderRadius: "20%",
-		borderWidth: 1,
+		borderWidth: px(1),
 		borderColor: "#e5e5e5",
 		backgroundColor: "#fff",
 	},

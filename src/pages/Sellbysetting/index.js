@@ -1,5 +1,6 @@
 import Taro, { Component, Config } from '@tarojs/taro';
 import {View,Text,Image} from '@tarojs/components';
+import Event from 'ay-event';
 import ItemConfirmDialog from '../../Component/ItemConfirmDialog';
 import ItemTextArea from '../../Component/ItemTextArea';
 import {NetWork} from '../../Public/Common/NetWork/NetWork.js';
@@ -11,6 +12,7 @@ import Tabmessage from './Tabmessage';
 import Tabsell from './Tabsell';
 import Tabdetails from './Tabdetails';
 import ProductStatus from './ProductStatus';
+import px from '../../Biz/px.js';
 
 /*
  * 代销铺货设置页面
@@ -44,25 +46,25 @@ export default class Sellbysetting extends Component {
         this.numIid = '';
         this.productId = '';
         let self = this;
-        // RAP.on('App.changeAlldata', (data) => {
-        //     Taro.showLoading({ title: '加载中...' });
-        //     let params = {
-        //         numIid:self.numIid,
-        //         shopType:self.state.lastShopType,
-        //         productID:self.productId,
-        //         shopId:self.state.chooseShop
-        //     };
-        //     self.getOneGoodSetting(params,(data)=>{
-        //         self.setState({
-        //             alldata:data,
-        //         })
-        //         Taro.hideLoading();
-        //     });
-        // }).then(result => {
-        //     console.log('注册成功');
-        // }).catch(error => {
-        //     console.log('注册失败');
-        // })
+        Event.on('App.changeAlldata', (data) => {
+            Taro.showLoading({ title: '加载中...' });
+            let params = {
+                numIid:self.numIid,
+                shopType:self.state.lastShopType,
+                productID:self.productId,
+                shopId:self.state.chooseShop
+            };
+            self.getOneGoodSetting(params,(data)=>{
+                self.setState({
+                    alldata:data,
+                })
+                Taro.hideLoading();
+            });
+        }).then(result => {
+            console.log('注册成功');
+        }).catch(error => {
+            console.log('注册失败');
+        })
     }
 
     // config: Config = {
@@ -237,10 +239,10 @@ export default class Sellbysetting extends Component {
 
             if (item.shop_type != 'taobao') {
                 tagDom.push(
-                    <View style={[{alignItems:'center',marginRight:24},key==4?{marginRight:0}:{}]}>
+                    <View style={[{alignItems:'center',marginRight:px(24)},key==4?{marginRight:px(0)}:{}]}>
                         <View style={[this.state.chooseShop == item.shop_id ? styles.tagImageActive:styles.tagImage]}
                         onClick={()=>{this.changShopTag(item)}}>
-                            <Image src={pic_url} style={{width:76,height:76}}/>
+                            <Image src={pic_url} style={{width:px(76),height:px(76)}}/>
                         </View>
                         <View style={{marginTop:px(6),width:px(140),alignItems:'center'}}>
                             <Text style={{fontSize:px(20),color:'#999999',textAlign:'center'}}>{item.shop_name}</Text>
@@ -364,8 +366,8 @@ export default class Sellbysetting extends Component {
         let content = 
         <View style={{flex:1}}>
             <ItemTextArea value={this.state.alldata.name}
-            height=px(150) multiple={true}
-            maxLength={60}
+            height={px(150)} multiple={true}
+            maxLength={px(60)}
             getValue={this.getValue}/>
         </View>;
         return (

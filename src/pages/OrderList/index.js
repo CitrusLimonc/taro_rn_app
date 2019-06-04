@@ -1,6 +1,7 @@
 
 import Taro, { Component, Config } from '@tarojs/taro';
 import { View,Text,Image} from '@tarojs/components';
+import Event from 'ay-event';
 import OrderStatus from './OrderStatus';
 import OrderCard from './OrderCard';
 import NoList from './NoList';
@@ -16,6 +17,7 @@ import { LocalStore } from '../../Public/Biz/LocalStore';
 import { Parse2json } from '../../Public/Biz/Parse2json';
 import {DoBeacon} from '../../Public/Biz/DoBeacon';
 import { GoToView } from '../../Public/Biz/GoToView';
+import px from '../../Biz/px.js';
 
 /**
 * @author cy
@@ -56,93 +58,93 @@ export default class OrderList extends Component {
 
         let self = this;
         //打开聊天
-        // RAP.on('App.openwc',(data)=>{
-        //     UitlsRap.openChat(data);
-        // });
+        Event.on('App.openwc',(data)=>{
+            // UitlsRap.openChat(data);
+        });
         //复制内容
-        // RAP.on('App.trclbd',(data)=>{
-        //     UitlsRap.clipboard(data.msg,(result)=>{
-        //         if(data.cal){
-        //             Taro.showToast({
-        //                 title: data.cal,
-        //                 icon: 'none',
-        //                 duration: 2000
-        //             });
-        //         }
-        //     });
-        // });
+        Event.on('App.trclbd',(data)=>{
+            UitlsRap.clipboard(data.msg,(result)=>{
+                if(data.cal){
+                    Taro.showToast({
+                        title: data.cal,
+                        icon: 'none',
+                        duration: 2000
+                    });
+                }
+            });
+        });
         //更新支付订单
-        // RAP.on('App.update_lastPayOrders',(data)=>{
-        //     self.setState({
-        //         lastPayOrders:data.lastPayOrders,
-        //         lastTaoTid:data.lastTaoTid,
-        //         lastShopId:data.lastShopId,
-        //         lastShopName:data.lastShopName,
-        //         updateOrderStatus:data.updateOrderStatus
-        //     });
-        //     self.refs.surePayDialog.show();
-        // });
+        Event.on('App.update_lastPayOrders',(data)=>{
+            self.setState({
+                lastPayOrders:data.lastPayOrders,
+                lastTaoTid:data.lastTaoTid,
+                lastShopId:data.lastShopId,
+                lastShopName:data.lastShopName,
+                updateOrderStatus:data.updateOrderStatus
+            });
+            self.refs.surePayDialog.show();
+        });
         //刷新订单列表
-        // RAP.on('App.update_shop_orders',(data)=>{
-        //     Taro.showLoading({ title: '加载中...' });
-        //     self.getTradeList(1,{},(result)=>{
-        //         self.setState({
-        //             dataSource:result,
-        //             bonepng:false
-        //         });
-        //         Taro.hideLoading();
-        //     });
-        // });
+        Event.on('App.update_shop_orders',(data)=>{
+            Taro.showLoading({ title: '加载中...' });
+            self.getTradeList(1,{},(result)=>{
+                self.setState({
+                    dataSource:result,
+                    bonepng:false
+                });
+                Taro.hideLoading();
+            });
+        });
         //进入页面带参，修改当前状态
         this.catchflag = true;
-        // RAP.on('App.getcon2',(data)=>{
-        //     self.state.choseshopid = '';
-        //     this.catchflag = false;
-        //     if(IsEmpty(data)){
-        //         self.changeStatus('待采购');
-        //     }else{
-        //         LocalStore.Remove(['tradecon']);
-        //         self.changeStatus(data.split(',')[0]);
-        //         self.state.choseshopid = data.split(',')[1];
-        //         if(!IsEmpty(self.state.choseshopid)){
-        //             self.submitFilter('',self.state.choseshopid);
-        //         }
-        //     }
-        // });
+        Event.on('App.getcon2',(data)=>{
+            self.state.choseshopid = '';
+            this.catchflag = false;
+            if(IsEmpty(data)){
+                self.changeStatus('待采购');
+            }else{
+                LocalStore.Remove(['tradecon']);
+                self.changeStatus(data.split(',')[0]);
+                self.state.choseshopid = data.split(',')[1];
+                if(!IsEmpty(self.state.choseshopid)){
+                    self.submitFilter('',self.state.choseshopid);
+                }
+            }
+        });
         //打开关闭订单弹窗
-        // RAP.on('App.opencloseorder',(data)=>{
-        //     this.closetid = data.tid;
-        //     this.refs.closeorderone.show();
-        // });
+        Event.on('App.opencloseorder',(data)=>{
+            this.closetid = data.tid;
+            this.refs.closeorderone.show();
+        });
         //隐藏关闭订单弹窗
-        // RAP.on('App.hidecloseorder',(data)=>{
-        //     this.refs.closeorderone.hide();
-        // });
+        Event.on('App.hidecloseorder',(data)=>{
+            this.refs.closeorderone.hide();
+        });
         //打开确认收款弹窗
-        // RAP.on('App.opencheckorder',(data)=>{
-        //     this.checktid = data.tid;
-        //     this.refs.checkorderone.show();
-        // });
+        Event.on('App.opencheckorder',(data)=>{
+            this.checktid = data.tid;
+            this.refs.checkorderone.show();
+        });
         //隐藏确认收款弹窗
-        // RAP.on('App.hidecheckorder',(data)=>{
-        //     this.refs.checkorderone.hide();
-        // });
+        Event.on('App.hidecheckorder',(data)=>{
+            this.refs.checkorderone.hide();
+        });
         //授权成功告知用户正在同步订单
-        // RAP.on('App.reSynOrders',(data)=>{
-        //     this.handleRefresh();
-        // });
+        Event.on('App.reSynOrders',(data)=>{
+            this.handleRefresh();
+        });
 
-        // RAP.on('App.showReAuthDialog',(data)=>{
-        //     this.setState({
-        //         dialogMsg:data
-        //     });
-        //     //弹出确认弹窗
-        //     this.refs.reAuthTrade.show();
-        // });
-        // RAP.on('App.choose_send_tid',(data)=>{
-        //     this.lastSendTid = data.tid;
-        //     this.sureAccess('sendGoods',false);
-        // });
+        Event.on('App.showReAuthDialog',(data)=>{
+            this.setState({
+                dialogMsg:data
+            });
+            //弹出确认弹窗
+            this.refs.reAuthTrade.show();
+        });
+        Event.on('App.choose_send_tid',(data)=>{
+            this.lastSendTid = data.tid;
+            this.sureAccess('sendGoods',false);
+        });
 
         if(this.catchflag){
             LocalStore.Get(['tradecon'],(result) => {
@@ -351,7 +353,7 @@ export default class OrderList extends Component {
                     icon: 'none',
                     duration: 2000
                 });
-                // RAP.emit('App.hidecloseorder');
+                Event.emit('App.hidecloseorder');
                 self.getTradeList(1,{},(result)=>{
                     self.setState({
                         dataSource:result,
@@ -363,7 +365,7 @@ export default class OrderList extends Component {
                     icon: 'none',
                     duration: 2000
                 });
-                // RAP.emit('App.hidecloseorder');
+                Event.emit('App.hidecloseorder');
             }
         });
 
@@ -689,7 +691,7 @@ export default class OrderList extends Component {
                     });
                     //同步下订单
                     Taro.showLoading({ title: '加载中...' });
-                    // RAP.emit('App.reSynOrders',{});
+                    Event.emit('App.reSynOrders',{});
                 }
             });
 
@@ -706,7 +708,7 @@ export default class OrderList extends Component {
                     });
                     //同步下订单
                     Taro.showLoading({ title: '加载中...' });
-                    // RAP.emit('App.reSynOrders',{});
+                    Event.emit('App.reSynOrders',{});
                 } else {
                     if (this.state.authType == "hasNoOrder" && res.msg == "hasNoAuth") {
                         this.setState({
@@ -761,7 +763,7 @@ export default class OrderList extends Component {
                     });
                     //同步下订单
                     Taro.showLoading({ title: '加载中...' });
-                    // RAP.emit('App.reSynOrders',{});
+                    Event.emit('App.reSynOrders',{});
                 }
             }else{
                 if (callback) {
@@ -839,7 +841,7 @@ export default class OrderList extends Component {
         let type= 'order';
         let list = '';
         if(bonepng){
-            list = <Image src={'https://q.aiyongbao.com/1688/bone.png'} style={{width:px(750),height:1024}}/>;
+            list = <Image src={'https://q.aiyongbao.com/1688/bone.png'} style={{width:px(750),height:px(1024)}}/>;
         }else{
             if(IsEmpty(dataSource)){
                 let noListType = 'normal';
@@ -921,7 +923,7 @@ export default class OrderList extends Component {
                     cancelText={'再核对一下'}
                     okText={'是，我已收到付款'}
                     content={'请认真核对是否已收到买家的付款'}
-                    onSubmit={()=>{/*RAP.emit('App.checkorderok',{tid:this.checktid});*/}}
+                    onSubmit={()=>{Event.emit('App.checkorderok',{tid:this.checktid});}}
                     onCancel={()=>{this.refs.checkorderone.hide();}}
                     />
                 <AiyongDialog

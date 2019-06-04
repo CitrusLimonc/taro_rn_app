@@ -8,6 +8,7 @@ import {NetWork} from '../../../Public/Common/NetWork/NetWork.js';
 import {IsEmpty} from '../../../Public/Biz/IsEmpty.js';
 import ItemIcon from '../../../Component/ItemIcon';
 import styles from './styles.js';
+import px from '../../../Biz/px.js';
 
 export default class Header extends Component{
     constructor(props){

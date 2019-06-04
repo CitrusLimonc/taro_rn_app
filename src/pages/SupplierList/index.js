@@ -1,11 +1,13 @@
 import Taro, { Component, Config } from '@tarojs/taro';
 import {View,Text} from '@tarojs/components';
+import Event from 'ay-event';
 import styles from './styles';
 import GoodsProductMap from '../../Component/GoodsProductMap';
 import ItemIcon from '../../Component/ItemIcon';
 import { GoToView } from '../../Public/Biz/GoToView.js';
 import { IsEmpty } from '../../Public/Biz/IsEmpty.js';
 import { NetWork } from '../../Public/Common/NetWork/NetWork';
+import px from '../../Biz/px.js';
 /**
  * @author SmingPro
  * 货源推荐
@@ -29,14 +31,14 @@ export default class SupplierList extends Component {
 
 		let self = this;
 		//刷新供应商列表
-		// RAP.on('App.RefreshSupplierList', (data) => {
-		// 	self.pageNo = 1;
-		// 	self.setState({
-		// 		rowData:[],
-		// 	});
-		// 	Taro.showLoading({ title: '供应商列表加载中...' });
-		// 	self.querySuppliers(1);
-		// });
+		Event.on('App.RefreshSupplierList', (data) => {
+			self.pageNo = 1;
+			self.setState({
+				rowData:[],
+			});
+			Taro.showLoading({ title: '供应商列表加载中...' });
+			self.querySuppliers(1);
+		});
 	}
 
 	// config: Config = {

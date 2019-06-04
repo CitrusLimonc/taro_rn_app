@@ -1,4 +1,4 @@
-import px from '../../Biz/px.js';
+import px from '../../../Biz/px.js';
 export default {
     cardContent:{
         backgroundColor: '#ffffff',
@@ -15,7 +15,6 @@ export default {
     },
     imgBox:{
         borderColor:'#fafafa',
-        borderStyle:'solid',
         borderWidth:px(2),
         width: px(140),
         height: px(140),

@@ -1,18 +1,17 @@
-import px from '../../Biz/px.js';
+import px from '../../../Biz/px.js';
 export default {
     shopLine:{
         borderBottomColor:'#f5f5f5',
-        borderBottomStyle:'solid',
         borderBottomWidth:px(2),
-        paddingLeft:24,
-        paddingRight:24,
-        paddingTop:18,
-        paddingBottom:18,
+        paddingLeft:px(24),
+        paddingRight:px(24),
+        paddingTop:px(18),
+        paddingBottom:px(18),
         backgroundColor:'#fff',
         flexDirection:'row',
         alignItems:'center',
         width:px(750),
-        marginTop:24
+        marginTop:px(24)
     },
     titleText:{
         color:'#000',

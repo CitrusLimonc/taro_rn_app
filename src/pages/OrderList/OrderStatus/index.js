@@ -3,6 +3,7 @@ import Taro, { Component, Config } from '@tarojs/taro';
 import {View,Text,ScrollView,Image} from '@tarojs/components';
 import ItemIcon from '../../../Component/ItemIcon';
 import styles from './styles.js';
+import px from '../../../Biz/px.js';
 // const {MultiRow}=Layout;
 /**
 *  @author cy
@@ -79,17 +80,17 @@ export default class OrderStatus extends Component {
         switch (this.props.shopType) {
             case 'taobao':{
                 return  (<Image src={'https://q.aiyongbao.com/1688/web/img/preview/taoLogo.png'}
-                        style={{width:60,height:60}}
+                        style={{width:px(60),height:px(60)}}
                         />);
             } break;
             case 'pdd':{
                 return  (<Image src={'https://q.aiyongbao.com/1688/web/img/preview/pingDDLogo.png'}
-                        style={{width:60,height:60}}
+                        style={{width:px(60),height:px(60)}}
                         />);
             } break;
             case 'wc':{
                 return  (<Image src={'https://q.aiyongbao.com/1688/web/img/preview/weichatLogo.png'}
-                        style={{width:60,height:60}}
+                        style={{width:px(60),height:px(60)}}
                         />);
             } break;
             default: {
@@ -102,13 +103,13 @@ export default class OrderStatus extends Component {
         }
                     // this.props.shopType == 'taobao' ?
                     // <Image src={'https://q.aiyongbao.com/1688/web/img/preview/taoLogo.png'}
-                    // style={{width:60,height:60}}
+                    // style={{width:px(60),height:px(60)}}
                     // />
                     // :
                     // (
                     //     this.props.shopType == 'pdd' ?
                     //     <Image src={'https://q.aiyongbao.com/1688/web/img/preview/pingDDLogo.png'}
-                    //     style={{width:60,height:60}}
+                    //     style={{width:px(60),height:px(60)}}
                     //     />
                     //     :
                     //     <ItemIcon onClick={this.props.showSideDialog}

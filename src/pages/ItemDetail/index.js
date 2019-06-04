@@ -1,5 +1,6 @@
 import Taro, { Component, Config } from '@tarojs/taro';
 import { View, Text, ScrollView, Image,Dialog,Button} from '@tarojs/components';
+import Event from 'ay-event';
 import BasicInfo from './BasicInfo';
 import SellSpec from './SellSpec';
 import ItemIcon from '../../Component/ItemIcon';
@@ -10,6 +11,7 @@ import {GetPrice} from '../../Biz/GetPrice.js';
 import {UitlsRap} from '../../Public/Biz/UitlsRap.js';
 import {NetWork} from '../../Public/Common/NetWork/NetWork.js';
 import styles from './styles';
+import px from '../../Biz/px.js';
 /**
  * @author cy
  * 商品详情
@@ -36,9 +38,9 @@ export default class ItemDetail extends Component{
         };
         let self=this;
         //返回操作
-        // RAP.on('App.detail_back',(data)=>{
-        //     self.initData();
-        // });
+        Event.on('App.detail_back',(data)=>{
+            self.initData();
+        });
     }
 
     // config: Config = {
@@ -161,7 +163,7 @@ export default class ItemDetail extends Component{
                     doms.push(
                         <View style={[styles.bigimgBox,{width:px(200),height:px(200)},key!=this.state.imageList.length-1?{marginRight:px(16)}:{}]}>
                             <Image src={imgUrl}
-                            style={{width:196,height:196}}
+                            style={{width:px(196),height:px(196)}}
                             resizeMode={"contain"}/>
                         </View>
                     );
@@ -216,7 +218,7 @@ export default class ItemDetail extends Component{
         return (
             <View style={{width:px(750),height:px(750),flexDirection:'column',alignItems:'center',justifyContent:'center'}}
             onClick={()=>{this.initData()}}>
-                <Text style={{fontSize:32,color:'#4a4a4a'}}>获取失败，点击刷新</Text>
+                <Text style={{fontSize:px(32),color:'#4a4a4a'}}>获取失败，点击刷新</Text>
             </View>
         );
     }
@@ -242,7 +244,7 @@ export default class ItemDetail extends Component{
             newAttr.map((item,key)=>{
                 doms.push(
                     <View style={styles.attrLine}>
-                        <Text style={[styles.attrText,{width:280}]}>{item.attributeName}</Text>
+                        <Text style={[styles.attrText,{width:px(280)}]}>{item.attributeName}</Text>
                         <Text style={styles.attrText}>{item.value}</Text>
                     </View>
                 );
@@ -290,7 +292,7 @@ export default class ItemDetail extends Component{
                         console.log('Orderreturn/synchroOneProduct',rsp);
                         //有结果
                         if (!IsEmpty(rsp)) {
-                            // RAP.emit('App.product_list_reload',{});
+                            Event.emit('App.product_list_reload',{});
                             Taro.showToast({
                                 title: '同步成功~',
                                 icon: 'none',
@@ -331,21 +333,23 @@ export default class ItemDetail extends Component{
         if (!IsEmpty(productInfo) && !IsEmpty(productInfo.saleInfo)) {
             //是否支持网上商品
             if (JSON.parse(productInfo.saleInfo.supportOnlineTrade)) {
-                supportOnlineTrade =
-                <View style={styles.icon}>
-                    <View style={styles.circle}></View>
-                    <Text style={{fontSize:px(24),color:'#9B9B9B',fontWeight:'600',marginLeft:px(5),marginRight:px(5)}}>网上交易</Text>
-                    <View style={styles.circle}></View>
-                </View>;
+                supportOnlineTrade = (
+                    <View style={styles.icon}>
+                        <View style={styles.circle}></View>
+                        <Text style={styles.smallTag}>网上交易</Text>
+                        <View style={styles.circle}></View>
+                    </View>
+                );
             }
             //是否支持混批
             if (JSON.parse(productInfo.saleInfo.mixWholeSale)) {
-                mixWholeSale =
-                <View style={[styles.icon,{marginLeft:px(10)}]}>
-                    <View style={styles.circle}></View>
-                    <Text style={{fontSize:px(24),color:'#9B9B9B',fontWeight:'600',marginLeft:px(5),marginRight:px(5)}}>混批</Text>
-                    <View style={styles.circle}></View>
-                </View>;
+                mixWholeSale = (
+                    <View style={[styles.icon,{marginLeft:px(10)}]}>
+                        <View style={styles.circle}></View>
+                        <Text style={styles.smallTag}>混批</Text>
+                        <View style={styles.circle}></View>
+                    </View>
+                );
             }
         }
         let subject = !IsEmpty(productInfo) ? productInfo.subject : '';
@@ -422,7 +426,7 @@ export default class ItemDetail extends Component{
                         </View>
                         {
                             !IsEmpty(supplierLoginId) ?
-                            <View style={[styles.supplierBox,{marginTop:24}]}>
+                            <View style={[styles.supplierBox,{marginTop:px(24)}]}>
                                 <View style={{flexDirection:'row',flex:1,alignItems:'center'}}>
                                     <Text style={{fontSize:px(28),color:'#4A4A4A'}}>{supplierLoginId}</Text>
                                     {
@@ -435,20 +439,20 @@ export default class ItemDetail extends Component{
                                         :
                                         <View style={{flex:1,flexDirection:'row',justifyContent:'flex-end',alignItems:'center'}}>
                                             <View style={styles.buttons} onClick={()=>{UitlsRap.openChat(supplierLoginId);}}>
-                                                <ItemIcon code={'\ue602'} iconStyle={{fontSize:28,color:'#3089dc'}}/>
-                                                <Text style={[styles.buttonText,{marginLeft:5}]}>旺旺联系</Text>
+                                                <ItemIcon code={'\ue602'} iconStyle={{fontSize:px(28),color:'#3089dc'}}/>
+                                                <Text style={[styles.buttonText,{marginLeft:px(5)}]}>旺旺联系</Text>
                                             </View>
                                         </View>
                                     }
                                 </View>
                                 {
                                     !IsEmpty(supplierMemberId) ?
-                                    <View style={{flexDirection:'row',justifyContent:'flex-end',flex:1,marginTop:24}}>
+                                    <View style={{flexDirection:'row',justifyContent:'flex-end',flex:1,marginTop:px(24)}}>
                                         <View style={styles.buttons} onClick={()=>{UitlsRap.openChat(supplierLoginId);}}>
-                                            <ItemIcon code={'\ue602'} iconStyle={{fontSize:28,color:'#3089dc'}}/>
-                                            <Text style={[styles.buttonText,{marginLeft:5}]}>旺旺联系</Text>
+                                            <ItemIcon code={'\ue602'} iconStyle={{fontSize:px(28),color:'#3089dc'}}/>
+                                            <Text style={[styles.buttonText,{marginLeft:px(5)}]}>旺旺联系</Text>
                                         </View>
-                                        <View style={[styles.buttons,{marginLeft:24}]} onClick={()=>{this.footPress('可代销货源')}}>
+                                        <View style={[styles.buttons,{marginLeft:px(24)}]} onClick={()=>{this.footPress('可代销货源')}}>
                                             <Text style={styles.buttonText}>可代销货源</Text>
                                         </View>
                                     </View>
@@ -460,11 +464,11 @@ export default class ItemDetail extends Component{
                             ''
                         }
                         <View style={styles.midLine}>
-                            <Text style={{fontSize:28,color:'#333333'}}>基本信息</Text>
+                            <Text style={{fontSize:px(28),color:'#333333'}}>基本信息</Text>
                         </View>
                         <BasicInfo numIid={this.state.numIid} productInfo={productInfo} showAttrDialog={this.showAttrDialog}/>
                         <View style={styles.midLine}>
-                            <Text style={{fontSize:28,color:'#333333'}}>销售规格</Text>
+                            <Text style={{fontSize:px(28),color:'#333333'}}>销售规格</Text>
                         </View>
                         <SellSpec productInfo={productInfo}/>
                     </View>
@@ -495,7 +499,7 @@ export default class ItemDetail extends Component{
                     :
                     ''
                 }
-                <Dialog ref="attrDialog"
+                {/* <Dialog ref="attrDialog"
                 duration={1000}
                 maskClosable={true}
                 maskStyle={styles.mask}
@@ -512,9 +516,9 @@ export default class ItemDetail extends Component{
                 </Dialog>
                 <Dialog ref={"sureDialog"} duration={1000} maskStyle={styles.maskStyle} contentStyle={styles.modal2Style}>
                     <View style={styles.dialogContent}>
-                        <Text style={{marginTop:px(15),fontSize:px(38),fontWeight:'300',color:'#4A4A4A',textAlign:'center',width:612}}>{dialogSet.dialogTitle}</Text>
-                        <View style={{width:612,marginTop:px(24),minHeight:200,paddingLeft:24}}>
-                            <Text style={[styles.dialogText,{marginTop:50}]}>
+                        <Text style={{marginTop:px(15),fontSize:px(38),fontWeight:'300',color:'#4A4A4A',textAlign:'center',width:px(612)}}>{dialogSet.dialogTitle}</Text>
+                        <View style={{width:px(612),marginTop:px(24),minHeight:px(200),paddingLeft:px(24)}}>
+                            <Text style={[styles.dialogText,{marginTop:px(50)}]}>
                             {dialogSet.dialogContentText}
                             </Text>
                         </View>
@@ -527,7 +531,7 @@ export default class ItemDetail extends Component{
                             </View>
                         </View>
                     </View>
-                </Dialog>
+                </Dialog> */}
             </View>
         );
     }

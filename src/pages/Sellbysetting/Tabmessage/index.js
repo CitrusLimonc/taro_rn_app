@@ -1,5 +1,6 @@
 import Taro, { Component, Config } from '@tarojs/taro';
 import { View, Text ,ScrollView,Button,Dialog,Radio} from '@tarojs/components';
+import Event from 'ay-event';
 import styles from './styles';
 import AiyongDialog from '../../../Component/AiyongDialog/index';
 import PddCateDialog from '../../../Component/PddCateDialog';
@@ -7,6 +8,7 @@ import {IsEmpty} from '../../../Public/Biz/IsEmpty.js';
 import {NetWork} from '../../../Public/Common/NetWork/NetWork.js';
 import ItemIcon from '../../../Component/ItemIcon';
 import { GoToView } from '../../../Public/Biz/GoToView';
+import px from '../../../Biz/px.js';
 
 /**
  * @author wzm
@@ -150,14 +152,14 @@ export default class Tabmessage extends Component {
                             icon: 'none',
                             duration: 2000
                         });
-                        // RAP.emit('App.changeAlldata');
+                        Event.emit('App.changeAlldata');
                     } else {
                         Taro.showToast({
                             title: '取消代销成功~',
                             icon: 'none',
                             duration: 2000
                         });
-                        // RAP.emit('App.changeAlldata');
+                        Event.emit('App.changeAlldata');
                     }
                 }
             }

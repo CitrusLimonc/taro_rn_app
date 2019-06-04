@@ -1,12 +1,11 @@
-import px from '../../Biz/px.js';
+import px from '../../../../Biz/px.js';
 export default {
     shopsbody:{
         flexDirection:'row',
         alignItems:'center',
         justifyContent:'flex-end',
-        marginBottom:'10',
-        paddingBottom:'10',
-        borderBottomStyle:'solid',
+        marginBottom:px(10),
+        paddingBottom:px(10),
         borderBottomWidth:px(1),
         borderBottomColor:'#e6e6e6',
     },
@@ -14,9 +13,7 @@ export default {
         flexDirection:'row',
         alignItems:'center',
         justifyContent:'flex-end',
-        // marginBottom:'10',
-        paddingBottom:'10',
-        borderBottomStyle:'solid',
+        paddingBottom:px(10),
         borderBottomWidth:px(0),
         borderBottomColor:'#e6e6e6',
     },

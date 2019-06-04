@@ -2,6 +2,7 @@
 
 import Taro, { Component, Config } from '@tarojs/taro';
 import { View,Text,Image } from '@tarojs/components';
+import Event from 'ay-event';
 import { IsEmpty } from '../../../../Public/Biz/IsEmpty.js';
 import { GoToView } from '../../../../Public/Biz/GoToView.js';
 import { GetOrderInfo,SyncShop,GetOrderState } from '../../../../Biz/Apis.js';
@@ -35,15 +36,15 @@ export default class Item extends Component{
         this.authorizationLink = '';
         let emitName = 'APP.render_shop_card';
         let self = this;
-        // RAP.on(emitName,(data)=>{
-        //     //避免重复interval
-        //     if (self.state.syncstate) {
-        //         self.setState({
-        //             syncstate:false
-        //         });
-        //         self.loadData();
-        //     }
-        // });
+        Event.on(emitName,(data)=>{
+            //避免重复interval
+            if (self.state.syncstate) {
+                self.setState({
+                    syncstate:false
+                });
+                self.loadData();
+            }
+        });
     }
 
     componentDidMount(){
@@ -126,7 +127,7 @@ export default class Item extends Component{
                                                             });
                                                         }
                                                     });
-                                                    // RAP.emit('APP.reload_headorderlist');
+                                                    Event.emit('APP.reload_headorderlist');
                                                     console.log('kankanloadmore')
                                                     self.setState({syncstate:true});
                                                 }
@@ -339,7 +340,7 @@ export default class Item extends Component{
                             {trade.map((item,key)=>{
                                 return(
                                     <View key={key} onClick={()=>{
-                                        // RAP.emit('App.Simple',{activeKey:{key:'order'},state:item.text,shopid:data.id});
+                                        Event.emit('App.Simple',{activeKey:{key:'order'},state:item.text,shopid:data.id});
                                     }} style={styles.item_dis}>
                                         <Text style={styles.text_num}>
                                             {item.num}
@@ -362,7 +363,7 @@ export default class Item extends Component{
                                             data.type = 'onsale';
                                         }
                                         LocalStore.Set({'item_list_get_shop_info':JSON.stringify(data)});
-                                        // RAP.emit('App.go_item_list_search',data);
+                                        Event.emit('App.go_item_list_search',data);
                                         console.log('kankantype',data);
                                     }} style={styles.item_dis}>
                                         <Text style={item.text=='缺货中'&&item.num!=0?(styles.textRednum):(styles.text_num)}>

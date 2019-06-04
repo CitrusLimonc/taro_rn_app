@@ -1,4 +1,4 @@
-import px from '../../Biz/px.js';
+import px from '../../../Biz/px.js';
 export default {
     maskStyle:{
         backgroundColor:'rgba(0,0,0,0.5)'
@@ -22,13 +22,12 @@ export default {
         backgroundColor:'#eeefee',
         height:px(52),
         flexDirection:'row',
-        paddingLeft:12,
-        paddingRight:12,
+        paddingLeft:px(12),
+        paddingRight:px(12),
         borderRadius:px(4),
         alignItems:'center',
         justifyContent:'center',
         borderColor:'#eeefee',
-        borderStyle:'solid',
         borderWidth:px(2),
         marginLeft:px(20),
         marginTop:px(20)
@@ -37,13 +36,12 @@ export default {
         backgroundColor:'#ffefe5',
         height:px(52),
         flexDirection:'row',
-        paddingLeft:12,
-        paddingRight:12,
+        paddingLeft:px(12),
+        paddingRight:px(12),
         borderRadius:px(4),
         alignItems:'center',
         justifyContent:'center',
         borderColor:'#ff6000',
-        borderStyle:'solid',
         borderWidth:px(2),
         marginLeft:px(20),
         marginTop:px(20)
@@ -69,7 +67,6 @@ export default {
         flexDirection:'row',
         borderTopWidth: px(1),
         borderTopColor: '#DCDDE3',
-        borderTopStyle: 'solid'
     },
     filterFootLeft:{
         flex:1,
@@ -99,8 +96,8 @@ export default {
     },
     tagIcon:{
         position:'absolute',
-        right:0,
-        bottom:0,
+        right:px(0),
+        bottom:px(0),
         color:'#ff6000',
         fontSize:px(28),
     },
@@ -162,8 +159,7 @@ export default {
     inputLine:{
         flexDirection:'row',
         height:px(88),
-        borderBottomWidth:2,
-        borderBottomStyle:'solid',
+        borderBottomWidth:px(2),
         borderBottomColor:'#f5f5f5'
     },
     filterLine:{
@@ -171,14 +167,13 @@ export default {
         paddingBottom:px(24),
         borderBottomWidth:px(2),
         borderBottomColor:'#f5f5f5',
-        borderBottomStyle:'solid'
     },
     selectTouch:{
         position:'absolute',
-        left:0,
-        right:0,
-        top:0,
-        bottom:0,
+        left:px(0),
+        right:px(0),
+        top:px(0),
+        bottom:px(0),
         height:px(88),
         width:px(520)
     },

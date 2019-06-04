@@ -1,5 +1,6 @@
 import Taro, { Component, Config } from '@tarojs/taro';
 import {ScrollView,View,Text,Checkbox,Image,Button,Dialog,Radio,Input} from '@tarojs/components';
+import Event from 'ay-event';
 import SureDialog from '../../Component/SureDialog';
 import ItemIcon from '../../Component/ItemIcon';
 import {NetWork} from '../../Public/Common/NetWork/NetWork.js';
@@ -101,21 +102,21 @@ export default class DistributionSetting extends Component {
 
 
         let self = this;
-        // RAP.on('back',function(e){
-        //     if (self.state.hasChanged) {
-        //         self.setState({
-        //             confirmTitle:'',
-        //             content:'铺货设置已经被修改，您要保存修改后的设置吗？',
-        //             confirmBtns:{
-        //                 cancelText:'不保存，直接退出',
-        //                 okText:'保存并退出'
-        //             }
-        //         });
-        //         self.refs.submitDialog.show();
-        //     } else {
-        //         GoToView({page_status:'pop'});
-        //     }
-        // });
+        Event.on('back',function(e){
+            if (self.state.hasChanged) {
+                self.setState({
+                    confirmTitle:'',
+                    content:'铺货设置已经被修改，您要保存修改后的设置吗？',
+                    confirmBtns:{
+                        cancelText:'不保存，直接退出',
+                        okText:'保存并退出'
+                    }
+                });
+                self.refs.submitDialog.show();
+            } else {
+                GoToView({page_status:'pop'});
+            }
+        });
     }
 
     // config: Config = {
@@ -1049,7 +1050,7 @@ export default class DistributionSetting extends Component {
                         beforSet:beforSet,
                     });
                     if (!IsEmpty(self.from) && shopIds == self.from) {
-                        // RAP.emit('App.change_setting_back',{shopId:self.from});
+                        Event.emit('App.change_setting_back',{shopId:self.from});
                         GoToView({page_status:'pop'});
                     }
                     if (isReturn) {

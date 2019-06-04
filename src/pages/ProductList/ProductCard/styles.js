@@ -15,7 +15,6 @@ export default {
     },
     imgBox:{
         borderColor:'#fafafa',
-        borderStyle:'solid',
         borderWidth:px(2),
         width: px(140),
         height: px(140),

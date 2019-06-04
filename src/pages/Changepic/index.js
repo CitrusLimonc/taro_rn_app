@@ -1,5 +1,6 @@
 import Taro, { Component, Config } from '@tarojs/taro';
 import { View, Text, Image, ScrollView, Radio } from '@tarojs/components';
+import Event from 'ay-event';
 import styles from './styles';
 import {NetWork} from '../../Public/Common/NetWork/NetWork.js';
 import {IsEmpty} from '../../Public/Biz/IsEmpty.js';
@@ -122,7 +123,7 @@ export default class Changepic extends Component {
                 data:params
             },(data)=>{
                 if(data.code == 200){
-                    // RAP.emit('App.changeAlldata');
+                    Event.emit('App.changeAlldata');
                     GoToView({page_status:'pop'});
                 }else{
                     if (!IsEmpty(data.msg)) {

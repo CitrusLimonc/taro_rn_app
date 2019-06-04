@@ -6,7 +6,6 @@ export default {
     orderNum:{
         borderBottomWidth:px(1),
         borderBottomColor:'#e5e5e5',
-        borderBottomStyle:'solid',
         height: px(75),
         alignItems: 'center',
         flexDirection: 'row',
@@ -35,7 +34,6 @@ export default {
         justifyContent:'center',
         borderColor:'#ff6000',
         borderWidth:px(1),
-        borderStyle:'solid',
         marginLeft:px(8)
     },
     tagText:{
@@ -48,7 +46,6 @@ export default {
         paddingBottom:px(18),
         paddingRight:px(24),
         borderBottomColor:'#f5f5f5',
-        borderBottomStyle:'solid',
         borderBottomWidth:px(2),
         marginLeft:px(24)
     },
@@ -65,7 +62,6 @@ export default {
         alignItems: 'center',
         borderBottomWidth:px(1),
         borderBottomColor:'#e5e5e5',
-        borderBottomStyle:'solid',
         height: px(75),
         paddingLeft: px(24),
         paddingRight: px(24),

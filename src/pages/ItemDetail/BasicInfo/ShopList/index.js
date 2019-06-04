@@ -4,6 +4,7 @@ import { GoToView } from '../../../../Public/Biz/GoToView.js';
 import {IsEmpty} from '../../../../Public/Biz/IsEmpty.js';
 import {NetWork} from '../../../../Public/Common/NetWork/NetWork.js';
 import styles from './styles';
+import px from '../../../../Biz/px.js';
 /**
  * @author cy
  * 基本信息
@@ -43,8 +44,8 @@ export default class ShopList extends Component{
         this.state.shopList.map((item,key)=>{
             doms.push(
                 <View style={key == nums?styles.shopsbodynoboder:styles.shopsbody}>
-                    <Image src={item.shop_url} style={{width:40,height:40}}/>
-                    <Text style={{marginLeft:8,fontSize:24,color:'#333333',flex:1}}>{item.shop_name}</Text>
+                    <Image src={item.shop_url} style={{width:px(40),height:px(40)}}/>
+                    <Text style={{marginLeft:px(8),fontSize:px(24),color:'#333333',flex:1}}>{item.shop_name}</Text>
                     {
                         item.shop_type == 'wc' || item.shop_type == 'pdd' ?(
                         <View style={{flexDirection:'row',alignItems:'center'}}>
@@ -52,7 +53,7 @@ export default class ShopList extends Component{
                                 //mark 测试时用0，正式用1
                                 item.has_smallroutine == 1 || item.shop_type == 'pdd' ? (<Button onClick={()=>{
                                     GoToView({status:'Sellbysetting',query:{numIid:item.num_iid,productId:self.props.productId,shopid:item.shop_id}});
-                                }} size="small" type="secondary" style={{height:48}}>编辑代销商品</Button>):''
+                                }} size="small" type="secondary" style={{height:px(48)}}>编辑代销商品</Button>):''
                             }
                             {
                                 item.shop_type == 'wc' ?
@@ -65,7 +66,7 @@ export default class ShopList extends Component{
                                     }
 
                                 }}
-                                size="small" type="primary" style={{marginLeft:24,height:48}}>去分享</Button>
+                                size="small" type="primary" style={{marginLeft:px(24),height:px(48)}}>去分享</Button>
                                 :
                                 ''
                             }
@@ -83,9 +84,9 @@ export default class ShopList extends Component{
 
     render(){
         return (
-            <View style={{backgroundColor:'#ffffff',flex:1,paddingLeft:20,paddingRight:24,paddingTop:24}}>
-                <Text style={{fontSize:28,color:'#979797'}}>已经铺货的店铺</Text>
-                <View style={{width:702,flexWrap:'wrap',marginTop:24}}>
+            <View style={{backgroundColor:'#ffffff',flex:1,paddingLeft:px(20),paddingRight:px(24),paddingTop:px(24)}}>
+                <Text style={{fontSize:px(28),color:'#979797'}}>已经铺货的店铺</Text>
+                <View style={{width:px(702),flexWrap:'wrap',marginTop:px(24)}}>
                     {this.renderShops()}
                 </View>
             </View>

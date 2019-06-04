@@ -2,8 +2,9 @@
 
 import Taro, { Component, Config } from '@tarojs/taro';
 import { View, Text,Image } from '@tarojs/components';
+import Event from 'ay-event';
 import {IsEmpty} from '../../../Public/Biz/IsEmpty.js';
-import px from '../../Biz/px.js';
+import px from '../../../Biz/px.js';
 
 const stateList = { 1:'买家未收到货',2:'买家已收到货',3:'买家已退货',}
 /*
@@ -21,10 +22,10 @@ export default class RefundEx extends Component {
     //复制订单号
     copyVou(){
         const { tid } = this.props;
-        // RAP.emit('App.trclbd',{
-        //     msg:tid,
-        //     cal:'订单号已复制'
-        // })
+        Event.emit('App.trclbd',{
+            msg:tid,
+            cal:'订单号已复制'
+        })
     }
 
     render() {
@@ -75,27 +76,27 @@ export default class RefundEx extends Component {
 }
 const styles = {
     vou_view:{
-        paddingLeft: 24,
-        paddingRight: 24,
-        paddingTop: 12,
-        paddingBottom: 30,
+        paddingLeft: px(24),
+        paddingRight: px(24),
+        paddingTop: px(12),
+        paddingBottom: px(30),
         justifyContent: 'space-between',
         backgroundColor:'#ffffff',
     },
     bill_line:{
         flexDirection: 'row',
         alignItems: 'center',
-        marginTop:8,
+        marginTop:px(8),
     },
     text_grey:{
-        fontSize: 24,
+        fontSize: px(24),
         color: '#999999',
     },
     text_bl:{
-        fontSize: 24,
+        fontSize: px(24),
     },
     new:{
-        height: 28,
-        width: 28,
+        height: px(28),
+        width: px(28),
     },
 }

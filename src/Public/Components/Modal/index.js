@@ -1,9 +1,11 @@
 var Modal = {};
 import Taro, { Component, Config } from '@tarojs/taro';
 import { Dialog,View,Text,ScrollView,Image } from '@tarojs/components';
+import Event from 'ay-event';
 import { IsEmpty } from '../../Biz/IsEmpty';
 import { GoToView } from '../../Biz/GoToView';
 import ItemIcon  from '../../../Component/ItemIcon';
+import px from '../../Biz/px.js';
 /**
 * @author lzy
 *  弹窗0.0.2 以后会改成子节点渲染方法
@@ -33,13 +35,13 @@ class AyDialog extends Component{
         let self = this;
         if(!self.state.hadrender){
             self.state.hadrender = true;
-            // RAP.on('Page.showmoda',(data)=>{
-            //     if (this.state.type == 'normal') {
-            //         this.refs.hello.show();
-            //     } else {
-            //         this.refs.modal1.show();
-            //     }
-            // })
+            Event.on('Page.showmoda',(data)=>{
+                if (this.state.type == 'normal') {
+                    this.refs.hello.show();
+                } else {
+                    this.refs.modal1.show();
+                }
+            })
         }
     }
 

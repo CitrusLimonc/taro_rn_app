@@ -10,6 +10,7 @@ import {GetQueryString} from '../../Public/Biz/GetQueryString.js';
 import {NetWork} from '../../Public/Common/NetWork/NetWork.js';
 import {DoBeacon} from '../../Public/Biz/DoBeacon';
 import {Domain} from '../../Env/Domain';
+import px from '../../Biz/px.js';
 /**
  * @author wzm
  * 优质供应商商品列表页
@@ -201,17 +202,17 @@ export default class SupplierGoods extends Component {
 		let phone = this.state.supplierdata.supplierphone;
         doms.push(
             <View style={{backgroundColor:"#fff"}}>
-				<View style={{flexDirection:"row",alignItems:'center',height:82,paddingLeft:32, borderBottomStyle:'solid',borderBottomWidth:px(2),borderBottomColor:'#e5e5e5',}}>
+				<View style={{flexDirection:"row",alignItems:'center',height:82,paddingLeft:32,borderBottomWidth:px(2),borderBottomColor:'#e5e5e5',}}>
 					<Text style={{ color: "#121314", fontSize: "px(28)",}}>{this.state.supplierdata.suppliertitle}</Text>
 					<ItemIcon onClick={()=>{UitlsRap.openChat(this.state.supplierdata.supplierwangwang)}} code={"\ue6ba"} iconStyle={{fontSize:px(40),color:'#2DA9F7',marginLeft:16}}/>
 					{this.gettag()}
 				</View>
                	<View style={{flexDirection:"row",alignItems:'center',justifyContent:'flex-end',height:98}}>
 				   {/* <Button type="normal" style={{height:48,width:128,marginRight:24}} onpress={()=>{}}>拨打电话</Button> */}
-				   {/* <Link style={{height:48,width:128,marginRight:24,flexDirection:'row',justifyContent:'center',alignItems:'center',borderStyle:'solid',borderWidth:px(1),borderColor:'#c5c5c5',borderRadius:4,}} onClick={()=>{console.log('usephone');DoBeacon('TD20181012161059','supplierpage_btn_call',self.state.loginId);}} href={`tel:${phone}`}>
+				   {/* <Link style={{height:48,width:128,marginRight:24,flexDirection:'row',justifyContent:'center',alignItems:'center',borderWidth:px(1),borderColor:'#c5c5c5',borderRadius:4,}} onClick={()=>{console.log('usephone');DoBeacon('TD20181012161059','supplierpage_btn_call',self.state.loginId);}} href={`tel:${phone}`}>
 						<Text style={{color: "#999999", fontSize: "px(28)",}}>拨打电话</Text>
 					</Link> */}
-					<View style={{height:48,width:128,marginRight:24,flexDirection:'row',justifyContent:'center',alignItems:'center',borderStyle:'solid',borderWidth:px(1),borderColor:'#c5c5c5',borderRadius:4,}} onClick={()=>{
+					<View style={{height:48,width:128,marginRight:24,flexDirection:'row',justifyContent:'center',alignItems:'center',borderWidth:px(1),borderColor:'#c5c5c5',borderRadius:4,}} onClick={()=>{
 					DoBeacon('TD20181012161059','supplierpage_btn_apply',self.state.loginId);
 					GoToView({
 						status:"https://page.1688.com/html/fa9028cc.html?sellerId=" + this.state.supplierdata.memberId,

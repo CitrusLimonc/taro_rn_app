@@ -2,6 +2,7 @@ import Taro, { Component, Config } from '@tarojs/taro';
 import { View, Text } from '@tarojs/components';
 import {IsEmpty} from '../../../Public/Biz/IsEmpty.js';
 import styles from './styles';
+import px from '../../../Biz/px.js';
 /**
  * @author cy
  * 销售规格信息
@@ -96,7 +97,7 @@ export default class SellSpec extends Component{
             doms.push(
                 <View style={{flexDirection:'row'}}>
                     <View style={[styles.tableBodyLine,{flex:1,height:height}]}>
-                        <Text style={{fontSize:px(28),color:'#727272',textAlign:'center',width:332}}>{name}</Text>
+                        <Text style={{fontSize:px(28),color:'#727272',textAlign:'center',width:px(332)}}>{name}</Text>
                     </View>
                     <View style={[styles.tableBodyLine,{marginLeft:px(-2),flex:1,height:height}]}>
                         <Text style={{fontSize:px(28),color:'#727272'}}>{item.amountOnSale}</Text>
@@ -143,18 +144,18 @@ export default class SellSpec extends Component{
             }
             doms.push(
                 <View style={{flexDirection:'row'}}>
-                    <View style={[styles.tableBodyLine,{flex:1,height:height}]}>
-                        <Text style={{fontSize:px(28),color:'#727272',width:221,textAlign:'center'}}>{name}</Text>
+                    <View style={[styles.tableBodyLine,{flex:1,height:px(height)}]}>
+                        <Text style={{fontSize:px(28),color:'#727272',width:px(221),textAlign:'center'}}>{name}</Text>
                     </View>
                     {
                         IsEmpty(hasSkuPrice) || hasSkuPrice ?
-                        <View style={[styles.tableBodyLine,{marginLeft:px(-2),flex:1,height:height}]}>
+                        <View style={[styles.tableBodyLine,{marginLeft:px(-2),flex:1,height:px(height)}]}>
                             <Text style={{fontSize:px(28),color:'#727272'}}>{price}</Text>
                         </View>
                         :
                         ''
                     }
-                    <View style={[styles.tableBodyLine,{marginLeft:px(-2),flex:1,height:height}]}>
+                    <View style={[styles.tableBodyLine,{marginLeft:px(-2),flex:1,height:px(height)}]}>
                         <Text style={{fontSize:px(28),color:'#727272'}}>{item.amountOnSale}</Text>
                     </View>
                 </View>

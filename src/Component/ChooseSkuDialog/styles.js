@@ -4,7 +4,6 @@ export default {
         width:px(750),
         height:px(96),
         backgroundColor:'#ffffff',
-        borderBottomStyle:'solid',
         borderBottomWidth:px(1),
         borderBottomColor:'#e5e5e5',
         paddingLeft:px(24),
@@ -29,7 +28,6 @@ export default {
     footer: {
         borderTopColor:'#dddddd',
         flexDirection:'row',
-        borderTopStyle:'solid',
         borderTopWidth:px(1),
         alignItems: 'center',
         justifyContent: 'flex-end',
@@ -55,7 +53,6 @@ export default {
         flex:1,
         flexDirection:'row',
         alignItems:'center',
-        borderBottomStyle:'solid',
         borderBottomWidth:px(2),
         borderBottomColor:'#fafafa'
     },
@@ -78,7 +75,6 @@ export default {
         height:px(48),
         borderRadius:px(24),
         borderColor:'#ff6000',
-        borderStyle:'solid',
         borderWidth:px(2),
         color:'#ff6000',
         fontSize:px(24)
@@ -110,7 +106,6 @@ export default {
         left:px(0),
         right:px(0),
         borderTopColor:'#e3e3e3',
-        borderTopStyle:'solid',
         borderTopWidth:px(2)
     },
     footTop:{
@@ -150,7 +145,6 @@ export default {
         justifyContent:'center',
         backgroundColor:'#ffffff',
         borderBottomColor:'#eeefee',
-        borderBottomStyle:'solid',
         borderBottomWidth:px(2)
     },
     closeTag:{
@@ -165,7 +159,6 @@ export default {
         paddingTop:px(18),
         paddingBottom:px(18),
         borderBottomColor:'#eeefee',
-        borderBottomStyle:'solid',
         borderBottomWidth:px(2)
     },
     skuNameStyle:{
@@ -192,7 +185,6 @@ export default {
         paddingTop:px(24),
         paddingBottom:px(24),
         borderBottomColor:'#eeefee',
-        borderBottomStyle:'solid',
         borderBottomWidth:px(2)
     }
 }

@@ -7,6 +7,7 @@ import {GetQueryString} from '../../Public/Biz/GetQueryString.js';
 import { GoToView } from '../../Public/Biz/GoToView.js';
 import {DoBeacon} from '../../Public/Biz/DoBeacon';
 import { NetWork } from '../../Public/Common/NetWork/NetWork.js';
+import px from '../../Biz/px.js';
 /**
  * @author SmingPro
  * 产品详情页
@@ -227,8 +228,8 @@ export default class ProductDetail extends Component {
 		let body = [];
 		this.babyDeatil.pics.map((item, index) => {
 			body.push(
-				<View style={{ width: px(750), height: 750 }}>
-					<Image resizeMode={"contain"} src={item} style={{ width: px(750), height: 750 }} />
+				<View style={{ width: px(750), height: px(750) }}>
+					<Image resizeMode={"contain"} src={item} style={{ width: px(750), height: px(750) }} />
 				</View>
 			);
 		});
@@ -243,8 +244,8 @@ export default class ProductDetail extends Component {
 		for (let i in self.babyDeatil.productAttributes) {
 			attrDom.push(
 				<View style={{ backgroundColor: "#ffffff", paddingTop: px(24), paddingBottom: px(24), borderBottomWidth: 1, borderColor: "#f5f5f5", flexDirection: "row", }}>
-					<Text style={{ flex: 1, paddingLeft: "", justifyContent: "flex-start", fontSize: 28 }}>{self.babyDeatil.productAttributes[i].attributeName}: </Text>
-					<Text style={{ flex: 1, justifyContent: "flex-start", paddingLeft: px(40), fontSize: 28 }}>{self.babyDeatil.productAttributes[i].value}</Text>
+					<Text style={{ flex: 1, paddingLeft: "", justifyContent: "flex-start", fontSize: px(28) }}>{self.babyDeatil.productAttributes[i].attributeName}: </Text>
+					<Text style={{ flex: 1, justifyContent: "flex-start", paddingLeft: px(40), fontSize: px(28) }}>{self.babyDeatil.productAttributes[i].value}</Text>
 				</View>
 			);
 		}
@@ -273,12 +274,12 @@ export default class ProductDetail extends Component {
 					<View style={{ backgroundColor: "#ffffff", flex: 1, paddingLeft: px(40), paddingRight: px(40), paddingTop: px(24), paddingBottom: px(60) }}>
 						{
 							IsEmpty(this.babyDeatil.saleInfo.retailprice) ? null :
-								<View style={{ backgroundColor: "#ffffff", height: "40", width: "704", flexDirection: 'row', marginBottom: px(24) }}>
-									<View><Text style={{ color: "#999999", fontSize: 28 }}>建议零售价:¥{this.babyDeatil.saleInfo.retailprice}</Text></View>
+								<View style={{ backgroundColor: "#ffffff", height: px(40), width: px(704), flexDirection: 'row', marginBottom: px(24) }}>
+									<View><Text style={{ color: "#999999", fontSize: px(28) }}>建议零售价:¥{this.babyDeatil.saleInfo.retailprice}</Text></View>
 								</View>
 						}
-						<View style={{ backgroundColor: "#ffffff", height: "40", width: "704", flexDirection: 'row', marginBottom: px(18), }}>
-							<View><Text style={{ color: "#999999", fontSize: 28 }}>规格及库存:</Text></View>
+						<View style={{ backgroundColor: "#ffffff", height: px(40), width: px(704), flexDirection: 'row', marginBottom: px(18), }}>
+							<View><Text style={{ color: "#999999", fontSize: px(28) }}>规格及库存:</Text></View>
 						</View>
 						<View style={{ flexDirection: 'row', flex: 1 }}>
 							<View style={[styles.tableHead, { flex: 1 }]}>
@@ -343,7 +344,7 @@ export default class ProductDetail extends Component {
 			tableDoms.push(
 				<View style={{ flexDirection: 'row' }}>
 					<View style={[styles.tableBodyLine, {flex:1,height:height}]}>
-						<Text style={[{fontSize:px(28),color:'#727272',textAlign:'center'},this.hasSkuPrice ?{width:221}:{width:332}]}>{attributes}</Text>
+						<Text style={[{fontSize:px(28),color:'#727272',textAlign:'center'},this.hasSkuPrice ?{width:px(221)}:{width:px(332)}]}>{attributes}</Text>
 					</View>
 					{this.hasSkuPrice ? <View style={[styles.tableBodyLine, { marginLeft: px(-2), flex: 1 ,height:height}]}>
 						<Text style={{ fontSize: px(28), color: '#727272' }}>{price}</Text>
@@ -458,25 +459,25 @@ export default class ProductDetail extends Component {
 							</Slider>
 						</View>
 						<View style={{ backgroundColor: "#ffffff", width: px(750) }}>
-							<View style={{ backgroundColor: "#ffffff", height: px(80), width: "704", margin: px(24), }}>
-								<Text style={{ color: "#333333", fontSize: 28 }}>{this.babyDeatil.basicInfo.title}</Text>
+							<View style={{ backgroundColor: "#ffffff", height: px(80), width: px(704), margin: px(24), }}>
+								<Text style={{ color: "#333333", fontSize: px(28) }}>{this.babyDeatil.basicInfo.title}</Text>
 							</View>
-							<View style={{ backgroundColor: "#ffffff", width: "704", marginLeft: px(24), marginRight: px(24), flexDirection: 'row', justifyContent: 'space-between', marginBottom: px(24), }}>
-								<View><Text style={{ color: "#666666", fontSize: 28 }}>代销价:¥{this.babyDeatil.basicInfo.price}</Text></View>
-								<View><Text style={{ color: "#666666", fontSize: 28 }}>库存:{parseInt(this.babyDeatil.basicInfo.amount)}</Text></View>
+							<View style={{ backgroundColor: "#ffffff", width: px(704), marginLeft: px(24), marginRight: px(24), flexDirection: 'row', justifyContent: 'space-between', marginBottom: px(24), }}>
+								<View><Text style={{ color: "#666666", fontSize: px(28) }}>代销价:¥{this.babyDeatil.basicInfo.price}</Text></View>
+								<View><Text style={{ color: "#666666", fontSize: px(28) }}>库存:{parseInt(this.babyDeatil.basicInfo.amount)}</Text></View>
 							</View>
 							{
 								IsEmpty(this.bookedCount) && IsEmpty(this.quantitySumMonth) ? null :
-								<View style={{ backgroundColor: "#ffffff", width: "704", marginLeft: px(24), marginRight: px(24), flexDirection: 'row', justifyContent: 'space-between', marginBottom: px(24), }}>
+								<View style={{ backgroundColor: "#ffffff", width: px(704), marginLeft: px(24), marginRight: px(24), flexDirection: 'row', justifyContent: 'space-between', marginBottom: px(24), }}>
 									{
 										IsEmpty(this.bookedCount) ? null :
 											<View>
-													<Text style={{ color: "#666666", fontSize: 28 }}>90天成交笔数:{this.bookedCount}</Text>
+													<Text style={{ color: "#666666", fontSize: px(28) }}>90天成交笔数:{this.bookedCount}</Text>
 											</View>
 									}
 									{
 										IsEmpty(this.quantitySumMonth) ? null :
-												<View><Text style={{ color: "#666666", fontSize: 28 }}>月销售件数:{parseInt(this.quantitySumMonth)}</Text></View>
+												<View><Text style={{ color: "#666666", fontSize: px(28) }}>月销售件数:{parseInt(this.quantitySumMonth)}</Text></View>
 									}
 								</View>
 							}
@@ -485,8 +486,8 @@ export default class ProductDetail extends Component {
 					{
 						this.babyDeatil.businessGuaranteeInfo.length == 0 ? null :
 							<View style={{ backgroundColor: "#ffffff", width: px(750), marginBottom: px(6), paddingBottom: px(12), }}>
-								<View style={{ backgroundColor: "#ffffff", width: "704", marginTop: px(24), marginLeft: px(24) }}>
-									<Text style={{ color: "#666666", fontSize: 28 }}>商家保障</Text>
+								<View style={{ backgroundColor: "#ffffff", width: px(704), marginTop: px(24), marginLeft: px(24) }}>
+									<Text style={{ color: "#666666", fontSize: px(28) }}>商家保障</Text>
 									{this.showBusinessGuaranteeInfo()}
 								</View>
 							</View>

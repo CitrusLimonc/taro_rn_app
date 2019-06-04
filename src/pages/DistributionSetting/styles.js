@@ -11,7 +11,6 @@ export default {
         width:px(80),
         height:px(80),
         borderRadius:px(8),
-        borderStyle:'solid',
         borderWidth:px(2),
         borderColor:'#E5E5E5',
         marginTop:px(24),
@@ -22,7 +21,6 @@ export default {
         width:px(80),
         height:px(80),
         borderRadius:px(8),
-        borderStyle:'solid',
         borderWidth:px(2),
         borderColor:'#0077FF',
         marginTop:px(24),
@@ -32,7 +30,6 @@ export default {
     commonLine:{
         flex:1,
         flexDirection:'row',
-        borderBottomStyle:'solid',
         borderBottomWidth:px(2),
         borderBottomColor:'#e7e7e9',
         alignItems:'center',
@@ -43,7 +40,6 @@ export default {
     catLine:{
         flex:1,
         flexDirection:'row',
-        borderBottomStyle:'solid',
         borderBottomWidth:2,
         borderBottomColor:'#e7e7e9',
         alignItems:'center',
@@ -53,7 +49,6 @@ export default {
     },
     columnLine:{
         flex:1,
-        borderBottomStyle:'solid',
         borderBottomWidth:px(2),
         borderBottomColor:'#e7e7e9',
         justifyContent:'center',
@@ -87,7 +82,6 @@ export default {
         alignItems: 'center',
         justifyContent: 'center',
         borderBottomColor:'#eeeeee',
-        borderBottomStyle:'solid',
         borderBottomWidth:px(1),
     },
     textHead:{
@@ -102,14 +96,12 @@ export default {
         paddingLeft:px(10),
         color:'#3089dc',
         borderColor:'#3089dc',
-        borderStyle:'solid',
         borderWidth:px(1),
         marginRight:px(20)
     },
     footer: {
         borderTopColor:'#dddddd',
         flexDirection:'row',
-        borderTopStyle:'solid',
         borderTopWidth:px(1),
         alignItems: 'center',
         justifyContent: 'flex-end',
@@ -128,7 +120,6 @@ export default {
         alignItems:'center',
         paddingLeft:px(24),
         borderBottomColor:'#f5f5f5',
-        borderBottomStyle:'solid',
         borderBottomWidth:px(2),
         paddingRight:px(24)
     },
@@ -144,7 +135,6 @@ export default {
         flexDirection:'row',
         alignItems:'center',
         borderBottomColor:'#f5f5f5',
-        borderBottomStyle:'solid',
         borderBottomWidth:px(2),
         marginLeft:px(24),
         height:px(88)
@@ -152,7 +142,6 @@ export default {
     cateTopLine:{
         backgroundColor:'#EFEFF4',
         borderBottomColor:'#e5e5e5',
-        borderBottomStyle:'solid',
         borderBottomWidth:px(2),
         paddingLeft:px(24),
         height:px(60),
@@ -184,7 +173,6 @@ export default {
         width:px(306),
         height:px(96),
         borderTopWidth:px(2),
-        borderStyle:'solid',
         borderColor:'#DCDEE3',
         alignItems:'center',
         justifyContent:'center',
@@ -194,7 +182,6 @@ export default {
         width:px(306),
         height:px(96),
         borderTopWidth:px(1),
-        borderTopStyle:'solid',
         borderTopColor:'#DCDEE3',
         alignItems:'center',
         justifyContent:'center',
@@ -204,7 +191,6 @@ export default {
         flex:1,
         height:px(96),
         borderTopWidth:px(1),
-        borderTopStyle:'solid',
         borderTopColor:'#DCDEE3',
         alignItems:'center',
         justifyContent:'center',
@@ -225,7 +211,6 @@ export default {
         width:px(306),
         height:px(96),
         borderTopWidth:px(2),
-        borderStyle:'solid',
         borderColor:'#DCDEE3',
         alignItems:'center',
         justifyContent:'center',

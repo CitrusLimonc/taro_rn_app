@@ -1,5 +1,6 @@
 import Taro, { Component, Config } from '@tarojs/taro';
 import { View, Text,} from '@tarojs/components';
+import Event from 'ay-event';
 import {IsEmpty} from '../../Public/Biz/IsEmpty.js';
 import Foot from './Foot';
 import TidCard from './TidCard';
@@ -8,6 +9,7 @@ import {NetWork} from '../../Public/Common/NetWork/NetWork.js';
 import AiyongDialog from '../../Component/AiyongDialog';
 import {UitlsRap} from '../../Public/Biz/UitlsRap.js';
 import styles from './styles.js';
+import px from '../../Biz/px.js';
 const types=['待采购','待发货','已发货','已成功','退款中','已关闭'];
 const reTypes={
     refundsuccess:{txt:'已退款',color:'rgba(139,87,42,0.5)'},
@@ -35,15 +37,15 @@ export default class OrderDetail extends Component {
         let self = this;
 
         //刷新1688订单
-        // RAP.on('App.pay_update_order_1688',(data)=>{
-        //     self.setState({updateMsg:data});
-        //     self.refs.surePayDialog.show();
-        // });
+        Event.on('App.pay_update_order_1688',(data)=>{
+            self.setState({updateMsg:data});
+            self.refs.surePayDialog.show();
+        });
 
         //重新加载
-        // RAP.on('App.redetail',(data)=>{
-        //     self.redetail();
-        // });
+        Event.on('App.redetail',(data)=>{
+            self.redetail();
+        });
     }
 
     // config: Config = {
@@ -285,7 +287,7 @@ export default class OrderDetail extends Component {
                     }
                 }
                 this.redetail();
-                // RAP.emit('App.update_shop_orders',{});
+                Event.emit('App.update_shop_orders',{});
             } else {
                 Taro.showToast({
                     title: '操作失败',

@@ -1,40 +1,36 @@
 import px from '../../Biz/px.js';
 export default {
     topLine:{
-        // flex:1,
-        height:242,
-        paddingLeft:24,
-        paddingRight:24,
-        paddingTop:32,
-        paddingBottom:24
+        height:px(242),
+        paddingLeft:px(24),
+        paddingRight:px(24),
+        paddingTop:px(32),
+        paddingBottom:px(24)
     },
     tagImage:{
-        width:80,
-        height:80,
-        borderRadius:8,
-        borderStyle:'solid',
-        borderWidth:2,
+        width:px(80),
+        height:px(80),
+        borderRadius:px(8),
+        borderWidth:px(2),
         borderColor:'#E5E5E5',
-        marginTop:24,
+        marginTop:px(24),
         alignItems:'center',
         justifyContent:'center'
     },
     tagImageActive:{
-        width:80,
-        height:80,
-        borderRadius:8,
-        borderStyle:'solid',
-        borderWidth:2,
+        width:px(80),
+        height:px(80),
+        borderRadius:px(8),
+        borderWidth:px(2),
         borderColor:'#0077FF',
-        marginTop:24,
+        marginTop:px(24),
         alignItems:'center',
         justifyContent:'center'
     },
     commonLine:{
         flex:1,
         flexDirection:'row',
-        borderBottomStyle:'solid',
-        borderBottomWidth:2,
+        borderBottomWidth:px(2),
         borderBottomColor:'#e7e7e9',
         alignItems:'center',
         marginLeft:px(24),
@@ -43,8 +39,7 @@ export default {
     },
     columnLine:{
         flex:1,
-        borderBottomStyle:'solid',
-        borderBottomWidth:2,
+        borderBottomWidth:px(2),
         borderBottomColor:'#e7e7e9',
         justifyContent:'center',
         marginLeft:px(24),
@@ -55,7 +50,7 @@ export default {
         flex:1,
         flexDirection:'row',
         justifyContent:'flex-end',
-        paddingRight:24
+        paddingRight:px(24)
     },
     mask:{
         backgroundColor:'transparent'// 可以修改默认的灰底
@@ -63,8 +58,8 @@ export default {
     modalStyle: {
         width: px(750),
         position:'absolute',
-        bottom:0,
-        left:0,
+        bottom:px(0),
+        left:px(0),
         maxHeight: px(750),
     },
     body: {
@@ -77,12 +72,11 @@ export default {
         alignItems: 'center',
         justifyContent: 'center',
         borderBottomColor:'#eeeeee',
-        borderBottomStyle:'solid',
         borderBottomWidth:px(1),
     },
     textHead:{
         color:'#3d4145',
-        fontSize:32,
+        fontSize:px(32),
     },
     text:{
         fontSize:px(28),
@@ -92,15 +86,13 @@ export default {
         paddingLeft:px(10),
         color:'#3089dc',
         borderColor:'#3089dc',
-        borderStyle:'solid',
         borderWidth:px(1),
         marginRight:px(20)
     },
     footer: {
         borderTopColor:'#dddddd',
         flexDirection:'row',
-        borderTopStyle:'solid',
-        borderTopWidth:1,
+        borderTopWidth:px(1),
         alignItems: 'center',
         justifyContent: 'flex-end',
         height: px(94)
@@ -113,12 +105,11 @@ export default {
     },
     radioLine:{
         flexDirection:'row',
-        height:96,
+        height:px(96),
         flex:1,
         alignItems:'center',
         paddingLeft:px(24),
         borderBottomColor:'#f5f5f5',
-        borderBottomStyle:'solid',
         borderBottomWidth:px(2),
         paddingRight:px(24)
     },
@@ -126,15 +117,14 @@ export default {
         width: px(750),
         position:'absolute',
         height:px(750),
-        left:0,
-        right:0,
-        bottom:0
+        left:px(0),
+        right:px(0),
+        bottom:px(0)
     },
     categoryLine:{
         flexDirection:'row',
         alignItems:'center',
         borderBottomColor:'#f5f5f5',
-        borderBottomStyle:'solid',
         borderBottomWidth:px(2),
         marginLeft:px(24),
         height:px(88)
@@ -142,7 +132,6 @@ export default {
     cateTopLine:{
         backgroundColor:'#EFEFF4',
         borderBottomColor:'#e5e5e5',
-        borderBottomStyle:'solid',
         borderBottomWidth:px(2),
         paddingLeft:px(24),
         height:px(60),
@@ -174,7 +163,6 @@ export default {
         width:px(306),
         height:px(96),
         borderTopWidth:px(2),
-        borderStyle:'solid',
         borderColor:'#DCDEE3',
         alignItems:'center',
         justifyContent:'center',
@@ -184,7 +172,6 @@ export default {
         width:px(306),
         height:px(96),
         borderTopWidth:px(1),
-        borderTopStyle:'solid',
         borderTopColor:'#DCDEE3',
         alignItems:'center',
         justifyContent:'center',
@@ -195,9 +182,9 @@ export default {
         color:'#272636'
     },
     tokenBody:{
-        height:216,
-        paddingLeft:40,
-        paddingRight:40,
+        height:px(216),
+        paddingLeft:px(40),
+        paddingRight:px(40),
         alignItems:'center',
         justifyContent:'center'
     },
@@ -205,7 +192,6 @@ export default {
         width:px(306),
         height:px(96),
         borderTopWidth:px(2),
-        borderStyle:'solid',
         borderColor:'#DCDEE3',
         alignItems:'center',
         justifyContent:'center',
@@ -213,23 +199,23 @@ export default {
     },
     tabContent: {
         flex: 1,
-        height:2000,
+        height:px(2000),
         backgroundColor: '#dddddd',
         alignItems: 'center',
         justifyContent: 'center'
     },
     tabText: {
-        fontSize: 30,
-        height:1000,
+        fontSize: px(30),
+        height:px(1000),
         textAlign: 'center'
     },
     item: {
-        height: 70,
+        height: px(70),
         alignItems: 'center',
         justifyContent: 'center'
     },
     tabtxt:{
-        fontSize:28,
+        fontSize:px(28),
     },
     activeBorder: {
         borderBottomColor: '#ff6600',

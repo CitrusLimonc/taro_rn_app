@@ -7,7 +7,6 @@ export default {
         paddingLeft:px(24),
         flexDirection:'row',
         borderBottomColor:'#f5f5f5',
-        borderBottomStyle:'solid',
         borderBottomWidth:px(2),
         alignItems:'center',
         marginBottom:px(12),

@@ -1,11 +1,10 @@
-import px from '../../Biz/px.js';
+import px from '../../../Biz/px.js';
 export default {
     statusList:{
         flexDirection: 'row',
         backgroundColor: '#ffffff',
         borderBottomWidth:px(1),
         borderBottomColor:'#e5e5e5',
-        borderBottomStyle:'solid'
     },
     statusItem:{
         flexDirection: 'row',
@@ -17,7 +16,6 @@ export default {
         marginRight: px(15),
         borderBottomWidth:px(4),
         borderBottomColor:'#fff',
-        borderBottomStyle:'solid'
     },
     activeStatus:{
         flexDirection: 'row',
@@ -27,7 +25,6 @@ export default {
         justifyContent: 'center',
         borderBottomWidth:px(4),
         borderBottomColor:'#ff6000',
-        borderBottomStyle:'solid',
         marginLeft: px(15),
         marginRight: px(15)
     },

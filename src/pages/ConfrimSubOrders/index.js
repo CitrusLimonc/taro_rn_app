@@ -1,6 +1,6 @@
 import Taro, { Component, Config } from '@tarojs/taro';
-import { View, Text , Image ,ScrollView,Button } from '@tarojs/components';
-// import {AtInputNumber} from 'taro-ui';
+import { View, Text , Image ,ScrollView,Button,Input } from '@tarojs/components';
+import Event from 'ay-event';
 import ItemIcon from '../../Component/ItemIcon';
 import AiyongDialog from '../../Component/AiyongDialog';
 import ChooseSkuDialog from '../../Component/ChooseSkuDialog';
@@ -41,14 +41,14 @@ export default class ConfrimSubOrders extends Component {
         this.flow = '';
         let self = this;
         //返回操作
-        // RAP.on('back',function(e){
-        //     LocalStore.Remove(['go_to_confrim_suborder','go_to_confrim_orderMsg']);
-        //     if (self.state.fromPage == 'detail') {
-        //         RAP.emit('App.redetail',{});
-        //     }
-        //     RAP.emit('App.update_shop_orders',{});
-        //     GoToView({page_status:'pop'});
-        // });
+        Event.on('back',function(e){
+            LocalStore.Remove(['go_to_confrim_suborder','go_to_confrim_orderMsg']);
+            if (self.state.fromPage == 'detail') {
+                Event.emit('App.redetail',{});
+            }
+            Event.emit('App.update_shop_orders',{});
+            GoToView({page_status:'pop'});
+        });
     }
 
     // config: Config = {
@@ -213,7 +213,7 @@ export default class ConfrimSubOrders extends Component {
                                                 }
                                                 <View style={{flex:1,flexDirection:'row',justifyContent:'flex-end'}}>
                                                     {/* <Text style={{fontSize:px(24),color:'#9a9a9a'}}>x{product.buyAmount}</Text> */}
-                                                    <AtInputNumber style={{width:px(180),height:px(57)}} min={0} max={99999} value={product.buyAmount} onChange={(e)=>{this.changeskunum(e,product.specId)}}  step={1}/>
+                                                    <Input style={{width:px(180),height:px(57)}} min={0} max={99999} value={product.buyAmount} onInput={(e)=>{this.changeskunum(e,product.specId)}}/>
                                                 </View>
                                             </View>
                                             {
@@ -444,9 +444,9 @@ export default class ConfrimSubOrders extends Component {
                     duration: 2000
                 });
                 if (this.state.fromPage == 'detail') {
-                    // RAP.emit('App.redetail',{});
+                    Event.emit('App.redetail',{});
                 }
-                // RAP.emit('App.update_shop_orders',{});
+                Event.emit('App.update_shop_orders',{});
                 GoToView({page_status:'pop'});
             }
 
@@ -517,9 +517,9 @@ export default class ConfrimSubOrders extends Component {
                         duration: 2000
                     });
                     if (this.state.fromPage == 'detail') {
-                        // RAP.emit('App.redetail',{});
+                        Event.emit('App.redetail',{});
                     }
-                    // RAP.emit('App.update_shop_orders',{});
+                    Event.emit('App.update_shop_orders',{});
                     GoToView({page_status:'pop'});
                 }
             } else {

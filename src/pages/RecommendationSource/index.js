@@ -9,6 +9,7 @@ import styles from './styles.js';
 import {NetWork} from '../../Public/Common/NetWork/NetWork.js';
 import {DoBeacon} from '../../Public/Biz/DoBeacon';
 import {Domain} from '../../Env/Domain';
+import px from '../../Biz/px.js';
 
 /**
  * @author SmingPro
@@ -394,7 +395,7 @@ export default class RecommendationSource extends Component {
 	// 		let supplierdatanew = encodeURI(supplierdata);
 	// 		doms.push(
 	// 			<View style={{backgroundColor:"#fff",height:396,width:px(750),alignItems:'center'}} onClick={()=>{GoToView({status:'SupplierGoods',query:{fromPage:'RecommendationSource',supplierdata:supplierdatanew}});}}>
-	// 				<Image style={{ height:326, width:654,borderStyle:'solid',borderWidth:px(1),borderColor:'#e5e5e5',borderRadius: px(8) }} src={item.supplierimg} />
+	// 				<Image style={{ height:326, width:654,borderWidth:px(1),borderColor:'#e5e5e5',borderRadius: px(8) }} src={item.supplierimg} />
 	// 				<View style={{ flexDirection: "row",alignItems:'center',width:654,marginTop:12}}>
 	// 					<Text style={{ color: "#121314", fontSize: px(24)}}>{item.suppliertitle}</Text>
 	// 					<Text style={{backgroundColor:"rgb(238,103,35)",width:24,height:24,marginLeft:12,color:'#ffffff',fontSize: px(20)}}>诚</Text>
@@ -412,7 +413,7 @@ export default class RecommendationSource extends Component {
 		if(!IsEmpty(data)){
 			data.map((item,key)=>{
 				let pic = "https://cbu01.alicdn.com/"+item.picURI;
-				dom.push(<Image src={pic} style={{width:130,height:130,borderRadius: px(8), borderWidth:px(1),borderStyle:'solid',borderColor:'#e5e5e5',}}/>)
+				dom.push(<Image src={pic} style={{width:px(130),height:px(130),borderRadius: px(8), borderWidth:px(1),borderColor:'#e5e5e5',}}/>)
 			});
 		}
 		return dom;
@@ -434,12 +435,16 @@ export default class RecommendationSource extends Component {
 			let supplierDatanew = encodeURI(supplierData);
 			doms.push(
 				<View>
-					<View onClick={()=>{DoBeacon('TD20181012161059','goodspage_qualitysupplier_click',self.userInfo.loginId);GoToView({status:'SupplierGoods',query:{fromPage:'RecommendationSource',supplierdata:supplierDatanew}});}} style={{backgroundColor:"#fff",width:700,alignItems:'center',borderRadius: px(8), borderWidth:px(1),borderStyle:'solid',borderColor:'#e5e5e5',paddingTop:12,paddingBottom:12}}>
+					<View onClick={()=>{
+						DoBeacon('TD20181012161059','goodspage_qualitysupplier_click',self.userInfo.loginId);
+						GoToView({status:'SupplierGoods',query:{fromPage:'RecommendationSource',supplierdata:supplierDatanew}});
+					}} 
+					style={{backgroundColor:"#fff",width:px(700),alignItems:'center',borderRadius: px(8), borderWidth:px(1),borderColor:'#e5e5e5',paddingTop:px(12),paddingBottom:px(12)}}>
 						<View style={{width:652,alignItems:'center',justifyContent:'space-between',flexDirection:'row'}}>
 							{this.getFloatData(itemnew.newsuppliergoods)}
 						</View>
-						<View style={{ flexDirection: "row",alignItems:'center',width:654,marginTop:12}}>
-							<Text style={{ color: "#121314", fontSize: px(28),marginRight:12}}>{itemnew.supplierName}</Text>
+						<View style={{ flexDirection: "row",alignItems:'center',width:px(654),marginTop:px(12)}}>
+							<Text style={{ color: "#121314", fontSize: px(28),marginRight:px(12)}}>{itemnew.supplierName}</Text>
 							<ItemIcon onClick={()=>{}} iconStyle={styles.wangwangicon} code={"\ue6ba"}/>
 							<View style={{ flexDirection: "row",alignItems:'center',flex:1,justifyContent:"flex-end"}}>
 								<ItemIcon iconStyle={{fontSize: px(32),color:'#666666'}}  code={"\ue65b"}/>
@@ -455,7 +460,7 @@ export default class RecommendationSource extends Component {
 		// 	console.log('kankanrsp',item);
 		// 	if(!IsEmpty(item.newsuppliergoods)){
 		// 		doms.push(
-		// 			<View onClick={()=>{this.gotoOutUrl(item.supplierUrl);DoBeacon('TD20181012161059','goodspage_qualitysupplier_click',self.userInfo.loginId);}} style={{backgroundColor:"#fff",width:700,alignItems:'center',borderRadius: px(8), borderWidth:px(1),borderStyle:'solid',borderColor:'#e5e5e5',marginBottom:24,paddingTop:12,paddingBottom:12}}>
+		// 			<View onClick={()=>{this.gotoOutUrl(item.supplierUrl);DoBeacon('TD20181012161059','goodspage_qualitysupplier_click',self.userInfo.loginId);}} style={{backgroundColor:"#fff",width:700,alignItems:'center',borderRadius: px(8), borderWidth:px(1),borderColor:'#e5e5e5',marginBottom:24,paddingTop:12,paddingBottom:12}}>
 		// 				<View style={{width:652,alignItems:'center',justifyContent:'space-between',flexDirection:'row'}}>
 		// 					{this.getFloatData(item.newsuppliergoods)}
 		// 				</View>
@@ -479,7 +484,7 @@ export default class RecommendationSource extends Component {
 		this.state.slider.map((item, index) => {
 			let beacon = 'goodspage_banner'+(index+1);
 			body.push(
-				<View style={{ width: px(750), height: 200 }}>
+				<View style={{ width: px(750), height: px(200) }}>
 					<Image resizeMode={"contain"} src={item.sliderimg} onClick={()=>{this.gotoOutUrl(item.sliderurl);}} style={{ width: px(750), height: 200 }} />
 				</View>
 			);
@@ -515,7 +520,7 @@ export default class RecommendationSource extends Component {
 		let doms = [];
 		doms.push(
 			<View onClick={()=>{GoToView({status:'ItemSelectPage',query:{from:'searchSource'}})}}>
-				<Image src={'https://q.aiyongbao.com/1688/web/img/newSearchTitle.png'} style={{width:px(750),height:128}}/>
+				<Image src={'https://q.aiyongbao.com/1688/web/img/newSearchTitle.png'} style={{width:px(750),height:px(128)}}/>
 			</View>
 		)
 		// doms.push(

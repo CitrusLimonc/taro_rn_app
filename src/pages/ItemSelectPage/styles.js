@@ -2,7 +2,6 @@ import px from '../../Biz/px.js';
 export default {
     firstLine:{
         flexDirection: 'row',
-        borderBottomStyle:'solid',
         borderBottomWidth:px(2),
         borderBottomColor:'#f5f5f5',
         backgroundColor: '#fff',
@@ -14,7 +13,6 @@ export default {
     normalLine:{
         height: px(80),
         marginLeft: px(20),
-        borderBottomStyle:'solid',
         borderBottomWidth:px(2),
         borderBottomColor:'#f5f5f5',
         justifyContent: 'center'
@@ -62,7 +60,6 @@ export default {
         marginLeft: px(20),
         height: px(74),
         alignItems: 'center',
-        borderBottomStyle:'solid',
         borderBottomWidth:px(2),
         borderBottomColor:'#f5f5f5'
     },
@@ -82,7 +79,6 @@ export default {
     },
     wrap:{
         flexDirection: 'row',
-        borderBottomStyle:'solid',
         borderBottomWidth:px(2),
         borderBottomColor:'#f5f5f5',
         backgroundColor: '#fff',
@@ -92,32 +88,30 @@ export default {
         height:px(92)
     },
     normalTabBox:{
-        width:128,
-        height:76,
+        width:px(128),
+        height:px(76),
         flexDirection:'row',
         alignItems:'center',
         justifyContent:'center'
     },
     activeTabBox:{
-        width:128,
-        height:76,
+        width:px(128),
+        height:px(76),
         borderBottomColor:'#ff6000',
-        borderBottomStyle:'solid',
-        borderBottomWidth:2,
+        borderBottomWidth:px(2),
         flexDirection:'row',
         alignItems:'center',
         justifyContent:'center'
     },
     tabbarLine:{
         flexDirection:'row',
-        height:76,
+        height:px(76),
         alignItems:'center',
         borderBottomColor:'#e5e5e5',
-        borderBottomStyle:'solid',
         borderBottomWidth:px(1)
     },
     refresh: {
-        height: 80,
+        height: px(80),
         width: px(750),
         backgroundColor: '#f5f5f5',
         justifyContent: 'center',

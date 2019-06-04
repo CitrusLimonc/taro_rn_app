@@ -6,7 +6,6 @@ import {IsEmpty} from '../../../Public/Biz/IsEmpty.js';
 import {ReviewPurcharse} from '../../../Public/Biz/ReviewPurcharse.js';
 import SubCard from './SubCard';
 import styles from './styles.js';
-import px from '../../Biz/px.js';
 /*
 * @author cy
 * 采购单

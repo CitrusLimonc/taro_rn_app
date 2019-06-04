@@ -55,7 +55,6 @@ export default {
     },
     shopLine:{
         borderBottomColor:'#f5f5f5',
-        borderBottomStyle:'solid',
         borderBottomWidth:px(2),
         paddingLeft:24,
         paddingRight:24,

@@ -1,4 +1,4 @@
-import px from '../../Biz/px.js';
+import px from '../../../Biz/px.js';
 export default {
     item:{
         flex:1,
@@ -6,7 +6,6 @@ export default {
         alignItems: 'center',
         justifyContent:'space-between',
         borderBottomWidth: px(1),
-        borderBottomStyle: 'solid',
         borderBottomColor: '#e5e5e5',
         paddingTop:px(10),
         paddingRight:px(20),
@@ -35,13 +34,12 @@ export default {
     dlgBtn:{
         flex:1,
         backgroundColor: '#f6834e',
-        fontSize: '28',
+        fontSize: px(28),
     },
     Head_v:{
-        height:100,
+        height:px(100),
         justifyContent: 'center',
         alignItems: 'center',
-        borderBottomStyle: 'solid',
         borderBottomWidth:px(1),
         borderBottomColor:'#e5e5e5',
     },
@@ -71,7 +69,7 @@ export default {
         backgroundColor: '#ffffff'
     },
     left_text:{
-        fontSize: 32,
+        fontSize: px(32),
         color: '#4a4a4a',
     },
     right:{
@@ -82,7 +80,7 @@ export default {
         alignItems: 'center',
     },
     right_text:{
-        fontSize: 32,
+        fontSize: px(32),
         color: '#ffffff',
     },
     right_text32:{

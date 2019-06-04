@@ -4,6 +4,7 @@ import {IsEmpty} from '../../../Public/Biz/IsEmpty.js';
 import ShopList from './ShopList';
 import ItemIcon from '../../../Component/ItemIcon';
 import styles from './styles';
+import px from '../../../Biz/px.js';
 /**
  * @author cy
  * 基本信息
@@ -114,7 +115,7 @@ export default class BasicInfo extends Component{
         return (
             <View style={{backgroundColor:'#fff'}}>
                 <ShopList numIid = {this.props.numIid}  productId={this.state.productInfo.productID}/>
-                <View style={[styles.statusLine,{borderTopStyle:'solid',borderTopWidth:px(1),borderTopColor:'#e5e5e5'}]}>
+                <View style={[styles.statusLine,{borderTopWidth:px(1),borderTopColor:'#e5e5e5'}]}>
                     <View style={{flexDirection:'row'}}>
                         <Text style={{fontSize:px(28),color:'#979797'}}>商品状态:</Text>
                         <Text style={{fontSize:px(28),color:'#4A4A4A',marginLeft:px(20)}}>{status}</Text>

@@ -9,7 +9,6 @@ export default {
     },
     doingLine:{
         flex:1,
-        borderBottomStyle:'solid',
         borderBottomWidth:px(2),
         borderBottomColor:'#f4f4f4',
         marginLeft:px(24),
@@ -23,7 +22,6 @@ export default {
         flex:1,
         flexDirection:'column',
         borderBottomColor:'#e5e5e5',
-        borderBottomStyle:'solid',
         borderBottomWidth:px(1),
     },
     resultLine:{
@@ -33,7 +31,6 @@ export default {
         flexDirection:'row',
         alignItems:'center',
         borderBottomColor:'#e5e5e5',
-        borderBottomStyle:'solid',
         borderBottomWidth:px(1),
         paddingLeft:px(24),
         paddingBottom:px(24)
@@ -63,7 +60,6 @@ export default {
         width:px(306),
         height:px(96),
         borderTopWidth:px(2),
-        borderStyle:'solid',
         borderColor:'#DCDEE3',
         alignItems:'center',
         justifyContent:'center',
@@ -73,7 +69,6 @@ export default {
         width:px(306),
         height:px(96),
         borderTopWidth:px(1),
-        borderTopStyle:'solid',
         borderTopColor:'#DCDEE3',
         alignItems:'center',
         justifyContent:'center',
@@ -122,7 +117,6 @@ export default {
     },
     shopLine:{
         borderBottomColor:'#E5E5E5',
-        borderBottomStyle:'solid',
         borderBottomWidth:px(1),
         paddingTop:px(24),
         paddingBottom:px(24),
@@ -136,7 +130,6 @@ export default {
         alignItems:'center',
         justifyContent:'center',
         borderColor:'#e5e5e5',
-        borderStyle:'solid',
         borderWidth:px(2),
         borderRadius:px(8)
     }

@@ -1,5 +1,6 @@
 import Taro, { Component, Config } from '@tarojs/taro';
 import { View, Text , Image, Dialog, Button ,ScrollView} from '@tarojs/components';
+import Event from 'ay-event';
 import ChooseSkuDialog from '../../Component/ChooseSkuDialog';
 import SureDialog from '../../Component/SureDialog';
 // import Floattop from '../../Public/Components/Floattop';
@@ -65,82 +66,82 @@ export default class DistributionResult extends Component {
 
         let self = this;
         //修改属性后刷新
-        // RAP.on('App.change_attr_back',(data) => {
-        //     let disResult = self.state.disResult;
-        //     for (let i = 0; i < disResult.length; i++) {
-        //         if (data.shopId == disResult[i].shop_id) {
-        //             disResult[i].resText = '铺货成功';
-        //             disResult[i].btnText = '查看日志';
-        //             disResult[i].dis_result.isonsale = true;
-        //         }
-        //     }
-        //     self.setState({
-        //         disResult:disResult
-        //     });
-        // });
+        Event.on('App.change_attr_back',(data) => {
+            let disResult = self.state.disResult;
+            for (let i = 0; i < disResult.length; i++) {
+                if (data.shopId == disResult[i].shop_id) {
+                    disResult[i].resText = '铺货成功';
+                    disResult[i].btnText = '查看日志';
+                    disResult[i].dis_result.isonsale = true;
+                }
+            }
+            self.setState({
+                disResult:disResult
+            });
+        });
         //修改设置后刷新
-        // RAP.on('App.change_setting_back',(data) => {
-        //     let disResult = self.state.disResult;
-        //     for (let i = 0; i < disResult.length; i++) {
-        //         if (data.shopId == disResult[i].shop_id) {
-        //             disResult[i].btnText = '重新铺货';
-        //         }
-        //     }
-        //     self.setState({
-        //         disResult:disResult
-        //     });
-        // });
+        Event.on('App.change_setting_back',(data) => {
+            let disResult = self.state.disResult;
+            for (let i = 0; i < disResult.length; i++) {
+                if (data.shopId == disResult[i].shop_id) {
+                    disResult[i].btnText = '重新铺货';
+                }
+            }
+            self.setState({
+                disResult:disResult
+            });
+        });
         //重新铺货
-        // RAP.on('App.log_distribute_redo',(data) => {
-        //     let list = data.list;
-        //     self.offerId = data.offerId;
-        //     self.logId = data.logId;
-        //     let doList = [
-        //         {id:0,name:'优化商品标题',isOk:false},
-        //         {id:1,name:'编辑商品属性',isOk:false},
-        //         {id:2,name:'优化商品主图',isOk:false},
-        //         {id:3,name:'优化商品详情描述',isOk:false},
-        //         {id:4,name:'生成手机详情',isOk:false},
-        //         {id:5,name:'设置商品价格',isOk:false},
-        //         {id:6,name:'设置商品库存',isOk:false},
-        //         {id:7,name:'设置运费模板',isOk:false},
-        //         {id:8,name:'设置商品自定义分类',isOk:false}
-        //     ];
-        //     if (list[0].shop_type == 'pdd') {
-        //         doList = [
-        //             {id:0,name:'优化商品标题',isOk:false},
-        //             {id:1,name:'编辑商品属性',isOk:false},
-        //             {id:2,name:'优化商品主图',isOk:false},
-        //             {id:3,name:'优化商品详情描述',isOk:false},
-        //             {id:4,name:'设置商品价格',isOk:false},
-        //             {id:5,name:'设置商品库存',isOk:false},
-        //             {id:6,name:'设置运费模板',isOk:false},
-        //         ];
-        //     }
+        Event.on('App.log_distribute_redo',(data) => {
+            let list = data.list;
+            self.offerId = data.offerId;
+            self.logId = data.logId;
+            let doList = [
+                {id:0,name:'优化商品标题',isOk:false},
+                {id:1,name:'编辑商品属性',isOk:false},
+                {id:2,name:'优化商品主图',isOk:false},
+                {id:3,name:'优化商品详情描述',isOk:false},
+                {id:4,name:'生成手机详情',isOk:false},
+                {id:5,name:'设置商品价格',isOk:false},
+                {id:6,name:'设置商品库存',isOk:false},
+                {id:7,name:'设置运费模板',isOk:false},
+                {id:8,name:'设置商品自定义分类',isOk:false}
+            ];
+            if (list[0].shop_type == 'pdd') {
+                doList = [
+                    {id:0,name:'优化商品标题',isOk:false},
+                    {id:1,name:'编辑商品属性',isOk:false},
+                    {id:2,name:'优化商品主图',isOk:false},
+                    {id:3,name:'优化商品详情描述',isOk:false},
+                    {id:4,name:'设置商品价格',isOk:false},
+                    {id:5,name:'设置商品库存',isOk:false},
+                    {id:6,name:'设置运费模板',isOk:false},
+                ];
+            }
 
-        //     console.log('choosedSkus',list[0]);
-        //     let choosedSkus = '';
-        //     if (!IsEmpty(list[0].choosedSkus)) {
-        //         choosedSkus = list[0].choosedSkus;
-        //         self.state.choosedSkus = choosedSkus;
-        //     }
+            console.log('choosedSkus',list[0]);
+            let choosedSkus = '';
+            if (!IsEmpty(list[0].choosedSkus)) {
+                choosedSkus = list[0].choosedSkus;
+                self.state.choosedSkus = choosedSkus;
+            }
 
-        //     self.setState({
-        //         distributList:list,
-        //         lastDistribute:list[0],
-        //         doList:doList,
-        //         isOk:false,
-        //         disResult:[]
-        //     });
+            self.setState({
+                distributList:list,
+                lastDistribute:list[0],
+                doList:doList,
+                isOk:false,
+                disResult:[]
+            });
 
-        //     let startTime = GetTimeString('YY-MM-DD hh:mm:ss');
-        //     self.distributionMain(0,list,[],startTime);
-        // });
+            let startTime = GetTimeString('YY-MM-DD hh:mm:ss');
+            self.distributionMain(0,list,[],startTime);
+        });
 
         //返回操作
-        // RAP.on('back',(data) => {
-        //     this.moveToBack('pop');
-        // });
+        Event.on('back',(data) => {
+            this.moveToBack('pop');
+        });
     }
 
     // config: Config = {
@@ -581,7 +582,7 @@ export default class DistributionResult extends Component {
                                                     //把它挪出去
                                                     this.removeProductList(list[index]);
                                                 } else {
-                                                    // RAP.emit('App.product_list_reload',{});
+                                                    Event.emit('App.product_list_reload',{});
                                                 }
                                                 if(resultInfo.isonsale){
                                                     disResult[i].resText = '铺货成功';
@@ -668,7 +669,7 @@ export default class DistributionResult extends Component {
         },(rsp)=>{
             console.log('Orderreturn/deleteRelation',rsp);
             //有数据
-            // RAP.emit('App.product_list_reload',{});
+            Event.emit('App.product_list_reload',{});
         },(error)=>{
             alert(JSON.stringify(error));
         });
@@ -797,14 +798,14 @@ export default class DistributionResult extends Component {
             case 'goback':{
                 DoBeacon('TD20181012161059','distributing_click_background',self.userNick);
                 if(pageindex==1){
-                    // RAP.emit('App.getrunning');
+                    Event.emit('App.getrunning');
                 }
                 GoToView({page_status:'popTo',pop_index:pageindex});
                 // GoToView({page_status:'pop'});
 
             }break;
             case 'pop':{
-                // RAP.emit('App.getrunning');
+                Event.emit('App.getrunning');
                 GoToView({page_status:'pop'});
             }break;
             case 'gomore':{
@@ -914,7 +915,7 @@ export default class DistributionResult extends Component {
                 {
                     this.state.openfloat?(
                     <View style={{width:px(750),height:px(200),backgroundColor:'transparent',position:'fixed',bottom:px(24),alignItems:'center',justifyContent:'center'}}>
-                    <View style={{width:px(700),height:px(200),alignItems:'center',paddingLeft:px(24),paddingRight:px(24),paddingBottom:px(24),backgroundColor:'#F1E6D6',borderRadius: px(8), borderWidth:px(0),borderStyle:'solid',borderColor:'#9D6C3F',}}>
+                    <View style={{width:px(700),height:px(200),alignItems:'center',paddingLeft:px(24),paddingRight:px(24),paddingBottom:px(24),backgroundColor:'#F1E6D6',borderRadius: px(8), borderWidth:px(0),borderColor:'#9D6C3F',}}>
                         <View style={{width:px(652),alignItems:'center',flexDirection:'row',justifyContent:'space-between',marginBottom:px(12),marginTop:px(12)}}>
                             <Text style={{color:'#9D6C3F',fontSize:px(24)}}>特价尾货1折起</Text>
                             <ItemIcon onClick={()=>{this.closefloat()}} code={"\ue69a"}  iconStyle={{color:'#999999'}}/>
@@ -942,7 +943,7 @@ export default class DistributionResult extends Component {
         const self = this;
         let dom=[];
         self.state.floatdata.map((item,key)=>{
-            dom.push(<Image onClick={()=>{this.moveToBack('goodssupplier')}} src={item.image} style={{width:px(130),height:px(130),borderRadius: px(8), borderWidth:px(2),borderStyle:'solid',borderColor:'#9D6C3F',}}/>)
+            dom.push(<Image onClick={()=>{this.moveToBack('goodssupplier')}} src={item.image} style={{width:px(130),height:px(130),borderRadius: px(8), borderWidth:px(2),borderColor:'#9D6C3F',}}/>)
         });
         return dom;
     }
@@ -1056,7 +1057,7 @@ export default class DistributionResult extends Component {
                 GoToView({status:"https://page.1688.com/html/fa9028cc.html?sellerId=" + item.origin_id,page_status:'special'});
             } break;
             case '更多货源':{
-                // RAP.emit('App.change_tabbar_status',{status:'source'});
+                Event.emit('App.change_tabbar_status',{status:'source'});
                 GoToView({page_status:'popTo',pop_index:1});
             } break;
             case '覆盖原商品':{
@@ -1542,7 +1543,7 @@ export default class DistributionResult extends Component {
                                         <Button size="small"
                                         type="secondary"
                                         onClick={()=>{
-                                            RAP.emit('App.checkwc');
+                                            Event.emit('App.checkwc');
                                             // GoToView({status:'DistributionShops',query:{iswd:1}});
                                             GoToView({page_status:'pop'})
 

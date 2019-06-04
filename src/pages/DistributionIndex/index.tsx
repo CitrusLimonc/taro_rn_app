@@ -1,5 +1,7 @@
 import Taro, { Component, Config } from '@tarojs/taro';
 import { View,Text,ScrollView } from '@tarojs/components';
+// import Event from 'ay-event';
+// import { ListView } from 'antd-mobile';
 import { IsEmpty } from '../../Public/Biz/IsEmpty.js';
 import AiyongDialog from '../../Component/AiyongDialog';
 import Back from './back';
@@ -88,15 +90,29 @@ export default class DistributionIndex extends Component <{}, {}>{
         //     icon:'none',
         //     duration:3000
         // });
-        // Taro.showLoading({ title: '加载中...' });
-        // setTimeout(() => {
-        //     Taro.hideLoading();
-        // }, 2000);
-
-        Taro.showLoading({title: '加载中'});
+        Taro.showLoading({
+            title: '加载中',
+        });
+        
         setTimeout(function(){
             Taro.hideLoading();
-        },2000)
+        },2000);
+
+        // Taro.setNavigationBarTitle({
+        //    title: '当前页面'
+        // });
+
+        // Taro.showModal({
+        //     title: '提示',
+        //     content: '这是一个模态弹窗',
+        //     success: function(res) {
+        //         if (res.confirm) {
+        //             console.log('用户点击确定')
+        //         } else if (res.cancel) {
+        //             console.log('用户点击取消')
+        //         }
+        //     }
+        // });
     }
 
     //获取两个日期间相差的天数
@@ -186,7 +202,7 @@ export default class DistributionIndex extends Component <{}, {}>{
         this.refs.listView.refs.homeHead.loadData();
         this.refs.listView.refs.homeBody.loadData();
         this.refs.listView.refs.homeList.loadData();
-        // RAP.emit('APP.render_shop_card',{});
+        // Event.emit('APP.render_shop_card',{});
         let self = this;
         setTimeout(() => {
             self.setState({
@@ -276,7 +292,7 @@ export default class DistributionIndex extends Component <{}, {}>{
                 <ScrollView scrollY = {true} style={{flex:1,backgroundColor:'#f5f5f5'}} scrollWithAnimation>
                     <Back ref="Back" key={0}/>
                     <Head ref="homeHead" key={1}/>
-                    <View key={2} style={{marginLeft: px(24),marginRight: px(24),marginTop: px(24),}}>
+                    <View key={2} style={{marginLeft: px(24),marginRight: px(24),marginTop: px(24)}}>
                         <Body ref="homeBody"/>
                     </View>
                     <Text key={3} style={{fontSize:px(28),color:'#222',marginTop:px(42),marginLeft:px(56)}}>我的店铺</Text>
@@ -290,11 +306,8 @@ export default class DistributionIndex extends Component <{}, {}>{
                         <Course ref="course"/>
                     </View>
                     <View key={7} style={{height:px(30)}}></View>
-                    <View key={8}>
-                        <Text>{JSON.stringify(this.props)}</Text>
-                    </View>
                 </ScrollView>
-                <AiyongDialog
+                {/* <AiyongDialog
                     ref={"vipDialog"}
                     title={"该功能是付费功能"}
                     cancelText={'取消'}
@@ -312,9 +325,9 @@ export default class DistributionIndex extends Component <{}, {}>{
                 content={dialogMsg.content}
                 onSubmit={()=>{this.submitSend();}}
                 onCancel={()=>{this.cancelSend();}}
-                />
+                /> */}
                 {/* <Modal.AyDialog ref='aydialog'/> */}
             </View>
-        )
+        );
     }
 }

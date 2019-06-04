@@ -1,11 +1,13 @@
 import Taro, { Component, Config } from '@tarojs/taro';
 import {ScrollView,View,Text,Image,Dialog} from '@tarojs/components';
+import Event from 'ay-event';
 import {NetWork} from '../../Public/Common/NetWork/NetWork.js';
 import {GoToView} from '../../Public/Biz/GoToView.js';
 import {IsEmpty} from '../../Public/Biz/IsEmpty.js';
 import SwitchLine from './SwitchLine';
 import ItemIcon from '../../Component/ItemIcon';
 import styles from './styles';
+import px from '../../Biz/px.js';
 
 /*
  * 公众号通知设置
@@ -23,34 +25,33 @@ export default class WechartMsg extends Component {
             relationId:''
         };
         let self = this;
-        // RAP.on('back',function(e){
-        //     if (self.state.isOpen) {
-        //         GoToView({page_status:'pop'});
-        //     } else {
-        //         self.getList((rsp)=>{
-        //             if (!IsEmpty(rsp)) {
-        //                 self.setState({
-        //                     list:rsp.list,
-        //                     isOpen:rsp.isOpen,
-        //                     imageUrl:rsp.imageUrl,
-        //                     openId:rsp.openId,
-        //                     relationId:rsp.relationId
-        //                 });
-
-        //                 if (!rsp.isOpen) {
-        //                     GoToView({page_status:'pop'});
-        //                 } else {
-        //                     RAP.emit('APP.reload_wechart_msg',{
-        //                         isOpen:true,
-        //                         needShow:false,
-        //                     });
-        //                 }
-        //             } else {
-        //                 GoToView({page_status:'pop'});
-        //             }
-        //         });
-        //     }
-        // });
+        Event.on('back',function(e){
+            if (self.state.isOpen) {
+                GoToView({page_status:'pop'});
+            } else {
+                self.getList((rsp)=>{
+                    if (!IsEmpty(rsp)) {
+                        self.setState({
+                            list:rsp.list,
+                            isOpen:rsp.isOpen,
+                            imageUrl:rsp.imageUrl,
+                            openId:rsp.openId,
+                            relationId:rsp.relationId
+                        });
+                        if (!rsp.isOpen) {
+                            GoToView({page_status:'pop'});
+                        } else {
+                            Event.emit('APP.reload_wechart_msg',{
+                                isOpen:true,
+                                needShow:false,
+                            });
+                        }
+                    } else {
+                        GoToView({page_status:'pop'});
+                    }
+                });
+            }
+        });
     }
 
     // config: Config = {

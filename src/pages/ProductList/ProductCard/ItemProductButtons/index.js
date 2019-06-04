@@ -1,5 +1,6 @@
 import Taro, { Component, Config } from '@tarojs/taro';
 import { View, Text, Dialog, Checkbox} from '@tarojs/components';
+import Event from 'ay-event';
 import {UitlsRap} from '../../../../Public/Biz/UitlsRap.js';
 import {IsEmpty} from '../../../../Public/Biz/IsEmpty.js';
 import {LocalStore} from '../../../../Public/Biz/LocalStore.js';
@@ -188,7 +189,7 @@ export default class ItemProductButtons extends Component {
                             icon: 'none',
                             duration: 2000
                         });
-                        // RAP.emit('App.product_list_reload',{});
+                        Event.emit('App.product_list_reload',{});
                     }else{
                         Taro.showToast({
                             title: rsp.value,
@@ -691,7 +692,7 @@ export default class ItemProductButtons extends Component {
                 <Dialog ref={"sureDialog"} duration={1000} maskStyle={styles.maskStyle} contentStyle={styles.modal2Style}>
                     <View style={styles.dialogContent}>
                         <Text style={{marginTop:px(15),fontSize:px(38),fontWeight:'300',color:'#4A4A4A',textAlign:'center',width:px(612)}}>{dialogSet.dialogTitle}</Text>
-                        <View style={{width:px(612),marginTop:px(24),minHeight:200}}>
+                        <View style={{width:px(612),marginTop:px(24),minHeight:px(200)}}>
                             <Text style={[styles.dialogText,dialogSet.dialogTitle == '同步1688货源信息'||dialogSet.dialogTitle == '恢复代销关系失败' ? {marginTop:px(50)}:{}]}>
                             {dialogSet.dialogContentText}
                             </Text>

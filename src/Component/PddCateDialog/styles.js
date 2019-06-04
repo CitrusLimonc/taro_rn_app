@@ -20,7 +20,6 @@ export default {
         alignItems: 'center',
         justifyContent: 'center',
         borderBottomColor:'#eeeeee',
-        borderBottomStyle:'solid',
         borderBottomWidth:px(1),
     },
     textHead:{
@@ -35,14 +34,12 @@ export default {
         paddingLeft:px(10),
         color:'#3089dc',
         borderColor:'#3089dc',
-        borderStyle:'solid',
         borderWidth:px(1),
         marginRight:px(20)
     },
     footer: {
         borderTopColor:'#dddddd',
         flexDirection:'row',
-        borderTopStyle:'solid',
         borderTopWidth:px(1),
         alignItems: 'center',
         justifyContent: 'flex-end',
@@ -61,7 +58,6 @@ export default {
         alignItems:'center',
         paddingLeft:px(24),
         borderBottomColor:'#f5f5f5',
-        borderBottomStyle:'solid',
         borderBottomWidth:px(2),
         paddingRight:px(24)
     },

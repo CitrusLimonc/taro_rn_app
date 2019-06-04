@@ -1,5 +1,6 @@
 import Taro, { Component, Config } from '@tarojs/taro';
 import { View, Text, Image, Button} from '@tarojs/components';
+import Event from 'ay-event';
 import styles from './styles';
 import {UitlsRap} from '../../Public/Biz/UitlsRap.js';
 import {NetWork} from '../../Public/Common/NetWork/NetWork';
@@ -23,10 +24,10 @@ export default class Openwd extends Component {
             loginId:'',
             picid:''
         }
-        // RAP.on('back',(result)=>{
-        //     RAP.emit('APP.reload_shoplist_info',{});
-        //     GoToView({page_status:'pop'});
-        // });
+        Event.on('back',(result)=>{
+            Event.emit('APP.reload_shoplist_info',{});
+            GoToView({page_status:'pop'});
+        });
     }
 
     // config: Config = {
