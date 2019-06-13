@@ -2,6 +2,7 @@
 
 import Taro, { Component, Config } from '@tarojs/taro';
 import { View, Text } from '@tarojs/components';
+import { Toast } from '@ant-design/react-native';
 import Event from 'ay-event';
 import {IsEmpty} from '../../../Public/Biz/IsEmpty.js';
 import {GoToView} from '../../../Public/Biz/GoToView.js';
@@ -47,11 +48,7 @@ export default class Foot extends Component {
             }
         },(res)=>{
             if(res.code==200){
-                Taro.showToast({
-                    title: '确认付款成功',
-                    icon: 'none',
-                    duration: 2000
-                }); 
+                Toast.info('确认付款成功', 2);
                 let datas = self.state.data;
                 datas.pay_time = 'now';
                 self.setState({
@@ -60,11 +57,7 @@ export default class Foot extends Component {
                 self.refs.checkorderone.hide();
                 Event.emit('App.update_shop_orders',{});
             }else{
-                Taro.showToast({
-                    title: '确认付款失败',
-                    icon: 'none',
-                    duration: 2000
-                }); 
+                Toast.info('确认付款失败', 2);
                 self.refs.checkorderone.hide();
             }
 
@@ -124,22 +117,22 @@ export default class Foot extends Component {
                                     </View>
                                 )
                                 :
-                                ''
+                                null
                             )
                         )
                     )
 
 
             if (footRight == '') {
-                return '';
+                return null;
             } else {
                 return (
                     <View style={styles.foot}>
                         {
                             !IsEmpty(hasNotSp) ? //有未代销的商品，留着
-                            ''
+                            null
                             :
-                            ''
+                            null
                         }
                         {
                             footRight
@@ -150,7 +143,7 @@ export default class Foot extends Component {
 
             break;
             case '待发货':
-                return ''
+                return null;
             break;
             case '已发货':
                 return(
@@ -272,11 +265,7 @@ export default class Foot extends Component {
                     // let ofurls = RAP.biz.getBizInfoUrl('orderDetail', { 'orderId': firstPayOrderId, 'sys_page': 1 });
                     // RAP.navigator.push({url: ofurls});
                 } else {
-                    Taro.showToast({
-                        title: '暂无可付款的订单',
-                        icon: 'none',
-                        duration: 2000
-                    }); 
+                    Toast.info('暂无可付款的订单', 2);
                 }
                         //呼起支付宝并显示弹窗
                         // RAP.navigator.push({
@@ -320,11 +309,7 @@ export default class Foot extends Component {
                     // let ofurls = RAP.biz.getBizInfoUrl('orderDetail', { 'orderId': orderId, 'sys_page': 1 });
                     // RAP.navigator.push({url: ofurls});
                 } else {
-                    Taro.showToast({
-                        title: '暂无可退款的订单',
-                        icon: 'none',
-                        duration: 2000
-                    });
+                    Toast.info('暂无可退款的订单', 2);
                 }
             } break;
             case '确认收货':{
@@ -350,11 +335,7 @@ export default class Foot extends Component {
                     // let ofurls = RAP.biz.getBizInfoUrl('orderDetail', { 'orderId': orderId, 'sys_page': 1 });
                     // RAP.navigator.push({url: ofurls});
                 } else {
-                    Taro.showToast({
-                        title: '暂无可确认收货的订单',
-                        icon: 'none',
-                        duration: 2000
-                    });
+                    Toast.info('暂无可确认收货的订单', 2);
                 }
             } break;
             case '确认已收款':{

@@ -1,5 +1,6 @@
 import Taro, { Component, Config } from '@tarojs/taro';
 import { View, Text } from '@tarojs/components';
+import { Toast , Portal } from '@ant-design/react-native';
 import {GoToView} from '../../Public/Biz/GoToView.js';
 import {IsEmpty} from '../../Public/Biz/IsEmpty.js';
 import {UitlsRap} from '../../Public/Biz/UitlsRap.js';
@@ -60,11 +61,7 @@ export default class SureDialog extends Component {
             });
         }else{
             UitlsRap.clipboard(this.props.authorizationLink.authorLink,()=>{
-                Taro.showToast({
-                    title: '授权链接已复制，请粘贴到浏览器内访问并授权',
-                    icon: 'none',
-                    duration: 2000
-                });
+                Toast.info('授权链接已复制，请粘贴到浏览器内访问并授权', 2);
             });
             // let message = GetAuthoraitionMessage(this.props.lastShopType,this.props.authorizationLink);
             // UitlsRap.sendMessage({
@@ -96,7 +93,7 @@ export default class SureDialog extends Component {
                 }}>
                     <View style={styles.dialogContent}>
                         <View style={styles.tokenBody}>
-                            <Text style={{fontSize:px(32),color:'#333333',width:px(564)}}>{"完成授权后，请根据情况点击下面按钮"}</Text>
+                            <Text style={{fontSize:px(32),color:'#333333',width:px(564)}}>完成授权后，请根据情况点击下面按钮</Text>
                         </View>
                         <View style={styles.foot}>
                             <View style={styles.footBtn} onClick={this.cancel}>
@@ -110,7 +107,7 @@ export default class SureDialog extends Component {
                 </View>
             );
         } else {
-            return '';
+            return null;
         }
 
     }

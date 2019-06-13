@@ -1,5 +1,6 @@
 import Taro, { Component, Config } from '@tarojs/taro';
 import { View , Text ,Image} from '@tarojs/components';
+import { Toast , Portal } from '@ant-design/react-native';
 import Event from 'ay-event';
 import {UitlsRap} from '../../Public/Biz/UitlsRap.js';
 import ItemIcon from '../ItemIcon';
@@ -25,11 +26,7 @@ export default class WangWang extends Component{
         const { loginid } = this.props;
         if(this.props.title=='买家昵称'){
             UitlsRap.clipboard(this.props.text,()=>{
-                Taro.showToast({
-                    title: '买家昵称昵称复制成功',
-                    icon: 'none',
-                    duration: 2000
-                });
+                Toast.info('买家昵称昵称复制成功', 2);
             });
         }else{
             Event.emit('App.openwc',loginid);
@@ -89,11 +86,11 @@ export default class WangWang extends Component{
                                 <ItemIcon code={"\ue6a7"} iconStyle={{fontSize:px(32),color:'#ff6000'}}/>
                             </View>
                             :
-                            ''
+                            null
                         )
                     )
                     :
-                    ''
+                    null
                 }
             </View>
         );

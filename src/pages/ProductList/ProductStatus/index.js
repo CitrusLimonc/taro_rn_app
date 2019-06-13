@@ -20,12 +20,12 @@ export default class ProductStatus extends Component {
     getViews=()=>{
         let doms=[];
         this.props.pageStatus.map((item,key)=>{
-            let text ='';
+            let text = null;
             if (this.props.nowPageStatus.status==item.status) {
                 text = <Text style={[styles.normalNum,styles.activeText]}>{item.itemTotal}</Text>;
             }
             doms.push(
-                <View style={this.props.nowPageStatus.status==item.status?styles.activeStatus:styles.statusItem} onClick={()=>{this.changeStaus(item)}}>
+                <View key={key} style={this.props.nowPageStatus.status==item.status?styles.activeStatus:styles.statusItem} onClick={()=>{this.changeStaus(item)}}>
                     <Text style={[styles.normalText,this.props.nowPageStatus.status==item.status?styles.activeText:'']}>{item.status}</Text>
                     {text}
                 </View>

@@ -87,14 +87,14 @@ export default class List extends Component{
                     }
                 },(error)=>{
                     self.setState({datasource:[],loding:true});
-                    alert(JSON.stringify(error));
+                    console.error(error);
                 });
             }else{
                 self.setState({datasource:[],loding:true});
             }
         },(error)=>{
             self.setState({datasource:[],loding:true});
-            alert(JSON.stringify(error));
+            console.error(error);
         });
     }
 
@@ -115,8 +115,8 @@ export default class List extends Component{
         const { datasource,loding } = this.state;
         if(IsEmpty(datasource)&&loding==true){
             return (
-                <View>
-                    <Item type={'empty'}/>
+                <View key={0}>
+                    <Item type={'empty'} key={0}/>
                 </View>
             )
         }else if (!IsEmpty(datasource)){
@@ -131,7 +131,7 @@ export default class List extends Component{
             )
         }else{
             return (
-                <View style={{height:px(256),borderRadius: px(12),marginTop:px(20),backgroundColor:'#fff',justifyContent:'center',alignItems: 'center'}}>
+                <View style={{height:px(256),borderRadius: px(12),marginTop:px(20),backgroundColor:'#fff',justifyContent:'center',alignItems: 'center'}} key={0}>
                    <Text style={{fontSize: px(28)}}>加载中......</Text>
                 </View>
             )

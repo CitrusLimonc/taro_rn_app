@@ -1,11 +1,12 @@
 import Taro, { Component} from '@tarojs/taro';
 import {StyleSheet} from 'react-native';
+import { Toast , Portal } from '@ant-design/react-native';
 import { View,Text,Image } from '@tarojs/components';
 import { NetWork } from '../../../Public/Common/NetWork/NetWork.js';
 import {Domain} from '../../../Env/Domain.js';
 import {GoToView} from '../../../Public/Biz/GoToView.js';
 import px from '../../../Biz/px.js';
-import { IsEmpty } from '../../../Public/Common/Utils/IsEmpty.js';
+import { IsEmpty } from '../../../Public/Biz/IsEmpty.js';
 /**
 * 教程
 */
@@ -25,29 +26,15 @@ export default class Tool extends Component {
         //     params:{}
         // },(rsp)=>{
         //     console.log('dishelper/gettool',rsp);
-		// 	if(rsp.code == 200){
+		// 	if(!IsEmpty(rsp.code) && rsp.code == 200){
 		// 		self.setState({
 		// 			orderinfo:rsp.value
 		// 		})
 		// 	}else{
-        //         self.setState({
-		// 			orderinfo:'1'
-		// 		})
-        //         Taro.showToast({
-        //             title: '获取数据失败',
-        //             icon: 'none',
-        //             duration: 2000
-        //         });
+        //         Toast.info('获取数据失败', 2);
 		// 	}
-        // },()=>{
-        //     self.setState({
-        //         orderinfo:'1'
-        //     })
-        //     Taro.showToast({
-        //         title: '获取数据失败',
-        //         icon: 'none',
-        //         duration: 2000
-        //     });
+        // },(error)=>{
+        //     Toast.info('获取数据失败', 2);
         // });
     }
     //跳转页面

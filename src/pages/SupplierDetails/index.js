@@ -1,5 +1,7 @@
 import Taro, { Component, Config } from '@tarojs/taro';
 import {View,Text} from '@tarojs/components';
+import { Toast , Portal } from '@ant-design/react-native';
+import { FlatList , RefreshControl}  from 'react-native';
 import Event from 'ay-event';
 import {GetQueryString} from '../../Public/Biz/GetQueryString.js';
 import styles from './styles';
@@ -33,19 +35,19 @@ export default class SupplierDetails extends Component {
 		this.needmemberid =0;
 	}
 
-	// config: Config = {
-    //     navigationBarTitleText: '合作中的供应商'
-	// }
+	config = {
+        navigationBarTitleText: '合作中的供应商'
+    }
 
 	componentWillMount(){
 		this.memberId = GetQueryString({
-			name :'memberId'
+			name :'memberId',self:this
 		});
 		this.needmemberid = GetQueryString({
-			name :'needmemberid'
+			name :'needmemberid',self:this
 		});
 		this.supplierLoginId = decodeURI(GetQueryString({
-			name :'supplierLoginId'
+			name :'supplierLoginId',self:this
 		}));
 		this.sumForAlreadyConsignment(1);
 		this.querySuppliers();
@@ -117,7 +119,7 @@ export default class SupplierDetails extends Component {
 					allConsignmentData: self.state.allConsignmentData.concat(dataarr),
                     loadmore:false
 				});
-                self.refs.supperlierList.resetLoadmore();
+                // self.refs.supperlierList.resetLoadmore();
 			}
 		},(error)=>{
 			self.setState({
@@ -148,7 +150,7 @@ export default class SupplierDetails extends Component {
 	}
     // 底部加载更多
 	loadmore = () => {
-        this.refs.supperlierList.resetLoadmore();
+        // this.refs.supperlierList.resetLoadmore();
         console.log("loadmore", this.pageNo);
         this.setState({
             loadmore:true
@@ -168,11 +170,7 @@ export default class SupplierDetails extends Component {
 			}
 		},(result)=>{
 			console.log("endConsignRelationByConsigner", result);
-			Taro.showToast({
-				title: '[' + this.supplierLoginId+']已终止合作!',
-				icon: 'none',
-				duration: 2000
-			});
+			Toast.info('[' + this.supplierLoginId+']已终止合作!', 2);
 			Event.emit('App.RefreshSupplierList');
 			GoToView({ page_status: 'pop' });
 		},(error)=>{
@@ -302,15 +300,18 @@ export default class SupplierDetails extends Component {
 		// console.log(this.supplierCompany,"this.supplierCompany");
         return (
             <View>
-                <ListView
-                ref = "supperlierList"
-                style = {{flex:1,backgroundColor:'#f5f5f5'}}
+				<FlatList
+                ref="supperlierList"
+                style={{flex:1,backgroundColor:'#f5f5f5'}}
+                data={dataSource}
+                horizontal={false}
+                renderItem={this.renderRow}
+				ListFooterComponent={this.renderFooter}
+                refreshing={this.state.isRefreshing}
+                onRefresh={()=>{this.handleRefresh()}}
+                onEndReached={()=>{this.loadmore()}}
                 onEndReachedThreshold={800}
-                onEndReached={this.loadmore}
-                renderHeader = {this.renderHeader}
-                renderRow = {this.renderRow}
-                renderFooter = {this.renderFooter}
-                dataSource = {['null']}
+				keyExtractor={(item, index) => (index + '1')}
                 />
 				<View style={styles.zdy_v}>
 					<View onClick={this.endConsignDialog} style={styles.zdy_l}>

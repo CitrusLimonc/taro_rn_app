@@ -1,5 +1,6 @@
 import Taro, { Component, Config } from '@tarojs/taro';
-import { View, Text,Image,Button} from '@tarojs/components';
+import { View, Text,Image} from '@tarojs/components';
+import AyButton from '../../../../Component/AyButton/index';
 import { GoToView } from '../../../../Public/Biz/GoToView.js';
 import {IsEmpty} from '../../../../Public/Biz/IsEmpty.js';
 import {NetWork} from '../../../../Public/Common/NetWork/NetWork.js';
@@ -51,28 +52,26 @@ export default class ShopList extends Component{
                         <View style={{flexDirection:'row',alignItems:'center'}}>
                             {
                                 //mark 测试时用0，正式用1
-                                item.has_smallroutine == 1 || item.shop_type == 'pdd' ? (<Button onClick={()=>{
+                                item.has_smallroutine == 1 || item.shop_type == 'pdd' ? (<AyButton onClick={()=>{
                                     GoToView({status:'Sellbysetting',query:{numIid:item.num_iid,productId:self.props.productId,shopid:item.shop_id}});
-                                }} size="small" type="secondary" style={{height:px(48)}}>编辑代销商品</Button>):''
+                                }} type="primary" style={{height:px(48)}}>编辑代销商品</AyButton>):null
                             }
                             {
                                 item.shop_type == 'wc' ?
-                                <Button onClick={()=>{
+                                <AyButton onClick={()=>{
                                     let shopname = encodeURI(item.shop_name);
                                     if(item.has_smallroutine == 1){
                                         GoToView({status:'Intowd',query:{shopid:item.shop_id,shopname:shopname}});
                                     }else{
                                         GoToView({status:'Openwd',query:{shopid:item.shop_id,shopname:shopname}});
                                     }
-
-                                }}
-                                size="small" type="primary" style={{marginLeft:px(24),height:px(48)}}>去分享</Button>
+                                }} type="primary" style={{marginLeft:px(24),height:px(48)}}>去分享</AyButton>
                                 :
-                                ''
+                                null
                             }
                             
                         </View>
-                    ):''
+                    ):null
                     }
 
                 </View>

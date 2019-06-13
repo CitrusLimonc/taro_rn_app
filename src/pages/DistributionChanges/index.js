@@ -1,5 +1,8 @@
 import Taro, { Component, Config } from '@tarojs/taro';
-import { View, Text , Dialog, Button ,ScrollView,Radio,Checkbox,Input} from '@tarojs/components';
+import { View, Text , ScrollView,Radio,Checkbox,Input,RadioGroup,CheckboxGroup} from '@tarojs/components';
+import { Toast , Portal } from '@ant-design/react-native';
+import AyButton from '../../Component/AyButton/index';
+import Dialog from '../../Component/Dialog';
 import Event from 'ay-event';
 import ItemIcon from '../../Component/ItemIcon';
 import {IsEmpty} from '../../Public/Biz/IsEmpty.js';
@@ -27,6 +30,7 @@ export default class DistributionChanges extends Component {
         };
         this.lastAttr = {};
         this.attributes = [];
+        this.loading = '';
         let self = this;
         //从搜索页面返回刷新数据
         Event.on('App.add_search_back',(data) => {
@@ -42,14 +46,14 @@ export default class DistributionChanges extends Component {
         });
     }
 
-    // config: Config = {
-    //     navigationBarTitleText: '修改属性'
-    // }
-
+    config = {
+        navigationBarTitleText: '修改属性'
+    }
+    
     componentDidMount(){
         let self = this;
         //获取所有属性(缓存)
-        Taro.showLoading({ title: '加载中...' });
+        this.loading = Toast.loading('加载中...');
         LocalStore.Get(['go_to_change_attributes'],(result) => {
             console.log('go_to_change_attributes',result);
             if (!IsEmpty(result)) {
@@ -70,12 +74,8 @@ export default class DistributionChanges extends Component {
                     }
                     console.log('typeof',typeof(res.dis_result));
                     if (typeof(res.dis_result) == "string") {
-                        Taro.hideLoading();
-                        Taro.showToast({
-                            title: '获取数据失败，请去淘宝卖家中心修改并上架',
-                            icon: 'none',
-                            duration: 2000
-                        });
+                        Portal.remove(self.loading);
+                        Toast.info('获取数据失败，请去淘宝卖家中心修改并上架', 2);
                         setTimeout(function(){
                             GoToView({page_status:'pop'});
                         },1000);
@@ -88,7 +88,7 @@ export default class DistributionChanges extends Component {
                             attributes:res.dis_result.unfilledProps
                         });
                         self.attributes = res.dis_result.unfilledProps;
-                        Taro.hideLoading();
+                        Portal.remove(self.loading);
                     }
                 });
             }
@@ -113,7 +113,7 @@ export default class DistributionChanges extends Component {
             }
         },(error)=>{
             callback({dis_result:{}});
-            alert(JSON.stringify(error));
+            console.error(error);
         });
     }
 
@@ -266,7 +266,7 @@ export default class DistributionChanges extends Component {
                 }
                 //只可单选
                 return (
-                    <Radio.Group ref="radioGroup" style={{flex:1}} defaultValue={lastAttr.value} onChange={(value)=>{this.radioOnChange(value)}}>
+                    <RadioGroup ref="radioGroup" style={{flex:1}} defaultValue={lastAttr.value} onChange={(value)=>{this.radioOnChange(value)}}>
                         {
                             lastAttr.options.map((item,key)=>{
                                 return (
@@ -279,7 +279,7 @@ export default class DistributionChanges extends Component {
                                 )
                             })
                         }
-                    </Radio.Group>
+                    </RadioGroup>
                 );
             } break;
             case 'multiCheck':{ //多选
@@ -289,7 +289,7 @@ export default class DistributionChanges extends Component {
                 }
                 console.log(lastAttr.value);
                 return (
-                    <Checkbox.Group style={{flex:1}} value={lastAttr.value} onChange={(value)=>{this.checkboxOnChange(value)}}>
+                    <CheckboxGroup style={{flex:1}} value={lastAttr.value} onChange={(value)=>{this.checkboxOnChange(value)}}>
                         {
                             lastAttr.options.map((item,key)=>{
                                 return (
@@ -302,7 +302,7 @@ export default class DistributionChanges extends Component {
                                 )
                             })
                         }
-                    </Checkbox.Group>
+                    </CheckboxGroup>
                 );
             } break;
             default: break;
@@ -475,7 +475,7 @@ export default class DistributionChanges extends Component {
                 }
             }
         },(error)=>{
-            alert(JSON.stringify(error));
+            console.error(error);
         });
     }
 
@@ -490,17 +490,24 @@ export default class DistributionChanges extends Component {
                         <Text style={{fontSize:px(32),color:'#ffffff'}}>保存修改并上架</Text>
                     </View>
                 </View>
-                <Dialog ref="optionDialog" duration={1000} maskClosable={false} maskStyle={styles.mask} contentStyle={styles.categoryModel}>
+                <Dialog 
+                ref="optionDialog" 
+                maskClosable={false} 
+                contentStyle={styles.categoryModel}
+                >
                     <View style={styles.body}>
                         <ScrollView style={{flex:1}}>
                             {this.renderDialogContent()}
                         </ScrollView>
                     </View>
                     <View style={styles.footer}>
-                        <Button rect block style={styles.dlgBtn} type="primary" size="large" onClick={()=>{this.submitDialog()}}>确定</Button>
+                        <AyButton style={styles.dlgBtn} type="secondary" onClick={()=>{this.submitDialog()}}>确定</AyButton>
                     </View>
                 </Dialog>
-                <Dialog ref={"submitDialog"} duration={1000} maskStyle={styles.maskStyle} contentStyle={styles.modal2Style}>
+                <Dialog 
+                ref={"submitDialog"}
+                contentStyle={styles.modal2Style}
+                >
                     <View style={styles.dialogContent}>
                         <View style={{flexDirection:'row',justifyContent:'center'}}>
                             <Text style={{marginTop:px(15),fontSize:px(38),color:'#4A4A4A'}}>温馨提示</Text>

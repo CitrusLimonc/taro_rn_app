@@ -1,5 +1,6 @@
 import Taro, { Component, Config } from '@tarojs/taro';
-import {View,ScrollView,Text,Image,Slider} from '@tarojs/components';
+import {View,ScrollView,Text,Image} from '@tarojs/components';
+import { Carousel } from '@ant-design/react-native';
 import { IsEmpty } from '../../Public/Biz/IsEmpty.js';
 import styles from './styles';
 import ItemIcon from '../../Component/ItemIcon';
@@ -38,31 +39,31 @@ export default class ProductDetail extends Component {
 
 	}
 
-	// config: Config = {
-    //     navigationBarTitleText: '产品详情'
-    // }
+	config = {
+        navigationBarTitleText: '产品详情'
+    }
 
 	componentWillMount() {
         const self = this;
 		this.offerid = GetQueryString({
-			name: 'offerid'
+			name: 'offerid',self:this
 		});
 		this.type = GetQueryString({
-			name: 'type'
+			name: 'type',self:this
 		});
 		this.memberId = GetQueryString({
-			name: 'memberId'
+			name: 'memberId',self:this
 		});
 		console.log('memberId',this.memberId);
 
 		this.bookedCount = GetQueryString({
-			name: 'bookedCount'
+			name: 'bookedCount',self:this
 		});
 		this.quantitySumMonth = GetQueryString({
-			name: 'quantitySumMonth'
+			name: 'quantitySumMonth',self:this
 		});
 		this.from = GetQueryString({
-			name: 'from'
+			name: 'from',self:this
 		});
 		this.getProductInfo();
 		// RAP.user.getUserInfo({extraInfo: true}).then((info) => {
@@ -444,19 +445,15 @@ export default class ProductDetail extends Component {
 					style={{ flex: 1, backgroundColor: '#f5f5f5' }} >
 					<View style={{ backgroundColor: "#ffffff", flex:1,width: px(750), marginBottom: px(6), }}>
 						<View style={{ backgroundColor: "#000000", height: px(750), width: px(750), }}>
-							<Slider
+							<Carousel
 								ref="Slider"
-								style={{ overflow: 'hidden' }}
-								width={750}
-								height={750}
+								style={{overflow: 'hidden',width:px(750),height:px(750)}}
 								autoplay={false}
-								showsPagination={true}
-								loop={false}
-								index={0}
+								infinite={false}
 								onChange={this.sliderChange}
 							>
 								{this.renderPics()}
-							</Slider>
+							</Carousel>
 						</View>
 						<View style={{ backgroundColor: "#ffffff", width: px(750) }}>
 							<View style={{ backgroundColor: "#ffffff", height: px(80), width: px(704), margin: px(24), }}>

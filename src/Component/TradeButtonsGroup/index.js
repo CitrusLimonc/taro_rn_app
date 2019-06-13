@@ -1,5 +1,6 @@
 import Taro, { Component, Config } from '@tarojs/taro';
-import { View ,Button} from '@tarojs/components';
+import { View } from '@tarojs/components';
+import { Toast , Portal } from '@ant-design/react-native';
 import Event from 'ay-event';
 import {IsEmpty} from '../../Public/Biz/IsEmpty.js';
 import {GoToView} from '../../Public/Biz/GoToView.js';
@@ -9,6 +10,7 @@ import {ReviewPurcharse} from '../../Public/Biz/ReviewPurcharse.js';
 import {NetWork} from '../../Public/Common/NetWork/NetWork';
 import px from '../../Biz/px.js';
 import styles from './styles.js';
+import AyButton from '../../Component/AyButton/index';
 
 const types=['待采购','待发货','已发货','已成功','退款中','已关闭'];
 /**
@@ -42,21 +44,13 @@ export default class ButtonsGroup extends Component{
                     }
                 },(res)=>{
                     if(res.code==200){
-                        Taro.showToast({
-                            title: '确认付款成功',
-                            icon: 'none',
-                            duration: 2000
-                        });
+                        Toast.info('确认付款成功', 2);
                         this.setState({
                             paytime:'now',
                         })
                         Event.emit('App.hidecheckorder');
                     }else{
-                        Taro.showToast({
-                            title: '确认付款失败',
-                            icon: 'none',
-                            duration: 2000
-                        });
+                        Toast.info('确认付款失败', 2);
                         Event.emit('App.hidecheckorder');
                     }
                 });
@@ -173,11 +167,7 @@ export default class ButtonsGroup extends Component{
                     // let ofurls = RAP.biz.getBizInfoUrl('orderDetail', { 'orderId': orderIdList[0], 'sys_page': 1 });
                     // RAP.navigator.push({url: ofurls});
                 } else {
-                    Taro.showToast({
-                        title: '暂无可付款的订单',
-                        icon: 'none',
-                        duration: 2000
-                    });
+                    Toast.info('暂无可付款的订单', 2);
                 }
                         //呼起支付宝并显示弹窗
                         // RAP.navigator.push({
@@ -236,11 +226,7 @@ export default class ButtonsGroup extends Component{
                     // let ofurls = RAP.biz.getBizInfoUrl('orderDetail', { 'orderId': orderId, 'sys_page': 1 });
                     // RAP.navigator.push({url: ofurls});
                 } else {
-                    Taro.showToast({
-                        title: '暂无可退款的订单',
-                        icon: 'none',
-                        duration: 2000
-                    });
+                    Toast.info('暂无可退款的订单', 2);
                 }
             } break;
             case '确认收货':{
@@ -267,11 +253,7 @@ export default class ButtonsGroup extends Component{
                     // let ofurls = RAP.biz.getBizInfoUrl('orderDetail', { 'orderId': orderId, 'sys_page': 1 });
                     // RAP.navigator.push({url: ofurls});
                 } else {
-                    Taro.showToast({
-                        title: '暂无可确认收货的订单',
-                        icon: 'none',
-                        duration: 2000
-                    });
+                    Toast.info('暂无可确认收货的订单', 2);
                 }
             } break;
             case '评价':{
@@ -297,11 +279,7 @@ export default class ButtonsGroup extends Component{
                     // let ofurls = RAP.biz.getBizInfoUrl('orderDetail', { 'orderId': orderId, 'sys_page': 1 });
                     // RAP.navigator.push({url: ofurls});
                 } else {
-                    Taro.showToast({
-                        title: '暂无可评价的订单',
-                        icon: 'none',
-                        duration: 2000
-                    });
+                    Toast.info('暂无可评价的订单', 2);
                 }
             } break;
             case '关闭订单':{
@@ -334,20 +312,20 @@ export default class ButtonsGroup extends Component{
             });
         }
         if(IsEmpty(this.state.paytime)&&data.store_id=='wc'){
-            return <Button style={[styles.button,{marginLeft:px(24),color:'#ff6000',borderColor:'#ff6000'}]} onClick={()=>{this.btnOptions('确认已收款',subOrderList)}}>确认已收款</Button>
+            return <AyButton style={[styles.button,{marginLeft:px(24),borderColor:'#ff6000'}]} textStyle={styles.btnText} onClick={()=>{this.btnOptions('确认已收款',subOrderList)}}>确认已收款</AyButton>
         }else {
             if(purchaseStatus == 0){
-               return <Button style={[styles.button,{marginLeft:px(24),color:'#BFBFBF',borderColor:'#E5E5E5',backgroundColor:'#F5F5F5'}]}>确认采购单</Button>
+               return <AyButton style={[styles.button,{marginLeft:px(24),borderColor:'#E5E5E5',backgroundColor:'#F5F5F5'}]} textStyle={{color:'#BFBFBF'}}>确认采购单</AyButton>
             }else{
                 if(hasPurchase){
-                   return <Button style={[styles.button,{marginLeft:px(24),color:'#ff6000',borderColor:'#ff6000'}]}
+                   return <AyButton style={[styles.button,{marginLeft:px(24),borderColor:'#ff6000'}]} textStyle={styles.btnText}
                     onClick={()=>{this.btnOptions('确认采购单',subOrderList)}}
-                    >确认采购单</Button>
+                    >确认采购单</AyButton>
                 }else{
                     if(hasNotPay){
-                        return <Button style={[styles.button,{marginLeft:px(24),color:'#ff6000',borderColor:'#ff6000'}]}
+                        return <AyButton style={[styles.button,{marginLeft:px(24),borderColor:'#ff6000'}]} textStyle={styles.btnText}
                         onClick={()=>{this.btnOptions('向供应商付款',subOrderList)}}
-                        >向供应商付款</Button>
+                        >向供应商付款</AyButton>
                     }else{
                         return null
                     }
@@ -421,20 +399,20 @@ export default class ButtonsGroup extends Component{
                     <View style={styles.buttons}>
                         {
                         //    data.store_id=='wc'?(
-                        //         hasPurchase?(<Button style={[styles.button,{marginRight:24}]} onClick={()=>{this.btnOptions('关闭订单',subOrderList)}}>关闭订单</Button>):(
-                        //             isclose?(<Button style={[styles.button,{marginRight:24}]} onClick={()=>{this.btnOptions('关闭订单',subOrderList)}}>关闭订单</Button>):('')
+                        //         hasPurchase?(<AyButton style={[styles.button,{marginRight:24}]} onClick={()=>{this.btnOptions('关闭订单',subOrderList)}}>关闭订单</AyButton>):(
+                        //             isclose?(<AyButton style={[styles.button,{marginRight:24}]} onClick={()=>{this.btnOptions('关闭订单',subOrderList)}}>关闭订单</AyButton>):(null)
                         //         )
-                        //    ):''
+                        //    ):null
                         }
-                        <Button style={styles.button} onClick={()=>{this.btnOptions('查看详情',subOrderList)}}>查看详情</Button>
+                        <AyButton style={styles.button} textStyle={styles.btnText} onClick={()=>{this.btnOptions('查看详情',subOrderList)}}>查看详情</AyButton>
                         {
                             this.showbutton()
                         }
                         {
                             !IsEmpty(hasNotSp) ? //有未代销货品，暂无
-                            ''
+                            null
                             :
-                            ''
+                            null
                         }
                     </View>
                 );
@@ -443,12 +421,12 @@ export default class ButtonsGroup extends Component{
             case '待发货':
             return (
                 <View style={styles.buttons}>
-                    <Button style={styles.button} onClick={()=>{this.btnOptions('查看详情',subOrderList)}}>查看详情</Button>
+                    <AyButton style={styles.button} textStyle={styles.btnText} onClick={()=>{this.btnOptions('查看详情',subOrderList)}}>查看详情</AyButton>
                     {
                         needSend ?
-                        <Button style={[styles.button,{marginLeft:px(24),color:'#ff6000',borderColor:'#ff6000'}]} onClick={()=>{this.sendGoods(data,sendType)}}>发货</Button>
+                        <AyButton style={[styles.button,{marginLeft:px(24),borderColor:'#ff6000'}]} onClick={()=>{this.sendGoods(data,sendType)}}>发货</AyButton>
                         :
-                        <Button style={[styles.button,{marginLeft:px(24)}]} onClick={()=>{this.btnOptions('提醒供应商发货',subOrderList)}}>提醒供应商发货</Button>
+                        <AyButton style={[styles.button,{marginLeft:px(24)}]} onClick={()=>{this.btnOptions('提醒供应商发货',subOrderList)}}>提醒供应商发货</AyButton>
                     }
                 </View>
             );
@@ -456,63 +434,63 @@ export default class ButtonsGroup extends Component{
             case '已发货':
             return (
                 <View style={styles.buttons}>
-                    <Button style={styles.button} onClick={()=>{this.btnOptions('查看详情',subOrderList)}}>查看详情</Button>
+                    <AyButton style={styles.button} textStyle={styles.btnText} onClick={()=>{this.btnOptions('查看详情',subOrderList)}}>查看详情</AyButton>
                     {
                         hasSendedBtns ?
-                        <Button style={[styles.button,{marginLeft:px(24)}]} onClick={()=>{this.btnOptions('申请退款',subOrderList)}}>申请退款</Button>
+                        <AyButton style={[styles.button,{marginLeft:px(24)}]} textStyle={styles.btnText} onClick={()=>{this.btnOptions('申请退款',subOrderList)}}>申请退款</AyButton>
                         :
-                        ''
+                        null
                     }
                     {
                         hasSendedBtns ?
-                        <Button style={[styles.button,{marginLeft:px(24)}]} onClick={()=>{this.btnOptions('确认收货',subOrderList)}}>确认收货</Button>
+                        <AyButton style={[styles.button,{marginLeft:px(24)}]} textStyle={styles.btnText} onClick={()=>{this.btnOptions('确认收货',subOrderList)}}>确认收货</AyButton>
                         :
-                        ''
+                        null
                     }
                 </View>
             );
             case '待评价':
             return (
                 <View style={styles.buttons}>
-                    <Button style={[styles.button,{marginLeft:px(10)}]}>旺旺催好评</Button>
-                    <Button style={[styles.button,{marginLeft:px(10)}]}>立即评价</Button>
+                    <AyButton style={[styles.button,{marginLeft:px(10)}]} textStyle={styles.btnText}>旺旺催好评</AyButton>
+                    <AyButton style={[styles.button,{marginLeft:px(10)}]} textStyle={styles.btnText}>立即评价</AyButton>
                 </View>
             )
             case '退款中':
-            return '';
+            return null;
             case 'refundStatusForAs':
             return (
                 <View style={styles.buttons}>
-                    <Button style={styles.button}>发货提醒</Button>
-                    <Button style={[styles.button,{marginLeft:px(24)}]}>延时收货</Button>
+                    <AyButton style={styles.button} textStyle={styles.btnText}>发货提醒</AyButton>
+                    <AyButton style={[styles.button,{marginLeft:px(24)}]} textStyle={styles.btnText}>延时收货</AyButton>
                 </View>
             );
             case '已成功':
             return (
                 <View style={styles.buttons}>
-                    <Button style={styles.button} onClick={()=>{this.btnOptions('查看详情',subOrderList)}}>查看详情</Button>
+                    <AyButton style={styles.button} textStyle={styles.btnText} onClick={()=>{this.btnOptions('查看详情',subOrderList)}}>查看详情</AyButton>
                 </View>
             );
             case '已关闭':
             return (
                 <View style={styles.buttons}>
-                    <Button style={styles.button} onClick={()=>{this.btnOptions('查看详情',subOrderList)}}>查看详情</Button>
+                    <AyButton style={styles.button} textStyle={styles.btnText} onClick={()=>{this.btnOptions('查看详情',subOrderList)}}>查看详情</AyButton>
                 </View>
             );
             case '双方未评':
                 return (
                     <View style={styles.buttons}>
-                        <Button style={[styles.button]}>旺旺催好评</Button>
+                        <AyButton style={[styles.button]} textStyle={styles.btnText}>旺旺催好评</AyButton>
                     </View>
                 )
             case '买家已评':
                 return (
                     <View style={styles.buttons}>
-                        <Button style={[styles.button]}>旺旺催好评</Button>
+                        <AyButton style={[styles.button]} textStyle={styles.btnText}>旺旺催好评</AyButton>
                     </View>
                 )
             default:
-                return ''
+                return null;
         };
     }
 }

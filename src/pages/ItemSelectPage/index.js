@@ -1,5 +1,7 @@
 import Taro, { Component, Config } from '@tarojs/taro';
 import { View, Text, ScrollView,Input} from '@tarojs/components';
+import { Toast , Portal } from '@ant-design/react-native';
+import { FlatList , RefreshControl}  from 'react-native';
 import Event from 'ay-event';
 import GoodsProductMap from '../../Component/GoodsProductMap';
 import ItemIcon from '../../Component/ItemIcon';
@@ -38,9 +40,10 @@ export default class ItemSelectPage extends Component {
             isRefreshing:false,//是否正在刷新
         }
         this.searchProduct=this.searchProduct.bind(this);
-        this.from = GetQueryString({name:'from'});
+        this.from = GetQueryString({name:'from',self:this});
         this.type = '';
         this.loginId = '';
+        this.loading = '';
         this.isvDaixiaoOfferRequest = {
             pageNo:1,
             pageSize:10
@@ -49,13 +52,13 @@ export default class ItemSelectPage extends Component {
 
     }
 
-    // config: Config = {
-    //     navigationBarTitleText: this.from == 'searchSource' ? '搜索货源' : '搜索'
-    // }
+    config = {
+        navigationBarTitleText: this.from == 'searchSource' ? '搜索货源' : '搜索'
+    }
 
     componentWillMount(){
-        this.from = GetQueryString({name:'from'});
-        this.type = GetQueryString({name:'type'});
+        this.from = GetQueryString({name:'from',self:this});
+        this.type = GetQueryString({name:'type',self:this});
 
         let self=this;
         // RAP.user.getUserInfo({extraInfo: true}).then((info) => {
@@ -71,6 +74,7 @@ export default class ItemSelectPage extends Component {
             let history=[];//搜索历史
             //获取搜索历史
             LocalStore.Get(['searchHistory_distributor'],(result)=>{
+                console.log('searchValue-searchHistory_distributor',result);
                 if (!IsEmpty(result) && result!='empty') {
                     if (result.searchHistory_distributor=="[]") {
                         history=[];
@@ -93,9 +97,9 @@ export default class ItemSelectPage extends Component {
 
         var p2=new Promise(function(resolve,reject){
             LocalStore.Get(['search_list_subjectkey_distributor'],(result)=>{
+                console.log('searchValue-search_list_subjectkey_distributor',result);
                 if (!IsEmpty(result) && result!='empty') {
                     let subjectKey=result.search_list_subjectkey_distributor;
-                    // console.log('取出',result);
                     resolve({
                         searchValue:subjectKey
                     });
@@ -137,13 +141,13 @@ export default class ItemSelectPage extends Component {
     goToListPage = (val) =>{
         if (this.from == 'searchSource') {
             this.state.searchValue = val;
-            Taro.showLoading({ title: '加载中...' });
+            this.loading = Toast.loading('加载中...');
             this.getOffers((data)=>{
                 this.setState({
                     searchStatus:true,
                     offerList:data
                 });
-                Taro.hideLoading();
+                Portal.remove(this.loading);
             });
         } else {
             let data = {
@@ -161,8 +165,9 @@ export default class ItemSelectPage extends Component {
     }
 
     //搜索框的值发生改变时
-    changeInput = (value) =>{
-        //console.log('searchValue',value);
+    changeInput = (e) =>{
+        let value = e.target.value;
+        console.log('searchValue',value);
         this.setState({
             searchValue:value
         });
@@ -171,59 +176,56 @@ export default class ItemSelectPage extends Component {
     //搜索操作
     searchProduct = () =>{
         console.log('搜索操作');
-        this.refs.searchInput.wrappedInstance.blur();
         let self=this;
-        setTimeout(function(){
-            let newHistory=self.state.history;
-            let flag=true;
-            if (IsEmpty(self.state.searchValue)) {
+        let newHistory=self.state.history;
+        let flag=true;
+        if (IsEmpty(self.state.searchValue)) {
+            flag=false;
+        }
+        self.state.history.map((item,key)=>{
+            if (item==self.state.searchValue) {
                 flag=false;
             }
-            self.state.history.map((item,key)=>{
-                if (item==self.state.searchValue) {
-                    flag=false;
-                }
-            });
-            if (flag) {
-                newHistory.unshift(self.state.searchValue);
-            }
-            if (newHistory.length>7) {
-                newHistory.splice(7,newHistory.length-7);
-            }
-            if (newHistory.length>0) {
-                let query={
-                    'searchHistory_distributor':JSON.stringify(newHistory)
-                };
-                LocalStore.Set(query);
-            }
+        });
+        if (flag) {
+            newHistory.unshift(self.state.searchValue);
+        }
+        if (newHistory.length>7) {
+            newHistory.splice(7,newHistory.length-7);
+        }
+        if (newHistory.length>0) {
+            let query={
+                'searchHistory_distributor':JSON.stringify(newHistory)
+            };
+            LocalStore.Set(query);
+        }
 
-            self.setState({
-                history:newHistory
-            });
+        self.setState({
+            history:newHistory
+        });
 
-            if (self.from == 'searchSource') {
-                Taro.showLoading({ title: '加载中...' });
-                self.getOffers((data)=>{
-                    self.setState({
-                        searchStatus:true,
-                        offerList:data
-                    });
-                    Taro.hideLoading();
+        if (self.from == 'searchSource') {
+            self.loading = Toast.loading('加载中...');
+            self.getOffers((data)=>{
+                self.setState({
+                    searchStatus:true,
+                    offerList:data
                 });
-            } else {
-                let data = {
-                    subjectKey:self.state.searchValue,
-                    lastTab:'list'
-                };
-                LocalStore.Set({'homeSubjectKey_distributor':self.state.searchValue});
-                if(self.type == 'recycle'){
-                    Event.emit('App.recylelist_search',data);
-                }else{
-                    Event.emit('App.list_search',data);
-                }
-                GoToView({page_status:'pop'});
+                Portal.remove(self.loading);
+            });
+        } else {
+            let data = {
+                subjectKey:self.state.searchValue,
+                lastTab:'list'
+            };
+            LocalStore.Set({'homeSubjectKey_distributor':self.state.searchValue});
+            if(self.type == 'recycle'){
+                Event.emit('App.recylelist_search',data);
+            }else{
+                Event.emit('App.list_search',data);
             }
-        },100);
+            GoToView({page_status:'pop'});
+        }
     }
 
     //清除历史搜索
@@ -268,7 +270,7 @@ export default class ItemSelectPage extends Component {
             }
         },(error)=>{
             callback([]);
-            alert(JSON.stringify(error));
+            console.error(error);
         });
     }
 
@@ -283,7 +285,7 @@ export default class ItemSelectPage extends Component {
             pageSize:10
         };
 
-        Taro.showLoading({ title: '加载中...' });
+        this.loading = Toast.loading('加载中...');
 
         tabStatus.map((item,key)=>{
             if (tab.name == item.name) {
@@ -308,7 +310,7 @@ export default class ItemSelectPage extends Component {
                 searchStatus:true,
                 offerList:data
             });
-            Taro.hideLoading();
+            Portal.remove(this.loading);
         });
     }
 
@@ -336,7 +338,7 @@ export default class ItemSelectPage extends Component {
                                 />
                             </View>
                             :
-                            ''
+                            null
                         }
                     </View>
                 </View>
@@ -353,7 +355,7 @@ export default class ItemSelectPage extends Component {
 
     //底部文本
     renderFooter = () => {
-        let foot = '';
+        let foot = null;
         if (this.state.showLoading) {
             foot =
             <View style={{width:px(750),height:px(72),flexDirection:'row',backgroundColor:'#f5f5f5',justifyContent:'center',alignItems:'center'}}>
@@ -365,7 +367,7 @@ export default class ItemSelectPage extends Component {
 
     onLoadMore = () => {
         console.log('render------onLoadMore');
-        this.refs.itemListView.resetLoadmore();
+        // this.refs.itemListView.resetLoadmore();
         if(this.state.totalRecords < 10){
             return ;
         }
@@ -397,9 +399,9 @@ export default class ItemSelectPage extends Component {
             });
         });
 
-        if (this.state.offerList.length>0) {
-            this.refs.itemListView.resetLoadmore();
-        }
+        // if (this.state.offerList.length>0) {
+        //     this.refs.itemListView.resetLoadmore();
+        // }
     };
 
     //列表的头部
@@ -428,7 +430,7 @@ export default class ItemSelectPage extends Component {
 
     render(){
         const {history,searchValue,searchStatus} = this.state;
-        let clearBtn='';
+        let clearBtn=null;
         if (this.state.history.length>0) {
             clearBtn=
             <View style={styles.clearBtn} onClick={()=>{this.clearHistory()}}>
@@ -436,8 +438,8 @@ export default class ItemSelectPage extends Component {
             </View>;
         }
 
-        let deleteIcon='';
-        if (this.state.searchValue!='') {
+        let deleteIcon=null;
+        if (this.state.searchValue!=null) {
             deleteIcon=
             <ItemIcon code="\ue658" iconStyle={styles.deleteIcon} onClick={()=>{this.setState({searchValue:''});}}/>;
         }
@@ -451,7 +453,7 @@ export default class ItemSelectPage extends Component {
                             value={this.state.searchValue}
                             placeholder={"输入搜索关键词"}
                             style={styles.selectInput}
-                            onChange={(value)=>{this.changeInput(value)}}
+                            onInput={(value)=>{this.changeInput(value)}}
                             onFocus={()=>{
                                 this.isvDaixiaoOfferRequest={
                                     pageNo:1,
@@ -476,7 +478,7 @@ export default class ItemSelectPage extends Component {
                     </View>
                     {
                         searchStatus ?
-                        ''
+                        null
                         :
                         <View style={styles.normalLine}>
                             <Text style={{color:'#C7C7C7',fontSize:px(28),fontWeight:'300'}}>搜索历史</Text>
@@ -488,16 +490,18 @@ export default class ItemSelectPage extends Component {
                             <View style={styles.tabbarLine}>
                             {this.getTabbars()}
                             </View>
-                            <ListView
+                            <FlatList
                             ref="itemListView"
                             style={{flex:1,marginTop:px(24)}}
-                            dataSource={['null']}
-                            renderHeader={this.renderHeader}
-                            renderRow={this.renderRow}
-                            renderFooter={this.renderFooter}
-                            onEndReached={this.onLoadMore}
+                            data={['null']}
+                            horizontal={false}
+                            renderItem={this.renderRow}
+                            ListFooterComponent={this.renderFooter}
+                            refreshing={this.state.isRefreshing}
+                            onRefresh={()=>{this.handleRefresh()}}
+                            onEndReached={()=>{this.onLoadMore()}}
                             onEndReachedThreshold={800}
-                            showScrollbar={false}
+                            keyExtractor={(item, index) => (index + '1')}
                             />
                         </View>
                         :

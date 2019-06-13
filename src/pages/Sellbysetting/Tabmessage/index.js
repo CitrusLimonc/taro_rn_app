@@ -1,5 +1,8 @@
 import Taro, { Component, Config } from '@tarojs/taro';
-import { View, Text ,ScrollView,Button,Dialog,Radio} from '@tarojs/components';
+import { View, Text ,ScrollView,Radio,RadioGroup} from '@tarojs/components';
+import { Toast , Portal } from '@ant-design/react-native';
+import AyButton from '../../../Component/AyButton/index';
+import Dialog from '../../../Component/Dialog';
 import Event from 'ay-event';
 import styles from './styles';
 import AiyongDialog from '../../../Component/AiyongDialog/index';
@@ -34,6 +37,7 @@ export default class Tabmessage extends Component {
         };
         this.tempSet = {};
         this.tempPageNo = 1;
+        this.loading = '';
     }
     componentWillReceiveProps(nextProps){
         let param = {};
@@ -100,11 +104,7 @@ export default class Tabmessage extends Component {
             }
         },(data)=>{
             if(data.code == 200){
-                Taro.showToast({
-                    title: '同步库存成功',
-                    icon: 'none',
-                    duration: 2000
-                });
+                Toast.info('同步库存成功', 2);
             }else{
                 self.setState({
                     faildReson:data.msg,
@@ -147,24 +147,16 @@ export default class Tabmessage extends Component {
             if (!IsEmpty(rsp)) {
                 if (param.needDelete == '0') {
                     if (updateType == 'delete') {
-                        Taro.showToast({
-                            title: '删除成功~',
-                            icon: 'none',
-                            duration: 2000
-                        });
+                        Toast.info('删除成功~', 2);
                         Event.emit('App.changeAlldata');
                     } else {
-                        Taro.showToast({
-                            title: '取消代销成功~',
-                            icon: 'none',
-                            duration: 2000
-                        });
+                        Toast.info('取消代销成功~', 2);
                         Event.emit('App.changeAlldata');
                     }
                 }
             }
             this.refs.closeDialog.hide()
-            Taro.hideLoading();
+            Portal.remove(this.loading);
         },(error)=>{
 
         });
@@ -210,28 +202,16 @@ export default class Tabmessage extends Component {
                 //成功了
                 if (isOnsale == '0') {
                     alldata.approve_status = '2';
-                    Taro.showToast({
-                        title: '下架成功',
-                        icon: 'none',
-                        duration: 2000
-                    });
+                    Toast.info('下架成功', 2);
                 } else if (isOnsale == '1') {
                     alldata.approve_status = '1';
-                    Taro.showToast({
-                        title: '上架成功',
-                        icon: 'none',
-                        duration: 2000
-                    });
+                    Toast.info('上架成功', 2);
                 }
                 this.setState({
                     alldata:alldata
                 });
             } else {
-                Taro.showToast({
-                    title: rsp.msg,
-                    icon: 'none',
-                    duration: 2000
-                });
+                Toast.info(rsp.msg, 2);
             }
         });
     }
@@ -244,7 +224,7 @@ export default class Tabmessage extends Component {
 
     showTemp = () =>{
         let {alldata} = this.state;
-        Taro.showLoading({ title: '加载中...' });
+        this.loading = Toast.loading('加载中...');
         NetWork.Get({
             url:'Distributeproxy/getTemplateModel',
             data:{
@@ -264,10 +244,10 @@ export default class Tabmessage extends Component {
                     tempList:[{template_id:'-1',template_name:'[1688一件代发]包邮模板(自动创建)'}],
                 });
             }
-            Taro.hideLoading();
+            Portal.remove(this.loading);
             this.refs.chooseDialog.show();
         },(error)=>{
-            alert(JSON.stringify(error));
+            console.error(error);
         });
     }
 
@@ -299,7 +279,7 @@ export default class Tabmessage extends Component {
                 });
             }
         },(error)=>{
-            alert(JSON.stringify(error));
+            console.error(error);
         });
     }
 
@@ -345,22 +325,14 @@ export default class Tabmessage extends Component {
         };
         this.props.editItemForPdd(param,(rsp)=>{
             if (rsp.code == '200') {
-                Taro.showToast({
-                    title: '修改成功',
-                    icon: 'none',
-                    duration: 2000
-                });
+                Toast.info('修改成功', 2);
                 alldata.cost_template_id = this.tempSet.template_id;
                 alldata.cost_template_name = this.tempSet.template_name;
                 this.setState({
                     alldata:alldata
                 });
             } else {
-                Taro.showToast({
-                    title: rsp.msg,
-                    icon: 'none',
-                    duration: 2000
-                });
+                Toast.info(rsp.msg, 2);
             }
         });
         this.refs.chooseDialog.hide();
@@ -389,22 +361,14 @@ export default class Tabmessage extends Component {
         };
         this.props.editItemForPdd(param,(rsp)=>{
             if (rsp.code == '200') {
-                Taro.showToast({
-                    title: '修改成功',
-                    icon: 'none',
-                    duration: 2000
-                });
+                Toast.info('修改成功', 2);
                 alldata.cat_id = cates.cat_id;
                 alldata.cat_name = cates.cat_name;
                 this.setState({
                     alldata:alldata
                 });
             } else {
-                Taro.showToast({
-                    title: '修改失败',
-                    icon: 'none',
-                    duration: 2000
-                });
+                Toast.info('修改失败', 2);
             }
         });
     }
@@ -438,7 +402,7 @@ export default class Tabmessage extends Component {
         
         return (
             IsEmpty(alldata) ? 
-            ''
+            null
             :
             <ScrollView style={styles.commonLine} >
                 <View style={styles.title} onClick = {()=>{
@@ -453,7 +417,7 @@ export default class Tabmessage extends Component {
                             alldata.shop_type == 'pdd' ?
                             <ItemIcon code={"\ue69e"} iconStyle={{fontSize:px(32),color:'#979797',marginTop:px(16)}}/>
                             :
-                            ''
+                            null
                         }
                     </View>
                 </View>
@@ -461,17 +425,17 @@ export default class Tabmessage extends Component {
                     <Text style={styles.titleTop}>商品状态:&nbsp;</Text>
                     <Text style={styles.lineText}>{sellState}</Text>
                     {
-                        sellBtn != '' ?
-                        <Button onClick={()=>{this.btnOnPress(sellBtn)}} type="normal">{sellBtn}</Button>
+                        sellBtn != null ?
+                        <AyButton onClick={()=>{this.btnOnPress(sellBtn)}} type="normal">{sellBtn}</AyButton>
                         :
-                        ''
+                        null
                     }
                 </View>
                 {
                     !IsEmpty(alldata.art_id)?(<View style={styles.line}>
                         <Text style={styles.titleTop}>商家编码:&nbsp;</Text>
                         <Text style={styles.lineText}>{alldata.art_id}</Text>
-                    </View>):''
+                    </View>):null
                 }
                 {
                     alldata.shop_type == 'pdd' ? 
@@ -487,7 +451,7 @@ export default class Tabmessage extends Component {
                 }
                 {
                     alldata.shop_type == 'pdd' ? 
-                    ''
+                    null
                     :
                     !IsEmpty(alldata.props_name)?(
                         <View style={styles.line} onClick={()=>{this.refs.attrDialog.show()}}>
@@ -495,7 +459,7 @@ export default class Tabmessage extends Component {
                             <Text style={styles.lineText}>点击查看</Text>
                             <ItemIcon code={"\ue6a7"} iconStyle={{fontSize:px(40),color:'#979797'}}/>
                         </View>
-                    ):''
+                    ):null
                 }
                 {
                     alldata.shop_type == 'pdd' ? 
@@ -514,10 +478,10 @@ export default class Tabmessage extends Component {
                     <View style={styles.line}>
                         <Text style={styles.titleTop}>库存计数:&nbsp;</Text>
                         <Text style={styles.lineText}>确认收款后减库存</Text>
-                        <Button onClick={()=>{this.getVan()}} type="normal">同步供应商库存</Button>
+                        <AyButton onClick={()=>{this.getVan()}} type="normal">同步供应商库存</AyButton>
                     </View>
                     :
-                    ''
+                    null
                 }
                 <AiyongDialog
                 ref={"closeDialog"}
@@ -529,9 +493,7 @@ export default class Tabmessage extends Component {
                 onCancel={()=>{this.refs.closeDialog.hide()}}
                 />
                 <Dialog ref="attrDialog"
-                duration={1000}
                 maskClosable={true}
-                maskStyle={styles.mask}
                 contentStyle={styles.categoryModel}>
                     <View style={styles.body}>
                         <View style={styles.head}><Text style={styles.textHead}>产品属性</Text></View>
@@ -539,7 +501,7 @@ export default class Tabmessage extends Component {
                         {this.renderAttributes()}
                         </ScrollView>
                         <View style={styles.footer}>
-                            <Button rect block style={styles.dlgBtn} type="primary" size="large" onClick={()=>{this.refs.attrDialog.hide()}}>关闭</Button>
+                            <AyButton style={styles.dlgBtn} type="normal" size="default" onClick={()=>{this.refs.attrDialog.hide()}}>关闭</AyButton>
                         </View>
                     </View>
                 </Dialog>
@@ -550,17 +512,17 @@ export default class Tabmessage extends Component {
                 shopName = {alldata.shop_name}
                 callback = {this.editCategory}
                 />
-                <Dialog ref="chooseDialog" duration={1000} maskClosable={true} maskStyle={styles.mask} contentStyle={styles.categoryModel}>
+                <Dialog ref="chooseDialog" maskClosable={true} contentStyle={styles.categoryModel}>
                     <View style={styles.body}>
                         <View style={styles.head}><Text style={styles.textHead}>选择运费模板</Text></View>
                         <ScrollView style={{flex:1}} onEndReached={()=>{this.tempEndReached()}}>
-                            <Radio.Group style={{flex:1}} value={alldata.cost_template_id + ''} onChange={(value)=>{this.changeRadio(value)}}>
+                            <RadioGroup style={{flex:1}} value={alldata.cost_template_id + ''} onChange={(value)=>{this.changeRadio(value)}}>
                                 {this.getRadios()}
-                            </Radio.Group>
+                            </RadioGroup>
                         </ScrollView>
                     </View>
                     <View style={styles.footer}>
-                        <Button rect block style={styles.dlgBtn} type="primary" size="large" onClick={()=>{this.changeSet()}}>确定</Button>
+                        <AyButton style={styles.dlgBtn} type="normal" size="default" onClick={()=>{this.changeSet()}}>确定</AyButton>
                     </View>
                 </Dialog>
             </ScrollView>

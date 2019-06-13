@@ -1,5 +1,5 @@
 import Taro, { Component, Config } from '@tarojs/taro';
-import { View,Text,Image,Input} from '@tarojs/components';
+import { View,Text,Image} from '@tarojs/components';
 import {GoToView} from '../../Public/Biz/GoToView.js';
 import { LocalStore } from '../../Public/Biz/LocalStore.js';
 import TradeAyTabber from '../../Component/TradeAyTabber/index.js';
@@ -35,13 +35,22 @@ export default class DistributionMy extends Component <{}, {}>{
         distribute:'',
     }
 
-    config: Config = {
+    config = {
         navigationBarTitleText: '我的'
     }
 
     componentWillMount(){
         let self = this;
         let now = new Date();
+
+        // NetWork.Get({
+        //     url:'Orderreturn/test',
+        //     data:{}
+        // },(res)=>{
+        //     console.log('Orderreturn/test',res);
+        // },(error)=>{
+        //     console.log(error);
+        // });
         //获取到期时间
         NetWork.Get({
             url:'m1688/get_service_end',
@@ -95,13 +104,13 @@ export default class DistributionMy extends Component <{}, {}>{
                                     item.txt == '关于代发助手' ?
                                     <Text style={{color:'#979797',fontSize:px(28),marginRight:px(15)}}>vx.x.x</Text>
                                     :
-                                    ''
+                                    null
                                 }
                                 {
                                     item.txt == '关于代发助手' ?
-                                    ''
+                                    null
                                     :
-                                    <ItemIcon iconStyle={{fontSize:px(36),color:'#3D4145',height:px(36),width:px(36)}} code = {"\ue6a7"}/>
+                                    <ItemIcon iconStyle={{fontSize:px(36),color:'#3D4145'}} code={"\ue6a7"}/>
                                 }
                             </View>
                         </View>
@@ -168,7 +177,7 @@ export default class DistributionMy extends Component <{}, {}>{
                                         </View>
                                         <View style={styles.list_iz}>
                                             <Text style={styles.list_txt}>{item.txt}</Text>
-                                            <ItemIcon iconStyle={{fontSize:px(36),color:'#3D4145',height:px(36),width:px(36)}} code={"\ue6a7"}/>
+                                            <ItemIcon iconStyle={{fontSize:px(36),color:'#3D4145'}} code={"\ue6a7"}/>
                                         </View>
                                     </View>
                                     <View style={styles.grey_view}/>

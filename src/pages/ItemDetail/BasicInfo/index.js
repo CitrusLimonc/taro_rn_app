@@ -133,7 +133,7 @@ export default class BasicInfo extends Component{
                         </View>
                     </View>
                     :
-                    ''
+                    null
                 }
                 {consignPrice}
             </View>

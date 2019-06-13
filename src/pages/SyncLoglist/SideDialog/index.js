@@ -1,5 +1,6 @@
 import Taro, { Component, Config } from '@tarojs/taro';
-import { View, Text, Dialog} from '@tarojs/components';
+import { View, Text } from '@tarojs/components';
+import Dialog from '../../../Component/Dialog';
 import { IsEmpty } from '../../../Public/Biz/IsEmpty';
 import {Parse2json} from '../../../Public/Biz/Parse2json.js';
 import styles from './styles';
@@ -194,7 +195,7 @@ export default class SideDialog extends Component {
         // }
 
         return(
-            <Dialog ref="modal1" maskStyle={maskStyle} contentStyle={contentStyle} maskClosable={false}>
+            <Dialog ref="modal1" contentStyle={contentStyle} maskClosable={false}>
                 <View style={styles.normalLine}>
                     <Text style={{fontSize:px(24)}}>筛选</Text>
                 </View>

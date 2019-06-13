@@ -1,7 +1,9 @@
 import Taro, { Component, Config } from '@tarojs/taro';
-import { View, Text, Dialog,ScrollView} from '@tarojs/components';
+import { View, Text, ScrollView} from '@tarojs/components';
+import { Toast } from '@ant-design/react-native';
+import Dialog from '../Dialog';
 import {NetWork} from '../../Public/Common/NetWork/NetWork.js';
-import ItemIcon from '..//ItemIcon';
+import ItemIcon from '../ItemIcon';
 import {IsEmpty} from '../../Public/Biz/IsEmpty.js';
 import px from '../../Biz/px.js';
 import styles from './styles';
@@ -51,11 +53,7 @@ export default class PddCateDialog extends Component {
                 });
                 this.refs.categryPddDialog.show();
             } else {
-                Taro.showToast({
-                    title: '类目获取失败，请稍候重试',
-                    icon: 'none',
-                    duration: 2000
-                });
+                Toast.info('类目获取失败，请稍候重试', 2);
             }
         });
     }
@@ -172,7 +170,11 @@ export default class PddCateDialog extends Component {
 
     render(){
         return (
-            <Dialog ref="categryPddDialog" duration={1000} maskClosable={true} maskStyle={styles.mask} contentStyle={styles.categoryModel}>
+            <Dialog 
+            ref="categryPddDialog" 
+            maskClosable={true} 
+            contentStyle={styles.categoryModel}
+            >
                 <View style={styles.body}>
                     <View style={styles.head}>
                         <ItemIcon code={"\ue647"}

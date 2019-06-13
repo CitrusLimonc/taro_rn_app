@@ -1,5 +1,7 @@
 import Taro, { Component, Config } from '@tarojs/taro';
-import { View, Text , Image ,ScrollView,Button,Input } from '@tarojs/components';
+import { View, Text , Image ,ScrollView,Input } from '@tarojs/components';
+import AyButton from '../../Component/AyButton/index';
+import { Toast , Portal } from '@ant-design/react-native';
 import Event from 'ay-event';
 import ItemIcon from '../../Component/ItemIcon';
 import AiyongDialog from '../../Component/AiyongDialog';
@@ -39,6 +41,7 @@ export default class ConfrimSubOrders extends Component {
         this.cargoParamList = '';
         this.supplyOrders = '';
         this.flow = '';
+        this.loading = '';
         let self = this;
         //返回操作
         Event.on('back',function(e){
@@ -51,16 +54,16 @@ export default class ConfrimSubOrders extends Component {
         });
     }
 
-    // config: Config = {
-    //     navigationBarTitleText: '确认采购单'
-    // }
+    config = {
+        navigationBarTitleText: '确认采购单'
+    }
 
     componentWillMount(){
         let self = this;
-        let type = GetQueryString({name:'type'});
-        let fromPage = GetQueryString({name:'fromPage'});
-        let totalPrice1 = GetQueryString({name:'totalPrice1'});
-        let totalPrice2 = GetQueryString({name:'totalPrice2'});
+        let type = GetQueryString({name:'type',self:this});
+        let fromPage = GetQueryString({name:'fromPage',self:this});
+        let totalPrice1 = GetQueryString({name:'totalPrice1',self:this});
+        let totalPrice2 = GetQueryString({name:'totalPrice2',self:this});
         this.downpay = totalPrice1*1+totalPrice2*0.01;
         //获取当前订单信息和采购单信息
         LocalStore.Get(['go_to_confrim_suborder','go_to_confrim_orderMsg'],(result) => {
@@ -126,11 +129,7 @@ export default class ConfrimSubOrders extends Component {
             }
         });
         if(tokennum==0){
-            Taro.showToast({
-                title: '采购单数量总和不能为0',
-                icon: 'none',
-                duration: 2000
-            });
+            Toast.info('采购单数量总和不能为0', 2);
         }else{
             this.setState({
                 dataSource:dataSource,
@@ -162,7 +161,7 @@ export default class ConfrimSubOrders extends Component {
                                     <Text style={{fontSize:px(28),color:'#3089dc'}}>申请分销</Text>
                                 </View>
                                 :
-                                ''
+                                null
                             }
                             
                         </View>
@@ -209,7 +208,7 @@ export default class ConfrimSubOrders extends Component {
                                                         <ItemIcon code={"\ue6a6"} iconStyle={{fontSize:px(24),color:'#9a9a9a'}}/>
                                                     </View>
                                                     :
-                                                    <Button style={styles.littleBtn} onClick={()=>{this.chooseSku(product,product.offerId)}}>匹配规格</Button>
+                                                    <AyButton type="primary" style={styles.littleBtn} onClick={()=>{this.chooseSku(product,product.offerId)}}>匹配规格</AyButton>
                                                 }
                                                 <View style={{flex:1,flexDirection:'row',justifyContent:'flex-end'}}>
                                                     {/* <Text style={{fontSize:px(24),color:'#9a9a9a'}}>x{product.buyAmount}</Text> */}
@@ -329,7 +328,7 @@ export default class ConfrimSubOrders extends Component {
             self.confirmSubOrders();
             return;
         }
-        Taro.showLoading({ title: '加载中...' });
+        this.loading = Toast.loading('加载中...');
         //确认采购单前预览
         NetWork.Post({
             url:'Distributeproxy/createOrderPreview',
@@ -339,7 +338,7 @@ export default class ConfrimSubOrders extends Component {
                 let getsell = this.downpay*100-result.orderPreviewResuslt[0].sumPayment*1
                 if(getsell<0){
                     //有亏损
-                    Taro.hideLoading();
+                    Portal.remove(self.loading);
                     self.refs.lossDialog.show();
                     let newGetSell = (getsell*(-0.01)).toFixed(2);
                     let getSellText = '该笔采购将会导致您亏损'+newGetSell+'元，是否确定采购单？';
@@ -352,7 +351,7 @@ export default class ConfrimSubOrders extends Component {
                 }
 			}else{
                 //预览失败，显示失败信息
-                Taro.hideLoading();
+                Portal.remove(self.loading);
                 let errorMessage = '';
                 if (!IsEmpty(result.errorMsg)) {
                     errorMessage = result.errorMsg;
@@ -391,7 +390,7 @@ export default class ConfrimSubOrders extends Component {
             }
 			// console.log(result);
         },(error)=>{
-            Taro.hideLoading();
+            Portal.remove(self.loading);
 			console.error(error);
         });
     }
@@ -426,9 +425,9 @@ export default class ConfrimSubOrders extends Component {
         });
 
         console.log('submitDatas',submitDatas);
-        Taro.showLoading({ title: '加载中...' });
+        this.loading = Toast.loading('加载中...');
         this.confrimOrders(0,submitDatas,[],(errorArr)=>{
-            Taro.hideLoading();
+            Portal.remove(this.loading);
             if (errorArr.length > 0) {
                 this.setState({
                     dialogLeftText:'遇到问题',
@@ -436,13 +435,8 @@ export default class ConfrimSubOrders extends Component {
                     faildReson:errorArr[0]
                 });
                 this.refs.faildDialog.show();
-
             } else {
-                Taro.showToast({
-                    title: '确认成功',
-                    icon: 'none',
-                    duration: 2000
-                });
+                Toast.info('确认成功', 2);
                 if (this.state.fromPage == 'detail') {
                     Event.emit('App.redetail',{});
                 }
@@ -510,12 +504,8 @@ export default class ConfrimSubOrders extends Component {
             if((!IsEmpty(data.isSuccess) && (data.isSuccess == true || data.isSuccess == 'true')) || (!IsEmpty(data.success) && (data.success == true || data.success == 'true'))){
                 console.log('Orderreturn/submitSupplyOrder','成功');
                 if (orderMsg.shopType != 'taobao') {
-                    Taro.hideLoading();
-                    Taro.showToast({
-                        title: '确认成功',
-                        icon: 'none',
-                        duration: 2000
-                    });
+                    Portal.remove(this.loading);
+                    Toast.info('确认成功', 2);
                     if (this.state.fromPage == 'detail') {
                         Event.emit('App.redetail',{});
                     }
@@ -540,7 +530,7 @@ export default class ConfrimSubOrders extends Component {
                 if (orderMsg.shopType != 'pdd' && orderMsg.shopType != 'wc') {
                     errorArr.push(errorMessage);
                 } else {
-                    Taro.hideLoading();
+                    Portal.remove(this.loading);
                     if (!IsEmpty(flow) && flow == 'general') {
                         this.setState({
                             dialogLeftText:'联系供应商',
@@ -576,8 +566,8 @@ export default class ConfrimSubOrders extends Component {
                 idx = idx + 1;
                 this.confrimOrders(idx,submitDatas,errorArr,callback);
             }
-            Taro.hideLoading();
-            alert(JSON.stringify(error));
+            Portal.remove(this.loading);
+            console.error(error);
         });
     }
 
@@ -668,11 +658,11 @@ export default class ConfrimSubOrders extends Component {
                 dataSource={dataSource}
                 lastSubOrder={lastSubOrder}
                 updateStates={this.updateStates}
-                showLoading={()=>{Taro.showLoading({ title: '加载中...' });}}
-                hideLoading={()=>{Taro.hideLoading();}}
+                showLoading={()=>{this.loading = Toast.loading('加载中...');}}
+                hideLoading={()=>{Portal.remove(this.loading);}}
                 from="all"
-                showLoading={()=>{Taro.showLoading({ title: '加载中...' });}}
-                hideLoading={()=>{Taro.hideLoading();}}
+                showLoading={()=>{this.loading = Toast.loading('加载中...');}}
+                hideLoading={()=>{Portal.remove(this.loading);}}
                 />
                 <AiyongDialog
                 maskClosable={true}

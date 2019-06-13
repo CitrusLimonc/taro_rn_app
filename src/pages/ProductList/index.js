@@ -1,19 +1,20 @@
 import Taro, { Component, Config } from '@tarojs/taro';
-import { View,Text,Image,Progress,Checkbox,ScrollView} from '@tarojs/components';
+import { View, Text, Image, Progress, Checkbox, ScrollView, CheckboxGroup } from '@tarojs/components';
+import { Toast , Portal } from '@ant-design/react-native';
+import { FlatList }  from 'react-native';
 import Event from 'ay-event';
-// import {AtModal, AtModalHeader, AtModalContent, AtModalAction} from 'taro-ui';
 import ProductStatus from './ProductStatus';
 import ProductCard from './ProductCard';
 import ChooseStatus from './ChooseStatus';
 import SideDialog from './SideDialog';
 import ItemIcon from '../../Component/ItemIcon';
+import Dialog from '../../Component/Dialog';
 import {IsEmpty} from '../../Public/Biz/IsEmpty.js';
 import {NetWork} from '../../Public/Common/NetWork/NetWork.js';
 import { GoToView } from '../../Public/Biz/GoToView.js';
 import {LocalStore} from '../../Public/Biz/LocalStore.js';
 import {GetQueryString} from '../../Public/Biz/GetQueryString.js';
 import {Parse2json} from '../../Public/Biz/Parse2json.js';
-import SetTitle from '../../Biz/SetTitle.js';
 import styles from './styles';
 import px from '../../Biz/px.js';
 /**
@@ -58,14 +59,12 @@ export default class ProductList extends Component{
             toCancel:false, //是否需要取消
             faildNumber:'', //失败个数
             faildReson:'', //失败原因
-            progressDialogIsOpened:false,
-            faildDialogIsOpened:false,
-            sureDialogIsOpened:false,
         };
         this.chooseTotal = 0;//选择的产品数量
         this.chooseItems = []; //选择的商品
         this.retry = 0;
         this.type = 'product';
+        this.loading = '';
         let self = this;
         //重新加载商品列表
         Event.on('App.product_list_reload',(data)=>{
@@ -93,7 +92,7 @@ export default class ProductList extends Component{
             //     let param = {status:'已缺货',itemTotal:0};
             //     self.changeStaus(param)
             // }else{
-            //     Taro.showLoading({ title: '加载中...' });
+            //     self.loading = Toast.loading('加载中...');
             // }
             self.getData(param);
 
@@ -108,13 +107,13 @@ export default class ProductList extends Component{
 
     }
 
-    // config: Config = {
-    //     navigationBarTitleText: this.type=='recycle' ? '代销货品' : '代销货品'
-    // }
+    config = {
+        navigationBarTitleText: this.type=='recycle' ? '回收站' : '代销货品'
+    }
 
     componentWillMount(){
         const self = this;
-        // this.type = GetQueryString({name:'type'});
+        this.type = GetQueryString({name:'type',self:this});
         //修改列表搜索条件
         let typename = '';
         if(this.type=='recycle'){
@@ -131,14 +130,14 @@ export default class ProductList extends Component{
                 param.subjectKey = data.subjectKey;
                 self.state.subjectKey = data.subjectKey;
             }
-            Taro.showLoading({ title: '加载中...' });
+            self.loading = Toast.loading('加载中...');
             self.getData(param);
         });
     }
 
     componentDidMount(){
         let self = this;
-        Taro.showLoading({ title: '加载中...' });
+        self.loading = Toast.loading('加载中...');
         self.loadData();
     }
 
@@ -173,7 +172,7 @@ export default class ProductList extends Component{
                             LocalStore.Remove(['item_list_get_shop_info']);
                             let data = Parse2json(result['item_list_get_shop_info']);
                             console.log('item_list_get_shop_info',data);
-                            Taro.showLoading({ title: '加载中...' });
+                            self.loading = Toast.loading('加载中...');
                             self.state.lastShop = data;
                             let param={
                                 shopId:data.id,
@@ -187,7 +186,7 @@ export default class ProductList extends Component{
                             //     let param = {status:'已缺货',itemTotal:0};
                             //     self.changeStaus(param)
                             // }else{
-                            //     Taro.showLoading({ title: '加载中...' });
+                            //     self.loading = Toast.loading('加载中...');
                             // }
                             self.getData(param);
                         } else {
@@ -199,9 +198,10 @@ export default class ProductList extends Component{
                 }
             } else {
                 self.setState({
-                    showLoading:false
+                    showLoading:false,
+                    isLoading:false,
                 });
-                Taro.hideLoading();
+                Portal.remove(self.loading);
             }
         });
     }
@@ -212,7 +212,7 @@ export default class ProductList extends Component{
             url:'Distributeproxy/getProxyShopInfo',
             data:{}
         },(rsp)=>{
-            Taro.hideLoading();
+            Portal.remove(this.loading);
             console.log('Distributeproxy/getProxyShopInfo',rsp);
             //有结果
             if (!IsEmpty(rsp)) {
@@ -223,7 +223,7 @@ export default class ProductList extends Component{
             }
         },(error)=>{
             callback([]);
-            Taro.hideLoading();
+            Portal.remove(this.loading);
         });
     }
 
@@ -292,7 +292,7 @@ export default class ProductList extends Component{
             let param={
                 pageNo:1
             }
-            Taro.showLoading({ title: '加载中...' });
+            this.loading = Toast.loading('加载中...');
             this.getData(param);
         }
     }
@@ -336,7 +336,7 @@ export default class ProductList extends Component{
 
     //底部文本
     renderFooter = () => {
-        let foot = '';
+        let foot = null;
         if (this.state.showLoading) {
             foot =
             <View style={{width: px(750),height: px(50),flexDirection: 'row',backgroundColor: '#f5f5f5',justifyContent: 'center',alignItems: 'flex-start'}}>
@@ -366,7 +366,7 @@ export default class ProductList extends Component{
 
     //获取代销货品数据
     getData = (param) =>{
-        Taro.showLoading({ title: '加载中...' });
+        this.loading = Toast.loading('加载中...');
         console.log('getData',param);
         let initData = {};
         //当前是否存在关键词
@@ -461,7 +461,7 @@ export default class ProductList extends Component{
                 isRefreshing: false,
                 subjectKey:!IsEmpty(param.subjectKey) ? param.subjectKey : ''
             });
-            Taro.hideLoading();
+            Portal.remove(this.loading);
         },(error)=>{
             let arr = this.state.pageStatus;
             arr.map((item,key) => {
@@ -478,7 +478,7 @@ export default class ProductList extends Component{
                 isRefreshing: false,
                 subjectKey:!IsEmpty(param.subjectKey) ? param.subjectKey : ''
             });
-            Taro.hideLoading();
+            Portal.remove(this.loading);
         });
     }
 
@@ -490,7 +490,7 @@ export default class ProductList extends Component{
             pageSize:this.state.pageSize,
             subjectKey:'',
         };
-        Taro.showLoading({ title: '加载中...' });
+        this.loading = Toast.loading('加载中...');
         this.getData(param);
     }
 
@@ -508,9 +508,9 @@ export default class ProductList extends Component{
         };
 
         this.getData(params);
-        if (this.state.dataSource.length>0) {
-            this.refs.itemListView.resetLoadmore();
-        }
+        // if (this.state.dataSource.length>0) {
+        //     this.refs.itemListView.resetLoadmore();
+        // }
     };
 
     //列表的头部
@@ -537,10 +537,10 @@ export default class ProductList extends Component{
     }
 
     //空列表的内部
-    renderNull = (item,index) =>{
+    renderNull = (item) =>{
         return (
-            <View style={{flex:1}}>
-                <View style={styles.midContent}>
+            <View style={{flex:1}} key={0}>
+                <View style={styles.midContent} key={0}>
                     <ItemIcon code={"\ue61d"} iconStyle={{fontSize:px(140),color:'#e6e6e6'}}/>
                     <Text style={{fontSize:px(24),color:'#666',marginTop:px(40)}}>没有符合条件的商品</Text>
                 </View>
@@ -549,7 +549,11 @@ export default class ProductList extends Component{
     }
 
     //获取商品
-    getProductLists = (item, index) => {
+    getProductLists = (products) => {
+
+        let index = products.index;
+        let item = products.item;
+
         // console.log("item",item);
         // console.log("this.state.dataSource",this.state.dataSource);
         if (item == "null") {
@@ -622,7 +626,7 @@ export default class ProductList extends Component{
 
     //确认筛选
     submitFilter = (lastShop) =>{
-        Taro.showLoading({ title: '加载中...' });
+        this.loading = Toast.loading('加载中...');
 
         let params = {
             pageNo:1
@@ -633,7 +637,6 @@ export default class ProductList extends Component{
             params.shopName = lastShop.shop_name;
         }
         this.state.lastShop = lastShop;
-
         this.getData(params);
     }
 
@@ -715,9 +718,7 @@ export default class ProductList extends Component{
     //弹窗的确认操作
     submit = () =>{
         this.refs.sureDialog.hide();
-        this.setState({
-            progressDialogIsOpened:true
-        });
+        this.refs.progressDialog.show();
         switch (this.state.dialogSet.dialogTitle) {
             case '同步1688货源信息':{
                 this.synchroRelation(this.chooseItems,0,[],(result)=>{
@@ -742,9 +743,7 @@ export default class ProductList extends Component{
     //批量任务结束后的回调
     btnCallback = (result,type) =>{
         console.log('result',result);
-        this.setState({
-            progressDialogIsOpened:false
-        });
+        this.refs.progressDialog.hide();
         //显示结果
         let success = 0;
         let faild = 0;
@@ -783,9 +782,9 @@ export default class ProductList extends Component{
                 headType:false,
                 hischeckedAll:false,
                 rate:0.0,
-                toCancel:false,
-                faildDialogIsOpened:true
+                toCancel:false
             });
+            this.refs.faildDialog.show();
         } else {
             this.setState({
                 checkedAll:false,
@@ -795,16 +794,13 @@ export default class ProductList extends Component{
                 rate:0.0,
                 toCancel:false
             });
-            Taro.showToast({
-                title: type+'成功~',
-                icon: 'none',
-                duration: 2000
-            });
+            Toast.info(type+'成功~', 2);
         }
         let params = {
             pageNo:1
         };
-        Taro.showLoading({ title: '加载中...' });
+        this.loading = Toast.loading('加载中...');
+        
         this.getData(params);
     }
     //修改代销关系 淘需要先修改真实代销关系
@@ -1104,9 +1100,7 @@ export default class ProductList extends Component{
 
     //隐藏进度弹窗
     hideProgressDialog = () =>{
-        this.setState({
-            progressDialogIsOpened:false
-        });
+        this.refs.progressDialog.hide();
         this.chooseTotal=0;
         this.setState({
             toCancel:true
@@ -1119,9 +1113,9 @@ export default class ProductList extends Component{
     }
 
     render(){
-        let headSelect='';//搜索、选择状态
-        let headStatus='';//商品状态导航
-        let footButton='';//底部按钮
+        let headSelect=null;//搜索、选择状态
+        let headStatus=null;//商品状态导航
+        let footButton=null;//底部按钮
 
         let {headType,checkedAll,pageStatus,nowPageStatus,subjectKey,lastShop,isLoading,dataSource,shopList,dialogSet} = this.state;
 
@@ -1156,7 +1150,7 @@ export default class ProductList extends Component{
             chooseNum={length}
             checkedAll={checkedAll}
             chooseAll={this.chooseAll}/>;
-            headStatus='';
+            headStatus=null;
             switch (nowPageStatus.status) {
                 case '代销中':
                 case '已缺货':
@@ -1181,7 +1175,7 @@ export default class ProductList extends Component{
                 default:break;
             }
         }else {
-            let subject='';
+            let subject=null;
             if (subjectKey!='') {
                 subject=
                 <View style={styles.subjectTag} onClick={this.deleteSubjectKey}>
@@ -1193,16 +1187,17 @@ export default class ProductList extends Component{
             }
             headSelect= (
             <View style={styles.selectView}>
-                <View style={[styles.inputBox,{flexDirection:'row',alignItems:'center'}]}>
-                {
-                    !IsEmpty(subjectKey) ?
-                    ''
-                    :
-                    <Text style={{fontSize:px(28),color:'#999999',marginLeft:54}}>输入搜索关键词</Text>
-                }
+                <View style={[styles.inputBox,{flexDirection:'row',alignItems:'center'}]} onClick={()=>{this.goToSelect()}}>
+                    <ItemIcon code={"\ue6ac"} iconStyle={styles.searchIcon} boxStyle={styles.searchIconBox} onClick={()=>{this.goToSelect()}}/>
+                    {
+                        !IsEmpty(subjectKey) ?
+                        null
+                        :
+                        <Text style={{fontSize:px(28),color:'#999999',marginLeft:px(24)}}>输入搜索关键词</Text>
+                    }
                 </View>
-                <ItemIcon code={"\ue6ac"} iconStyle={styles.searchIcon}/>
-                <View style={styles.touchInput} onClick={()=>{this.goToSelect()}}></View>
+                {/* <View style={styles.touchInput} onClick={()=>{this.goToSelect()}}>
+                </View> */}
                 {subject}
                 <View style={styles.arrowDown} onClick={()=>{this.refs.slideDialog.show()}}>
                 {
@@ -1228,41 +1223,39 @@ export default class ProductList extends Component{
                 );
         }
 
-        let content = '';
+        let content = null;
         if (isLoading) {
-            content = '';
+            content = null;
         } else {
             if (IsEmpty(dataSource)) {
-                content = (
-                    <ScrollView 
-                    ref="itemListView"
-                    scrollY = {true} 
-                    scrollWithAnimation 
-                    style={headType ? {paddingBottom:px(100)}:{}}
-                    >
-                        {this.renderNull()}
-                    </ScrollView>
-                );
+                content = 
+                <FlatList
+                ref="itemListView"
+                style={[{flex:1,backgroundColor:'#ffffff'},headType ? {paddingBottom:px(100)}:{}]}
+                data={['null']}
+                horizontal={false}
+                renderItem={this.renderNull}
+                refreshing={this.state.isRefreshing}
+                onRefresh={()=>{this.handleRefresh()}}
+                keyExtractor={(item, index) => (index + '1')}
+                />;
             } else {
-                content = (
-                    <ScrollView 
-                    ref="itemListView"
-                    scrollY = {true} 
-                    scrollWithAnimation 
-                    style={headType ? {paddingBottom:px(100)}:{}}
-                    >
-                        {
-                            dataSource.map((item,key)=>{
-                                return this.getProductLists(item, key)
-                            })
-                        }
-                    </ScrollView>
-                );
+                content = 
+                <FlatList
+                ref="itemListView"
+                style={[{flex:1,backgroundColor:'#ffffff'},headType ? {paddingBottom:px(100)}:{}]}
+                data={dataSource}
+                horizontal={false}
+                renderItem={this.getProductLists}
+                refreshing={this.state.isRefreshing}
+                onRefresh={()=>{this.handleRefresh()}}
+                keyExtractor={(item, index) => (index + '1')}
+                />;
             }
         }
 
         return (
-            <View>
+            <View style={{flex:1,backgroundColor:'#F5F5F5'}}>
                 <View style={{flex:1,backgroundColor:'#F5F5F5'}}>
                     <View>
                         {headSelect}
@@ -1271,20 +1264,17 @@ export default class ProductList extends Component{
                     {content}
                     {footButton}
                 </View>
-                <View>
-                    <Text>{JSON.stringify(this.props)}</Text>
-                </View>
                 <SideDialog
                 ref='slideDialog'
                 submitFilter={this.submitFilter}
                 shopId = {this.state.lastShop.id}
                 shopList={shopList}
                 ></SideDialog>
-                {/* <AtModal isOpened={this.state.sureDialogIsOpened}>
-                    <AtModalHeader>{dialogSet.dialogTitle}</AtModalHeader>
-                    <AtModalContent>
-                        <View style={{width:px(612),marginTop:px(24),minHeight:px(200),paddingLeft:px(24)}}>
-                            <Text style={[styles.dialogText,dialogSet.dialogTitle == '同步1688货源信息' ? {marginTop:px(50)}:{}]}>
+                <Dialog ref={"sureDialog"} contentStyle={styles.modal2Style}>
+                    <View style={styles.dialogContent}>
+                        <Text style={{marginTop:'15rem',fontSize:'38rem',fontWeight:'300',color:'#4A4A4A',textAlign:'center',width:612}}>{dialogSet.dialogTitle}</Text>
+                        <View style={{width:612,marginTop:'24rem',minHeight:200,paddingLeft:24}}>
+                            <Text style={[styles.dialogText,dialogSet.dialogTitle == '同步1688货源信息' ? {marginTop:50}:{}]}>
                             {dialogSet.dialogContentText}
                             </Text>
                             {
@@ -1294,41 +1284,57 @@ export default class ProductList extends Component{
                                         <Checkbox
                                         value={"1"}
                                         size="small"
-                                        style={{borderRadius:px(4),width:px(40),height:px(40)}}
-                                        checkedStyle={{borderRadius:px(4),width:px(40),height:px(40)}}/>
-                                        <Text style={{fontSize:px(28),color:'#333333',width:px(500)}}>
+                                        style={{borderRadius:'4rem',width:'40rem',height:'40rem'}}
+                                        checkedStyle={{borderRadius:'4rem',width:'40rem',height:'40rem'}}/>
+                                        <Text style={{fontSize:28,color:'#333333',width:500}}>
                                         同时{dialogSet.dialogTitle == "取消代销" ? "下架":"删除"}已铺货到下游店铺的商品
                                         </Text>
                                     </View>
                                 </Checkbox.Group>
                                 :
-                                ''
+                                null
                             }
                         </View>
-                    </AtModalContent>
-                    <AtModalAction>
-                        <Button onClick={this.cancel}>{dialogSet.dialogCancelText ? dialogSet.dialogCancelText : '取消'}</Button>
-                        <Button onClick={this.submit}>{dialogSet.dialogOkText ? dialogSet.dialogOkText : '确定'}</Button> 
-                    </AtModalAction>
-                </AtModal>
-                <AtModal
-                isOpened = {this.state.progressDialogIsOpened}
-                title='正在执行操作，请稍后...'
-                confirmText='取消'
-                onConfirm={()=>{this.hideProgressDialog()}}
-                content = {progressDialogContent}
-                />
-                <AtModal
-                isOpened = {this.state.faildDialogIsOpened}
-                title='温馨提示'
-                confirmText='我知道了'
-                onConfirm={()=>{
-                    this.setState({
-                        faildDialogIsOpened:false
-                    });
-                }}
-                content = {faildDialogContent}
-                /> */}
+                        <View style={styles.foot}>
+                            <View style={styles.footBtn} onClick={this.cancel}>
+                                <Text style={styles.fontStyle}>{dialogSet.dialogCancelText ? dialogSet.dialogCancelText : '取消'}</Text>
+                            </View>
+                            <View style={[styles.submitBtn,{backgroundColor:"#ff6000"}]} onClick={this.submit}>
+                                <Text style={[styles.fontStyle,{color:"#ffffff"}]}>{dialogSet.dialogOkText ? dialogSet.dialogOkText : '确定'}</Text>
+                            </View>
+                        </View>
+                    </View>
+                </Dialog>
+                <Dialog ref={"progressDialog"} contentStyle={styles.modal2Style} maskClosable={false}>
+                    <View style={styles.dialogContent}>
+                        <View style={{marginTop:'16rem',marginLeft:'25rem'}}>
+                            <Text style={{fontSize:'32rem',color:'#4a4a4a'}}>正在执行操作，请稍后...</Text>
+                        </View>
+                        <View style={{marginLeft:'25rem',flexDirection:'row',marginTop:'36rem',alignItems:'center'}}>
+                            <Progress rate={this.state.rate} style={{width:480,height:10}}/>
+                            <Text style={{fontSize:'28rem',color:'#666',marginLeft:'24rem'}}>{parseInt(this.state.rate*100)}%</Text>
+                        </View>
+                        <View style={[styles.dialogFoot,{marginTop:'36rem'}]}
+                        onClick={this.hideProgressDialog}>
+                            <Text style={styles.dialogText}>取消</Text>
+                        </View>
+                    </View>
+                </Dialog>
+                <Dialog ref={"faildDialog"} contentStyle={styles.modal2Style}>
+                    <View style={styles.dialogContent}>
+                        <View style={{marginTop:'30rem',marginLeft:'25rem'}}>
+                            <Text style={{fontSize:'32rem',color:'#4a4a4a'}}>温馨提示</Text>
+                        </View>
+                        <View style={{marginTop:'12rem',width:612,paddingLeft:24,paddingRight:24}}>
+                            <Text style={{fontSize:'28rem',color:'#666666',width:564}}>{this.state.faildNumber}</Text>
+                            <Text style={{fontSize:'28rem',color:'#666666',marginTop:12,width:564}}>失败原因:{this.state.faildReson}</Text>
+                        </View>
+                        <View style={styles.dialogFoot}
+                        onClick={()=>{this.refs.faildDialog.hide();}}>
+                            <Text style={[styles.dialogText,{fontSize:'32rem'}]}>我知道了</Text>
+                        </View>
+                    </View>
+                </Dialog>
             </View>
         );
     }

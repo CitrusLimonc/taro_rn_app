@@ -1,5 +1,9 @@
 import Taro, { Component, Config } from '@tarojs/taro';
-import { View, Text , Image, Dialog, Input, Button } from '@tarojs/components';
+import { View, Text , Image, Input} from '@tarojs/components';
+import AyButton from '../../Component/AyButton/index';
+import { Toast , Portal } from '@ant-design/react-native';
+import { FlatList , RefreshControl}  from 'react-native';
+import Dialog from '../../Component/Dialog';
 import Event from 'ay-event';
 import ChooseSkuDialog from '../../Component/ChooseSkuDialog';
 import SideDialog from './SideDialog';
@@ -22,7 +26,7 @@ import px from '../../Biz/px.js';
 export default class DistributionLog extends Component {
     constructor(props) {
         super(props);
-        let logStatus = GetQueryString({name:'status'});
+        let logStatus = GetQueryString({name:'status',self:this});
         this.state={
             dataSource:[], //日志数据
             isLoading:false,
@@ -56,13 +60,14 @@ export default class DistributionLog extends Component {
         this.authorizationLink = '';
         this.fromPage = '';
         this.shopList=[];
+        this.loading = '';
         let self = this;
         //修改完属性同步信息
         Event.on('App.change_attr_log',(data) => {
             self.setState({
                 showLoading:true
             });
-            Taro.showLoading({ title: '加载中...' });
+            self.loading = Toast.loading('加载中...');
             self.getDistributeLog(1,(result)=>{
                 if(IsEmpty(result.result)){
                     self.dataSourceIsEmpty = true;
@@ -71,7 +76,7 @@ export default class DistributionLog extends Component {
                     dataSource : result.result,
                     showLoading:false
                 });
-                Taro.hideLoading();
+                Portal.remove(self.loading);
             });
         });
 
@@ -86,20 +91,20 @@ export default class DistributionLog extends Component {
 
     }
 
-    // config: Config = {
-    //     navigationBarTitleText: '铺货日志'
-    // }
+    config = {
+        navigationBarTitleText: '铺货日志'
+    }
 
     componentWillMount(){
-        let fromPage = GetQueryString({name:'fromPage'});
+        let fromPage = GetQueryString({name:'fromPage',self:this});
         this.fromPage = fromPage;
     }
 
     componentDidMount(){
         let self = this;
         let iscreateWd = false;
-        Taro.showLoading({ title: '加载中...' });
-        let logStatus = GetQueryString({name:'status'});
+        self.loading = Toast.loading('加载中...');
+        let logStatus = GetQueryString({name:'status',self:this});
         if (!IsEmpty(logStatus)) {
             if (logStatus == '0') {
                 this.state.nowPageStatus = this.state.pageStatus[2];
@@ -133,7 +138,7 @@ export default class DistributionLog extends Component {
                     showLoading:false,
                     iscreateWd:iscreateWd
                 });
-                // Taro.hideLoading();
+                // Portal.remove(self.loading);
             })
 
         });
@@ -161,12 +166,10 @@ export default class DistributionLog extends Component {
             } else {
                 callback([]);
             }
-            Taro.hideLoading();
-
+            Portal.remove(this.loading);
         },(error)=>{
             callback([]);
-            alert(JSON.stringify(error));
-            Taro.hideLoading();
+            Portal.remove(this.loading);
         });
     }
 
@@ -315,11 +318,10 @@ export default class DistributionLog extends Component {
             else {
                 callback({result:[],count:0});
             }
-            Taro.hideLoading();
-
+            Portal.remove(self.loading);
         },(error)=>{
-            alert(JSON.stringify(error));
-            Taro.hideLoading();
+            console.error(error);
+            Portal.remove(self.loading);
             if (self.state.isRefreshing) {
                 self.setState({
                     isRefreshing:false,
@@ -345,7 +347,7 @@ export default class DistributionLog extends Component {
 
     //确认筛选
     submitFilter = (filterList) =>{
-        Taro.showLoading({ title: '加载中...' });
+        this.loading = Toast.loading('加载中...');
         let activeArr = [];
         let newActiveArr = [];
         filterList.forEach((e,i)=>{
@@ -361,9 +363,9 @@ export default class DistributionLog extends Component {
         }
         this.filterList = filterList;
         /* 重置无线滚动标志 */
-        if (this.state.dataSource.length>0) {
-            this.refs.mylist.resetLoadmore();
-        }
+        // if (this.state.dataSource.length>0) {
+        //     this.refs.mylist.resetLoadmore();
+        // }
 
         let self = this;
         this.getDistributeLog(1,(result)=>{
@@ -371,7 +373,7 @@ export default class DistributionLog extends Component {
                 dataSource:result.result,
                 isLoading:self.state.isLoading
             });
-            Taro.hideLoading();
+            Portal.remove(self.loading);
         });
     }
 
@@ -382,19 +384,19 @@ export default class DistributionLog extends Component {
 
     /* 搜索 */
     onChange=(value)=>{
-        Taro.showLoading({ title: '加载中...' });
+        this.loading = Toast.loading('加载中...');
         this.keyWord = value.replace(/^\s\s*/, '').replace(/\s\s*$/, '');
         /* 重置无线滚动标志 */
-        if (this.state.dataSource.length>0) {
-            this.refs.mylist.resetLoadmore();
-        }
+        // if (this.state.dataSource.length>0) {
+        //     this.refs.mylist.resetLoadmore();
+        // }
         let self = this;
         this.getDistributeLog(1,(result)=>{
             self.setState({
                 dataSource : result.result,
                 isLoading:false
             });
-            Taro.hideLoading();
+            Portal.remove(self.loading);
         });
     }
 
@@ -425,7 +427,10 @@ export default class DistributionLog extends Component {
     }
 
     //获取所有日志
-    renderRow = (item, index) =>{
+    renderRow = (items) =>{
+        let index = items.index;
+        let item = items.item;
+
         let imgUrl = '';
         let title = '';
         if(!IsEmpty(item.pic_1688)){
@@ -444,44 +449,44 @@ export default class DistributionLog extends Component {
             title = '暂无标题';
         }
 
-        let btns = '';
+        let btns = null;
         let distribute_mome = '';
         if (!IsEmpty(item.distribute_mome)){
             distribute_mome = item.distribute_mome;
             if (distribute_mome.indexOf('授权') >= 0) {
                 btns =
                 <View style={{flexDirection:'row',flex:1,justifyContent:'flex-end'}}>
-                    <Button type="secondary"
-                    size="small" style={{width:px(152),height:px(56)}}
+                    <AyButton type="primary"
+                    style={{width:px(152),height:px(56)}}
                     onClick={()=>{this.btnOptions('重新授权',item)}}
-                    >重新授权</Button>
-                    <Button type="secondary"
-                    size="small" style={{marginLeft:px(24),width:px(152),height:px(56)}}
+                    >重新授权</AyButton>
+                    <AyButton type="primary"
+                    style={{marginLeft:px(24),width:px(152),height:px(56)}}
                     onClick={()=>{this.btnOptions('重新铺货',item)}}
-                    >重新铺货</Button>
+                    >重新铺货</AyButton>
                 </View>;
             } else if (distribute_mome.indexOf('保证金') >= 0) {
                 distribute_mome = '该类目下您需先缴纳保证金';
             } else if (distribute_mome.indexOf('假一罚十') >= 0 || distribute_mome.indexOf('七天') >= 0 || distribute_mome.indexOf('24小时') >= 0 || distribute_mome.indexOf('智能匹配类目') >= 0) {
                 btns =
                 <View style={{flexDirection:'row',flex:1,justifyContent:'flex-end'}}>
-                    <Button type="secondary"
-                    size="small" style={{width:px(152),height:px(56)}}
+                    <AyButton type="primary"
+                    style={{width:px(152),height:px(56)}}
                     onClick={()=>{this.btnOptions('去设置',item)}}
-                    >去设置</Button>
+                    >去设置</AyButton>
                 </View>;
             } else if (distribute_mome.indexOf('CHENNEL_MANUAL_REVIEW') >= 0) {
                 distribute_mome = '代销关系需要人工审核';
                 btns =
                 <View style={{flexDirection:'row',flex:1,justifyContent:'flex-end'}}>
-                    <Button type="secondary"
-                    size="small" style={{width:px(152),height:px(56)}}
+                    <AyButton type="primary"
+                    style={{width:px(152),height:px(56)}}
                     onClick={()=>{this.btnOptions('申请分销',item)}}
-                    >申请分销</Button>
-                    <Button type="secondary"
-                    size="small" style={{marginLeft:px(24),width:px(152),height:px(56)}}
+                    >申请分销</AyButton>
+                    <AyButton type="primary"
+                    style={{marginLeft:px(24),width:px(152),height:px(56)}}
                     onClick={()=>{this.btnOptions('重新铺货',item)}}
-                    >重新铺货</Button>
+                    >重新铺货</AyButton>
                 </View>;
             } else if (distribute_mome.indexOf('IC_CHECKSTEP_NO_PERMISSION') >= 0) {
                 distribute_mome = '您未通过认证或已被处罚';
@@ -490,10 +495,10 @@ export default class DistributionLog extends Component {
                 distribute_mome = '该商品不支持传淘宝，请尝试铺货到其他渠道';
                 btns =
                 <View style={{flexDirection:'row',flex:1,justifyContent:'flex-end'}}>
-                    <Button type="secondary"
-                    size="small" style={{width:px(202),height:px(56)}}
+                    <AyButton type="primary"
+                    style={{width:px(202),height:px(56)}}
                     onClick={()=>{this.btnOptions('铺货到其他店铺',item)}}
-                    >铺货到其他店铺</Button>
+                    >铺货到其他店铺</AyButton>
                 </View>;
             } else if (distribute_mome.indexOf('DESC_IMG_ILLEGAL') >= 0) {
                 distribute_mome = '该产品的详情使用了淘宝其他店铺图片，无法代销，请联系供应商更换';
@@ -505,59 +510,59 @@ export default class DistributionLog extends Component {
                 distribute_mome = '不符合代销招商条件';
                 btns =
                 <View style={{flexDirection:'row',flex:1,justifyContent:'flex-end'}}>
-                    <Button type="secondary"
-                    size="small" style={{width:px(152),height:px(56)}}
+                    <AyButton type="primary"
+                    style={{width:px(152),height:px(56)}}
                     onClick={()=>{this.btnOptions('申请分销',item)}}
-                    >申请分销</Button>
-                    <Button type="secondary"
-                    size="small" style={{marginLeft:px(24),width:px(152),height:px(56)}}
+                    >申请分销</AyButton>
+                    <AyButton type="primary"
+                    style={{marginLeft:px(24),width:px(152),height:px(56)}}
                     onClick={()=>{this.btnOptions('重新铺货',item)}}
-                    >重新铺货</Button>
+                    >重新铺货</AyButton>
                 </View>;
             } else if (distribute_mome.indexOf('Sentinel') >= 0 ) {
                 distribute_mome = '1688接口异常';
                 btns =
                 <View style={{flexDirection:'row',flex:1,justifyContent:'flex-end'}}>
-                    <Button type="secondary"
-                    size="small" style={{marginLeft:px(24),width:px(152),height:px(56)}}
+                    <AyButton type="primary"
+                    style={{marginLeft:px(24),width:px(152),height:px(56)}}
                     onClick={()=>{this.btnOptions('重新铺货',item)}}
-                    >重新铺货</Button>
+                    >重新铺货</AyButton>
                 </View>;
             } else if (distribute_mome.indexOf('图片空间不足') >= 0 ) {
                 distribute_mome = '图片空间不足';
                 btns =
                 <View style={{flexDirection:'row',flex:1,justifyContent:'flex-end'}}>
-                    <Button type="secondary"
-                    size="small" style={{marginLeft:px(24),width:px(152),height:px(56)}}
+                    <AyButton type="primary"
+                    style={{marginLeft:px(24),width:px(152),height:px(56)}}
                     onClick={()=>{this.btnOptions('重新铺货',item)}}
-                    >重新铺货</Button>
+                    >重新铺货</AyButton>
                 </View>;
             } else if (distribute_mome.indexOf('这不是供销offer') != -1 || distribute_mome.indexOf('无铺货入淘权限') != -1 ) {
                 distribute_mome = '该商品不支持传淘宝，请尝试铺货到其他渠道';
                 btns =
                 <View style={{flexDirection:'row',flex:1,justifyContent:'flex-end'}}>
-                    <Button type="secondary"
-                    size="small" style={{width:px(202),height:px(56)}}
+                    <AyButton type="primary"
+                    style={{width:px(202),height:px(56)}}
                     onClick={()=>{this.btnOptions('铺货到其他店铺',item)}}
-                    >铺货到其他店铺</Button>
+                    >铺货到其他店铺</AyButton>
                 </View>;
             } else if (distribute_mome.indexOf('代销关系已存在') != -1) {
                 distribute_mome = '您的店铺已代销过该货品，是否覆盖店铺里的商品？';
                 btns =
                 <View style={{flexDirection:'row',flex:1,justifyContent:'flex-end'}}>
-                    <Button type="secondary"
-                    size="small" style={{width:px(152),height:px(56)}}
+                    <AyButton type="primary"
+                    style={{width:px(152),height:px(56)}}
                     onClick={()=>{this.btnOptions('覆盖原商品',item)}}
-                    >覆盖原商品</Button>
+                    >覆盖原商品</AyButton>
                 </View>;
             } else if (distribute_mome.indexOf('店铺不同意新协议') != -1) {
                 distribute_mome = '请前往电脑版拼多多商家后台签署店铺协议后再重新铺货。';
                 btns =
                 <View style={{flexDirection:'row',flex:1,justifyContent:'flex-end'}}>
-                    <Button type="secondary"
-                    size="small" style={{width:px(152),height:px(56)}}
+                    <AyButton type="primary"
+                    style={{width:px(152),height:px(56)}}
                     onClick={()=>{this.btnOptions('复制链接',item)}}
-                    >去签署</Button>
+                    >去签署</AyButton>
                 </View>;
             } else if (distribute_mome.indexOf('商品规格中价格的范围过大') != -1 || distribute_mome.indexOf('sku的规格错误') != -1 || distribute_mome.indexOf('规格值过多') != -1 ) {
                 if (distribute_mome.indexOf('商品规格中价格的范围过大') != -1) {
@@ -567,10 +572,10 @@ export default class DistributionLog extends Component {
                 }
                 btns =
                 <View style={{flexDirection:'row',flex:1,justifyContent:'flex-end'}}>
-                    <Button type="secondary"
-                    size="small" style={{width:px(162),height:px(56)}}
+                    <AyButton type="primary"
+                    style={{width:px(162),height:px(56)}}
                     onClick={()=>{this.btnOptions('选择规格铺货',item)}}
-                    >选择规格铺货</Button>
+                    >选择规格铺货</AyButton>
                 </View>;
             }
         }
@@ -579,10 +584,10 @@ export default class DistributionLog extends Component {
             if (distribute_mome.indexOf('必填属性未填') >= 0) {
                 btns =
                 <View style={{flexDirection:'row',flex:1,justifyContent:'flex-end'}}>
-                    <Button type="secondary"
-                    size="small" style={{width:px(152),height:px(56)}}
+                    <AyButton type="primary"
+                    style={{width:px(152),height:px(56)}}
                     onClick={()=>{this.btnOptions('修改并上架',item)}}
-                    >修改并上架</Button>
+                    >修改并上架</AyButton>
                 </View>;
             }
         }
@@ -590,10 +595,10 @@ export default class DistributionLog extends Component {
         if (this.state.nowPageStatus.status == 'distributeSuccess' && item.shop_type == 'wc' && distribute_mome.indexOf('您的店铺已代销过该货品') <= -1) {
             btns =
             <View style={{flexDirection:'row',flex:1,justifyContent:'flex-end'}}>
-                <Button type="secondary"
-                size="small" style={{width:px(200),height:px(56)}}
+                <AyButton type="primary"
+                style={{width:px(200),height:px(56)}}
                 onClick={()=>{this.btnOptions('修改代销信息',item)}}
-                >修改代销信息</Button>
+                >修改代销信息</AyButton>
             </View>;
         }
 
@@ -624,7 +629,7 @@ export default class DistributionLog extends Component {
                         </View>
                         {!IsEmpty(item.reopen)?(
                         <View style={{flexDirection:'row',marginTop:px(5),alignItems:'center',flex:1}}>
-                            {/* <Button type="secondary" size="small" style={{width:px(200),height:px(56)}} onClick={()=>{this.stopandreopen(item)}}>继续铺货</Button> */}
+                            {/* <AyButton type="primary" style={{width:px(200),height:px(56)}} onClick={()=>{this.stopandreopen(item)}}>继续铺货</AyButton> */}
                             <Text style={{color:'#ff6000',fontSize:px(24)}}>铺货超时，请点击继续铺货</Text>
 
                         </View>):
@@ -641,7 +646,7 @@ export default class DistributionLog extends Component {
                         {/* <Text style={[{fontSize:px(24),color:'#ff6000'},!IsEmpty(btns)?{width:px(300)}:{width:px(700)}]}>
                         {distribute_mome}
                         </Text> */}
-                        <Button type="secondary" size="small" style={{marginLeft:px(24),width:px(152),height:px(56)}} onClick={()=>{this.stopandreopen(item)}}>继续铺货</Button>
+                        <AyButton type="primary" style={{marginLeft:px(24),width:px(152),height:px(56)}} onClick={()=>{this.stopandreopen(item)}}>继续铺货</AyButton>
                     </View>):(
                     !IsEmpty(distribute_mome) ?
                         (<View style={styles.btnLine}>
@@ -657,7 +662,7 @@ export default class DistributionLog extends Component {
                                 {btns}
                             </View>
                             :
-                            ''
+                            null
                         )
                 )
 
@@ -695,9 +700,9 @@ export default class DistributionLog extends Component {
                 refreshText:'↓ 下拉刷新'
             });
         });
-        if (this.state.dataSource.length>0) {
-            this.refs.mylist.resetLoadmore();
-        }
+        // if (this.state.dataSource.length>0) {
+        //     this.refs.mylist.resetLoadmore();
+        // }
     }
 
     //下拉刷新头部
@@ -742,13 +747,9 @@ export default class DistributionLog extends Component {
                 //有授权 更新结果
                 if (!IsEmpty(rsp.code)) {
                     if(rsp.code=='200'){
-                        Taro.showToast({
-                            title: '授权成功',
-                            icon: 'none',
-                            duration: 2000
-                        });
+                        Toast.info('授权成功', 2);
                     } else if (rsp.code == '404') {
-                        Taro.hideLoading();
+                        Portal.remove(self.loading);
                         self.refs.sureDialog.show();
                         setTimeout(function(){
                             //参数构建
@@ -758,7 +759,7 @@ export default class DistributionLog extends Component {
                     }
                 }
             },(error)=>{
-                alert(JSON.stringify(error));
+                console.error(error);
             });
         } else {
             this.retry = 0;
@@ -793,7 +794,7 @@ export default class DistributionLog extends Component {
                 }
 
                 if (hasPdd) {
-                    Taro.showLoading({ title: '加载中...' });
+                    self.loading = Toast.loading('加载中...');
                     let isSetted = false;
                     let notSetShop = [];
                     //判断是否有未进行铺货设置的店铺，有则返回shopIds
@@ -805,7 +806,7 @@ export default class DistributionLog extends Component {
                     },(rsp)=>{
                         console.log('Distributeproxy/getNotSetByids',rsp);
                         //有数据
-                        Taro.hideLoading();
+                        Portal.remove(self.loading);
 
                         if (!IsEmpty(rsp.result)) {
                             notSetShop = rsp.result;
@@ -827,8 +828,8 @@ export default class DistributionLog extends Component {
                             }
                         }
                     },(error)=>{
-                        Taro.hideLoading();
-                        alert(JSON.stringify(error));
+                        Portal.remove(self.loading);
+                        console.error(error);
                     });
                 } else {
                     if (this.fromPage == 'distributeResult') {
@@ -881,19 +882,15 @@ export default class DistributionLog extends Component {
                     };
                     this.deleteLocalRelation(param,0,(isSuccess)=>{
                         console.log('deleteLocalRelation',isSuccess);
-                        Taro.hideLoading();
+                        Portal.remove(self.loading);
                         if (isSuccess) {
                             this.btnOptions('重新铺货',item);
                         } else {
-                            Taro.showToast({
-                                title: '覆盖原商品失败，请重试',
-                                icon: 'none',
-                                duration: 2000
-                            });
+                            Toast.info('覆盖原商品失败，请重试', 2);
                         }
                     });
                 }else{
-                    Taro.showLoading({ title: '加载中...' });
+                    self.loading = Toast.loading('加载中...');
                     //判断该商品是否存在于列表中
                     NetWork.Get({
                         url:'Orderreturn/getShopProduct',
@@ -907,12 +904,8 @@ export default class DistributionLog extends Component {
                         if (!IsEmpty(rsp)){
                             if (rsp.code == '500') {
                                 //授权失效
-                                Taro.hideLoading();
-                                Taro.showToast({
-                                    title: '店铺授权失效，请去店铺列表授权',
-                                    icon: 'none',
-                                    duration: 2000
-                                });
+                                Portal.remove(self.loading);
+                                Toast.info('店铺授权失效，请去店铺列表授权', 2);
                             } else if (rsp.code == '101') {
                                 //商品不存在 取消代销后重新铺货
                                 if (shopType == 'taobao') {
@@ -935,24 +928,17 @@ export default class DistributionLog extends Component {
                                         };
                                         this.deleteLocalRelation(param,0,(isSuccess)=>{
                                             console.log('deleteLocalRelation',isSuccess);
-                                            Taro.hideLoading();
+                                            Portal.remove(self.loading);
                                             if (isSuccess) {
                                                 this.btnOptions('重新铺货',item);
                                             } else {
-                                                Taro.showToast({
-                                                    title: '覆盖原商品失败，请重试',
-                                                    icon: 'none',
-                                                    duration: 2000
-                                                });
+                                                Toast.info('覆盖原商品失败，请重试', 2);
                                             }
                                         });
                                     },(error)=>{
-                                        Taro.hideLoading();
-                                        Taro.showToast({
-                                            title: '服务器开小差啦，请稍后重试',
-                                            icon: 'none',
-                                            duration: 2000
-                                        });
+                                        Portal.remove(self.loading);
+                                        console.error(error);
+                                        Toast.info('服务器开小差啦，请稍后重试', 2);
                                     });
                                 } else {
                                     let param = {
@@ -966,46 +952,30 @@ export default class DistributionLog extends Component {
                                     };
                                     this.deleteLocalRelation(param,0,(isSuccess)=>{
                                         console.log('deleteLocalRelation',isSuccess);
-                                        Taro.hideLoading();
+                                        Portal.remove(self.loading);
                                         if (isSuccess) {
                                             this.btnOptions('重新铺货',item);
                                         } else {
-                                            Taro.showToast({
-                                                title: '覆盖原商品失败，请重试',
-                                                icon: 'none',
-                                                duration: 2000
-                                            });
+                                            Toast.info('覆盖原商品失败，请重试', 2);
                                         }
                                     });
                                 }
                             } else if (rsp.code == '200') {
-                                Taro.hideLoading();
+                                Portal.remove(self.loading);
                                 //商品存在 告知成功
-                                Taro.showToast({
-                                    title: '商品已覆盖',
-                                    icon: 'none',
-                                    duration: 2000
-                                });
+                                Toast.info('商品已覆盖', 2);
                             }
                         }
                         //有数据
                     },(error)=>{
-                        Taro.hideLoading();
-                        Taro.showToast({
-                            title: '服务器开小差啦，请稍后重试',
-                            icon: 'none',
-                            duration: 2000
-                        });
+                        Portal.remove(self.loading);
+                        Toast.info('服务器开小差啦，请稍后重试', 2);
                     });
                 }
             } break;
             case '复制链接':{
                 UitlsRap.clipboard('https://mms.pinduoduo.com',()=>{
-                    Taro.showToast({
-                        title: '链接已复制，请复制到浏览器中打开',
-                        icon: 'none',
-                        duration: 2000
-                    });
+                    Toast.info('链接已复制，请复制到浏览器中打开', 2);
                 });
             } break;
             case '铺货到其他店铺':{
@@ -1106,7 +1076,7 @@ export default class DistributionLog extends Component {
     //断点续传
     stopandreopen=(data)=>{
         const self = this;
-        Taro.showLoading({ title: '加载中...' });
+        self.loading = Toast.loading('加载中...');
         let param = {
             productId:data.productId,
             shopList:data.shopList,
@@ -1147,7 +1117,7 @@ export default class DistributionLog extends Component {
                                 self.setState({
                                     dataSource:result.result,
                                 });
-                                Taro.hideLoading();
+                                Portal.remove(self.loading);
                             });
                         }, 2000);
 
@@ -1155,15 +1125,13 @@ export default class DistributionLog extends Component {
                 }
             });
         },(error)=>{
-            Taro.showToast({
-                title: '铺货失败，稍后再试',
-                icon: 'none',
-                duration: 2000
-            });
+            Toast.info('铺货失败，稍后再试', 2);
         });
     }
     //空列表的内容
-    renderNull = (item,index) =>{
+    renderNull = (items) =>{
+        let index = items.index;
+        let item = items.item;
         return (
             <View style={{flex:1}}>
                 <View style={styles.midContent}>
@@ -1181,7 +1149,7 @@ export default class DistributionLog extends Component {
     //改变状态
     changeStaus=(item)=>{
         this.state.nowPageStatus = item;
-        Taro.showLoading({ title: '加载中...' });
+        this.loading = Toast.loading('加载中...');
         this.getDistributeLog(1,(result)=>{
             if(IsEmpty(result.result)){
                 this.dataSourceIsEmpty = true;
@@ -1191,7 +1159,7 @@ export default class DistributionLog extends Component {
                 showLoading:false,
                 nowPageStatus:item
             });
-            // Taro.hideLoading();
+            // Portal.remove(this.loading);
         });
     }
 
@@ -1207,7 +1175,7 @@ export default class DistributionLog extends Component {
                         this.state.nowPageStatus.name==item.name ?
                         '(' + item.itemTotal + ')'
                         :
-                        ''
+                        null
                     }
                     </Text>
                 </View>
@@ -1217,28 +1185,32 @@ export default class DistributionLog extends Component {
     }
 
     render(){
-        let content='';
+        let content=null;
         if (this.state.showLoading) {
-            content='';
+            content=null;
         } else {
             if (this.state.dataSource.length>0) {
                 content=
-                <ListView
-                ref='mylist'
-                dataSource={this.state.dataSource}
-                renderRow={this.renderRow}
-                renderFooter={this.renderFooter}
-                renderHeader={this.renderHeader}
-                onEndReached={this.onEndReached}
-                showScrollbar={false}
+                <FlatList
+                ref="mylist"
+                data={this.state.dataSource}
+                horizontal={false}
+                renderItem={this.renderRow}
+                refreshing={this.state.isRefreshing}
+                onRefresh={()=>{this.handleRefresh()}}
+                onEndReached={()=>{this.onEndReached()}}
+                keyExtractor={(item, index) => (index + '1')}
                 />;
             } else {
                 content=
-                <ListView
-                dataSource={['null']}
-                renderHeader={this.renderHeader}
-                renderRow={this.renderNull}
-                showScrollbar={false}
+                <FlatList
+                ref="mylist"
+                data={['null']}
+                horizontal={false}
+                renderItem={this.renderNull}
+                refreshing={this.state.isRefreshing}
+                onRefresh={()=>{this.handleRefresh()}}
+                keyExtractor={(item, index) => (index + '1')}
                 />;
             }
         }
@@ -1284,11 +1256,15 @@ export default class DistributionLog extends Component {
                 updateStates={this.updateStates}
                 from="chooseMore"
                 notChooseSpecs={this.state.notChooseSpecs}
-                showLoading={()=>{Taro.showLoading({ title: '加载中...' });}}
-                hideLoading={()=>{Taro.hideLoading();}}
+                showLoading={()=>{this.loading = Toast.loading('加载中...');}}
+                hideLoading={()=>{Portal.remove(this.loading);}}
                 skuDistribute = {this.skuDistribute}
                 />
-                <Dialog ref={"addDialog"} duration={1000} maskStyle={styles.maskStyle} contentStyle={styles.modal2Style} maskClosable={false}>
+                <Dialog 
+                ref={"addDialog"} 
+                contentStyle={styles.modal2Style} 
+                maskClosable={false}
+                >
                     <View style={styles.dialogContent}>
                         <View style={styles.dialogBody}>
                             <View style={{flex:1,flexDirection:'row',justifyContent:'center'}}>
@@ -1300,12 +1276,12 @@ export default class DistributionLog extends Component {
                                 </View>
                                 <Text style={{color:'#333333',fontSize:28,marginLeft:16}}>拼多多店铺</Text>
                                 <View style ={{flexDirection:'row',justifyContent:'flex-end',flex:1}}>
-                                    <Button size="small"
-                                    type="secondary"
+                                    <AyButton
+                                    type="primary"
                                     onClick={()=>{
                                         GoToView({status:'DistributionShops',query:{offerId:this.state.offerId,supplierMemberId:this.state.supplierMemberId}});
                                     }}
-                                    >立即铺货</Button>
+                                    >立即铺货</AyButton>
                                 </View>
                             </View>
                             <View style={styles.shopLine}>
@@ -1317,22 +1293,21 @@ export default class DistributionLog extends Component {
                                 <View style ={{flexDirection:'row',justifyContent:'flex-end',flex:1}}>
                                     {/* {
                                         this.state.iscreateWd?(
-                                        <Button size="small"
-                                        type="secondary"
+                                        <AyButton
+                                        type="primary"
                                         onClick={()=>{
                                             Event.emit('App.checkwc');
                                             GoToView({status:'DistributionShops',query:{iswd:1}});
 
                                         }}
-                                        >立即铺货</Button>):(
+                                        >立即铺货</AyButton>):(
                                        )
                                     } */}
-                                        <Button size="small"
-                                        type="secondary"
+                                        <AyButton type="primary"
                                         onClick={()=>{
                                             GoToView({status:'DistributionShops',query:{offerId:this.state.offerId,supplierMemberId:this.state.supplierMemberId}});
                                         }}
-                                        >立即铺货</Button>
+                                        >立即铺货</AyButton>
                                 </View>
                             </View>
                             <View style={styles.shopLine}>
@@ -1357,11 +1332,7 @@ export default class DistributionLog extends Component {
                                 <Text style={{color:'#999999',fontSize:22,width:290,marginLeft:24}}>更多平台敬请期待......</Text>
                             </View>
                             <View style={{flex:1,flexDirection:'row',justifyContent:'center',marginBottom:24}}>
-                                <Button size="small"
-                                type="normal"
-                                style={{marginLeft:12,width:256}}
-                                onClick={()=>{this.refs.addDialog.hide();}}
-                                >我知道了</Button>
+                                <AyButton  type="normal" style={{marginLeft:12,width:256}} onClick={()=>{this.refs.addDialog.hide();}}>我知道了</AyButton>
                             </View>
                         </View>
                     </View>

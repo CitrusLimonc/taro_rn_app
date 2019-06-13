@@ -8,7 +8,7 @@ export default {
         justifyContent:'center'
     },
     btnBox:{
-        position:'fixed',
+        position:'absolute',
         bottom:px(24),
         left:px(30),
         height:px(80),
@@ -47,23 +47,23 @@ export default {
     },
     close:{
         color:'#fff',
-        fontSize:42,
-        borderWidth:'2',
+        fontSize:px(42),
+        borderWidth:px(2),
         borderColor:'#fff',
-        borderRadius: 21,
-        marginTop:24,
+        borderRadius: px(21),
+        marginTop:px(24),
     },
     shopLine:{
         borderBottomColor:'#f5f5f5',
         borderBottomWidth:px(2),
-        paddingLeft:24,
-        paddingRight:24,
+        paddingLeft:px(24),
+        paddingRight:px(24),
         backgroundColor:'#fff',
         flexDirection:'row',
         alignItems:'center',
         width:px(750),
-        marginTop:24,
-        height:88
+        marginTop:px(24),
+        height:px(88)
     },
     titleText:{
         color:'#000',

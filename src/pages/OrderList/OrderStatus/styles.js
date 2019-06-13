@@ -6,7 +6,6 @@ export default  {
     },
     statusText:{
         fontSize:px(26),
-        fontFamily:'Microsoft YaHei',
     },
     faab89:{
         color:'#FF6000',
@@ -23,7 +22,6 @@ export default  {
         height:px(70),
         justifyContent:'center',
         alignItems:'center',
-        fontWeight:'400',
     },
     arrowDown:{
         alignItems:'center',
@@ -50,11 +48,6 @@ export default  {
         paddingRight:px(24),
         paddingLeft:px(24),
         backgroundColor: '#ffffff',
-    },
-    arrowUp:{
-        color:'#666666',
-        fontWeight:px(100),
-        marginRight:px(15),
     },
     funTitle:{
         fontSize:px(24),

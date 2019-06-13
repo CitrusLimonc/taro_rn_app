@@ -1,5 +1,6 @@
 import Taro, { Component, Config } from '@tarojs/taro';
 import { View, Text,Checkbox,Image} from '@tarojs/components';
+import { Toast , Portal } from '@ant-design/react-native';
 import {IsEmpty} from '../../../Public/Biz/IsEmpty.js';
 import {UitlsRap} from '../../../Public/Biz/UitlsRap.js';
 import ItemIcon from '../../../Component/ItemIcon';
@@ -133,7 +134,7 @@ export default class BatchPay extends Component {
                                             !IsEmpty(sku) ?
                                             <Text style={{fontSize:px(24),color:'#ff6000'}}>{sku}</Text>
                                             :
-                                            ''
+                                            null
                                         }
                                         <View style={{flexDirection:'row',flex:1,justifyContent:'flex-end'}}>
                                             <Text style={{fontSize:px(24),color:'#ff6000'}}>x{number}</Text>
@@ -150,11 +151,7 @@ export default class BatchPay extends Component {
                     onClick={()=>{
                         if (!IsEmpty(order.tid) && !headType) {
                             UitlsRap.clipboard(order.tid,(result)=>{
-                                Taro.showToast({
-                                    title: '订单号已复制',
-                                    icon: 'none',
-                                    duration: 2000
-                                });
+                                Toast.info('订单号已复制', 2);
                             });
                         }
                     }}

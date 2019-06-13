@@ -1,5 +1,5 @@
 import Taro, { Component, Config } from '@tarojs/taro';
-import { View, Text ,Checkbox,Input,Radio} from '@tarojs/components';
+import { View, Text ,Checkbox,Input,Radio,RadioGroup} from '@tarojs/components';
 import px from '../../../Biz/px.js';
 import styles from './styles';
 /**
@@ -29,7 +29,7 @@ export default class PriceLine extends Component {
                 <View style={{flexDirection:'row',alignItems:'center',marginTop:px(8)}}>
                     { title == '售价设置'?
                     (
-                        <Radio.Group onChange={(value)=>{callback(value,title,'priceWay')}} value={priceWay}>
+                        <RadioGroup onChange={(value)=>{callback(value,title,'priceWay')}} value={priceWay}>
                         <View style={styles.input}>
                             <Radio size="small" value={"0"} type="dot" style={{width:px(44),height:px(44)}}></Radio>
                             <Text style={styles.smallText}>{'采购价'}</Text>
@@ -53,7 +53,7 @@ export default class PriceLine extends Component {
                             type={"number"}/>
                             <Text style={[styles.smallText,{marginLeft:px(8),marginRight:px(8)}]}>% </Text>
                         </View>
-                    </Radio.Group>
+                    </RadioGroup>
                     ):
                     (
                         <View style={{flexDirection:'row',alignItems:'center',marginTop:px(8)}}>
@@ -81,7 +81,7 @@ export default class PriceLine extends Component {
                         checkedStyle={{borderRadius:px(4),width:px(40),height:px(40)}}/>
                         <Text style={styles.smallText} onClick={()=>{callback('none',title,'point')}}>去掉小数点价格</Text>
                     </View>
-                    <Radio.Group style={{flexDirection:'row',alignItems:'center'}} value={removeWay} onChange={(value)=>{callback(value,title,'remove')}}>
+                    <RadioGroup style={{flexDirection:'row',alignItems:'center'}} value={removeWay} onChange={(value)=>{callback(value,title,'remove')}}>
                         <View style={styles.radioLine} onClick={()=>{callback("1",title,'remove')}}>
                             <Radio size="small" value={"1"} type="dot" disabled={!isRemovePoint}></Radio>
                             <Text style={{fontSize:px(28),color:'#333333'}}>四舍五入</Text>
@@ -90,7 +90,7 @@ export default class PriceLine extends Component {
                             <Radio size="small" value={"2"} type="dot" disabled={!isRemovePoint}></Radio>
                             <Text style={{fontSize:px(28),color:'#333333'}}>直接去掉</Text>
                         </View>
-                    </Radio.Group>
+                    </RadioGroup>
                 </View>
             </View>
         );

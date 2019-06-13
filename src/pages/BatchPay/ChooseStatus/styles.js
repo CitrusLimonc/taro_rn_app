@@ -11,7 +11,6 @@ export default {
         borderBottomWidth:px(2)
     },
     cancelBtn:{
-        backgroundColor:"rgb(238, 238, 238)",
         alignItems: 'center',
         justifyContent: 'center',
         width: px(150),

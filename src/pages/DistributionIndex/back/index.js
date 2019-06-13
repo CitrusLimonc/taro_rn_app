@@ -44,7 +44,7 @@ export default class Body extends Component{
                 loginId:'萌晓月cy',
             });
         },(error)=>{
-            // alert(JSON.stringify(error));
+            // console.error(error);
             this.setState({
                 distribute:'2019-06-01',
                 toux:'',

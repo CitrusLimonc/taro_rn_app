@@ -1,5 +1,6 @@
 import Taro, { Component, Config } from '@tarojs/taro';
-import { View, Text, Image, Button} from '@tarojs/components';
+import { View, Text, Image} from '@tarojs/components';
+import AyButton from '../../Component/AyButton/index';
 import Event from 'ay-event';
 import styles from './styles';
 import {UitlsRap} from '../../Public/Biz/UitlsRap.js';
@@ -30,14 +31,14 @@ export default class Openwd extends Component {
         });
     }
 
-    // config: Config = {
-    //     navigationBarTitleText: '分享商品'
-    // }
+    config = {
+        navigationBarTitleText: '分享商品'
+    }
 
     componentWillMount(){
         const self =this;
-        let shopid = GetQueryString({name:'shopid'});
-        let shopname = GetQueryString({name:'shopname'});
+        let shopid = GetQueryString({name:'shopid',self:this});
+        let shopname = GetQueryString({name:'shopname',self:this});
         let shopnamede = decodeURI(shopname);
         this.state.shopid = shopid;
         this.state.shopname = shopnamede;
@@ -99,7 +100,7 @@ export default class Openwd extends Component {
                     IsEmpty(this.state.pic)?(<View  style={styles.Picbodypic}></View>):(<Image src={this.state.pic} style={styles.Picbodypic}></Image>)
                 }
                     {/* <Image src={this.state.pic} style={styles.Picbodypic}></Image> */}
-                    <Button onClick={()=>{this.reloadpic()}} style={styles.Picbodybutton} type="normal">重新生成</Button>
+                    <AyButton onClick={()=>{this.reloadpic()}} style={styles.Picbodybutton} type="normal">重新生成</AyButton>
                 </View>
                 <Text style={styles.importText}>注意：这是您的开通爱用旺铺的专属二维码，请不要分享给除您以外的任何人，分享行为带来的风险，由您自行承担</Text>
                 <Text style={styles.firstText}>2.开通成功后，使用代发助手铺货的商品自动同步到小程序店铺；小程序分享的商品如果有买家付款，订单会自动同步到代发助手的待采购列表。</Text>

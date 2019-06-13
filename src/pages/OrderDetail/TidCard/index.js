@@ -82,7 +82,7 @@ export default class TidCard extends Component {
                         !IsEmpty(testdata.buyer_nick) ?
                         <TradeNick loginid={testdata.buyer_nick} text={testdata.buyer_nick} title={testdata.store_id=='wc'?'买家昵称':'买家旺旺'} />
                         :
-                        ''
+                        null
                     }
                     {!IsEmpty(cardData['buyerFeedback'])?(
                         <Remark remark={cardData['buyerFeedback']}/>
@@ -143,7 +143,7 @@ export default class TidCard extends Component {
                             !IsEmpty(testdata.buyer_nick) ?
                             <TradeNick loginid={testdata.buyer_nick} text={testdata.buyer_nick} title={testdata.store_id=='wc'?'买家昵称':'买家旺旺'} />
                             :
-                            ''
+                            null
                         }
                         {!IsEmpty(testdata.seller_memo)?(
                             <TradeSellerMemo ModifyMo={this.ModifyMo} text={testdata.seller_memo} clo={testdata.seller_flag}/>
@@ -184,7 +184,7 @@ export default class TidCard extends Component {
                             !IsEmpty(testdata.buyer_nick) ?
                             <TradeNick loginid={testdata.buyer_nick} text={testdata.buyer_nick} title={testdata.store_id=='wc'?'买家昵称':'买家旺旺'} />
                             :
-                            ''
+                            null
                         }
                         {!IsEmpty(testdata.seller_memo)?(
                             <TradeSellerMemo ModifyMo={this.ModifyMo} text={testdata.seller_memo} clo={testdata.seller_flag}/>
@@ -211,7 +211,7 @@ export default class TidCard extends Component {
                             !IsEmpty(testdata.buyer_nick) ?
                             <TradeNick loginid={testdata.buyer_nick} text={testdata.buyer_nick} title={testdata.store_id=='wc'?'买家昵称':'买家旺旺'} />
                             :
-                            ''
+                            null
                         }
                         <TradeProducts showex={this.showex} order={testdata} tapstate={status} datasource={cardData['productItems']} />
                         <EasyPay rex={true} data={testdata} products={cardData['productItems']}/>
@@ -247,7 +247,7 @@ export default class TidCard extends Component {
                             !IsEmpty(testdata.buyer_nick) ?
                             <TradeNick loginid={testdata.buyer_nick} text={testdata.buyer_nick} title={testdata.store_id=='wc'?'买家昵称':'买家旺旺'} />
                             :
-                            ''
+                            null
                         }
                         {!IsEmpty(cardData['buyerFeedback'])?(
                             <Remark remark={cardData['buyerFeedback']}/>

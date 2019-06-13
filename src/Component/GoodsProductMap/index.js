@@ -1,5 +1,6 @@
 import Taro, { Component, Config } from '@tarojs/taro';
 import {View,Text,ScrollView} from '@tarojs/components';
+import { Grid } from '@ant-design/react-native';
 import GridCell from './GridCell';
 import {GoToView} from '../../Public/Biz/GoToView.js';
 import { IsEmpty } from '../../Public/Biz/IsEmpty';
@@ -31,6 +32,7 @@ export default class GoodsProductMap extends Component {
 		return (
 			<GridCell
 				size={size}
+				key = {index}
 				dataSource={dataSource}
 				from ={this.props.from}
 				callback = {
@@ -124,6 +126,7 @@ export default class GoodsProductMap extends Component {
 				}
 				doms.push(
 					<GridCell
+					key = {i}
 					textstyle={"center"}
 					size={size}
 					from ={this.props.from}
@@ -145,22 +148,21 @@ export default class GoodsProductMap extends Component {
 			}
 			return (
 				<ScrollView
-				horizontal={true}
-				showScrollBar = {false}
-					style={{ backgroundColor: '#ffffff', flex: 1, width: px(750),height:viewHeight }}
+				scrollX={true}
+				style={{ backgroundColor: '#ffffff', flex: 1, width: px(750),height:viewHeight }}
 				>
 					{doms}
 				</ScrollView>
 			);
 		}else{ //多列展示
 			return (
-				<MultiRow
-					dataSource={dataSource}
-					rows = {
-						rows
-					}
-					renderCell={this.renderGridCell}
-				/>
+				<ScrollView>
+					<Grid
+					data = { dataSource }
+					columnNum = { rows }
+					renderItem = {this.renderGridCell}
+					/>
+				</ScrollView>
 			);
 		}
 	}

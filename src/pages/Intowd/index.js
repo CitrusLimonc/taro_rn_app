@@ -16,9 +16,9 @@ export default class Intowd extends Component {
         }
     }
 
-    // config: Config = {
-    //     navigationBarTitleText: '进入小程序店铺'
-    // }
+    config = {
+        navigationBarTitleText: '进入小程序店铺'
+    }
 
     render(){
         return (

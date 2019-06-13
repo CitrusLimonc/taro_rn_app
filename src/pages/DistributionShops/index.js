@@ -1,5 +1,9 @@
 import Taro, { Component, Config } from '@tarojs/taro';
-import {View,Text,Image,Input,Button,ScrollView} from '@tarojs/components';
+import {View,Text,Image,Input,ScrollView} from '@tarojs/components';
+import { Toast , Portal } from '@ant-design/react-native';
+import AyButton from '../../Component/AyButton/index';
+import { FlatList }  from 'react-native';
+import Dialog from '../../Component/Dialog';
 import Event from 'ay-event';
 import ItemIcon from '../../Component/ItemIcon';
 import AiyongDialog from '../../Component/AiyongDialog';
@@ -66,7 +70,7 @@ export default class DistributionShops extends Component {
             isRefreshing:false,
             refreshText:'↓ 下拉刷新',
             fromPage:'',
-            from:GetQueryString({name:'from'}),
+            from:GetQueryString({name:'from',self:this}),
             notChooseSpecs:'',
             inputname:'',
             lotskuLeftText:'',
@@ -78,7 +82,7 @@ export default class DistributionShops extends Component {
                 'message':'',
                 'buttons':[]
             },
-            showWarning:true,
+            showWarning:false,
             imageUrl:''
         }
         this.userNick = '';
@@ -93,6 +97,8 @@ export default class DistributionShops extends Component {
         this.openelldialog = '';
         this.isfromself = '';
         this.type = "";
+        this.loading = '';
+        this.itemKey = 0;
         let self = this;
         Event.on('back',function(e){
             if (self.state.fromPage == 'orderList') {
@@ -110,34 +116,34 @@ export default class DistributionShops extends Component {
 
     }
 
-    // config: Config = {
-    //     navigationBarTitleText: '选择店铺'
-    // }
+    config = {
+        navigationBarTitleText: '选择店铺'
+    }
 
     componentWillMount(){
         const self = this;
         // LuaEntry(); //保存用户信息
-        this.getWarningStatus((showWarning)=>{
-            this.setState({
-                showWarning:showWarning
-            });
-            if (!showWarning) {
+        // this.getWarningStatus((showWarning)=>{
+        //     this.setState({
+        //         showWarning:showWarning
+        //     });
+        //     if (!showWarning) {
                 this.gettypeshoplist();
-            }
-        });
+        //     }
+        // });
     }
 
     componentDidMount(){
         let self = this;
-        self.state.from = GetQueryString({name:'from'});
+        self.state.from = GetQueryString({name:'from',self:this});
 
         // if (self.state.showWarning) {
         //     console.log(self.state.showWarning,'return--did');
         //     return ;
         // }
-        let isfromself = GetQueryString({name:'isfromself'});
+        let isfromself = GetQueryString({name:'isfromself',self:this});
         this.isfromself = isfromself;
-        let iswd = GetQueryString({name:'iswd'});
+        let iswd = GetQueryString({name:'iswd',self:this});
         // RAP.user.getUserInfo({extraInfo: true}).then((info) => {
             // console.log('getUserInfo',info);
             // if(!IsEmpty(info.extraInfo) && info.extraInfo != false && info.extraInfo != 'false'){
@@ -153,11 +159,9 @@ export default class DistributionShops extends Component {
             if(IsEmpty(isfromself)){
                 DoBeacon('TD20181012161059','shoplist_show',self.userNick);
             }
-            self.offerId = GetQueryString({name:'offerId'});
-            self.type = GetQueryString({
-            	name: 'type'
-            });
-            self.supplierMemberId = GetQueryString({name:'supplierMemberId'});
+            self.offerId = GetQueryString({name:'offerId',self:this});
+            self.type = GetQueryString({name: 'type',self:this});
+            self.supplierMemberId = GetQueryString({name:'supplierMemberId',self:this});
             // self.offerId = '578897732596';
             //判断授权
             NetWork.Get({
@@ -169,13 +173,13 @@ export default class DistributionShops extends Component {
                 console.log('Orderreturn/authorDistribute',rsp);
                 //有结果
                 if (!IsEmpty(rsp.code) && rsp.code=='200') {
-                    Taro.showLoading({ title: '加载中...' });
+                    self.loading = Toast.loading('加载中...');
                     // 判断库里是否有店铺列表数据
                     self.getShops((result)=>{
                         if (!IsEmpty(result)) {
                             self.setState({
                                 shopList:result,
-                                fromPage:GetQueryString({name:'fromPage'}),
+                                fromPage:GetQueryString({name:'fromPage',self:this}),
                                 isLoading:false
                             });
                             if(iswd==1){
@@ -197,7 +201,7 @@ export default class DistributionShops extends Component {
                                     chooseList:chooseList
                                 })
                             }
-                            Taro.hideLoading();
+                            Portal.remove(self.loading);
                         } else {
                             //没有数据  判断授权
                             self.sureAccess('taobao',false,true);
@@ -206,7 +210,7 @@ export default class DistributionShops extends Component {
                 } else {
                     self.setState({
                         shopList:[],
-                        fromPage:GetQueryString({name:'fromPage'}),
+                        fromPage:GetQueryString({name:'fromPage',self:this}),
                         isLoading:false
                     });
                     // RAP.sso.goAuth(8869440);
@@ -214,19 +218,23 @@ export default class DistributionShops extends Component {
             },(error)=>{
                 self.setState({
                     shopList:[],
-                    fromPage:GetQueryString({name:'fromPage'}),
+                    fromPage:GetQueryString({name:'fromPage',self:this}),
                     isLoading:false
                 });
-                alert(JSON.stringify(error));
+                console.error(error);
             });
         // }).catch((error) => {
         //     self.setState({
         //         shopList:[],
-        //         fromPage:GetQueryString({name:'fromPage'}),
+        //         fromPage:GetQueryString({name:'fromPage',self:this}),
         //         isLoading:false
         //     });
         //     console.log(error);
         // });
+
+        this.setState({
+            from:self.state.from
+        });
 
 
         //选中微店,去掉淘宝店选择
@@ -253,7 +261,7 @@ export default class DistributionShops extends Component {
     //获取店铺类型的列表
     gettypeshoplist=()=>{
         const self = this;
-        NetWork.Post({
+        NetWork.Get({
 			url:'Orderreturn/getShopTags',
         },(rsp)=>{
 			if(!IsEmpty(rsp)){
@@ -262,23 +270,21 @@ export default class DistributionShops extends Component {
                     shopTypeList:rsp,
                 })
 			}else{
-                Taro.showToast({
-                    title: '获取店铺类型列表数据失败',
-                    icon: 'none',
-                    duration: 2000
-                });
+                Toast.info('获取店铺类型列表数据失败', 2);
 			}
+        },(error)=>{
+            Toast.info(JSON.stringify(error), 2);
         });
     }
     //获取店铺列表
     getShops = (callback) =>{
         const self = this;
-        Taro.showLoading({ title: '加载中...' });
+        self.loading = Toast.loading('加载中...');
         NetWork.Get({
             url:'Distributeproxy/getProxyShopInfo',
             data:{}
         },(shopRes)=>{
-            console.log('distribution/getProxyShopInfo',shopRes);
+            console.log('Orderreturn/getProxyShopInfo',shopRes);
             //有数据
             if(!IsEmpty(shopRes.result)){
                 let shopList = shopRes.result;
@@ -306,23 +312,22 @@ export default class DistributionShops extends Component {
                             shopList[key].hasAuth = hasAuth;
                         });
                     }
-                    Taro.hideLoading();
+                    Portal.remove(self.loading);
                     callback(shopList);
                 },(error)=>{
-                    alert(JSON.stringify(error));
-                    Taro.hideLoading();
+                    console.error(error);
+                    Portal.remove(self.loading);
                     callback(shopList);
                 });
             } else {
-                Taro.hideLoading();
+                Portal.remove(self.loading);
                 callback([]);
-
             }
 
         },(error)=>{
             callback([]);
-            alert(JSON.stringify(error));
-            Taro.hideLoading();
+            console.error(error);
+            Portal.remove(self.loading);
         });
     }
 
@@ -330,17 +335,15 @@ export default class DistributionShops extends Component {
     isdisabled=(diaabledone,shoptype,isrunning)=>{
         if(diaabledone){
             if(shoptype == 'wc'&&isrunning == '0'){
-                Taro.showToast({
-                    title: '删除旺铺请联系客服',
-                    icon: 'none',
-                    duration: 2000
-                });
+                Toast.info('删除旺铺请联系客服', 2);
             }
         }
     }
 
     //渲染店铺列表
-    renderRow = (item,key) =>{
+    renderRow = (items) =>{
+        let key = items.index;
+        let item = items.item;
         const { from , chooseList,shopList} = this.state;
         const self = this;
         let isChecked = false;
@@ -380,6 +383,7 @@ export default class DistributionShops extends Component {
         }
         doms.push(
             <ShopItem
+            key={key}
             isdisabled = {this.isdisabled}
             diaabledone = {diaabledone}
             checkboxStyle = {checkboxStyle}
@@ -394,7 +398,7 @@ export default class DistributionShops extends Component {
         );
         if (key == shopList.length -1) {
             doms.push(
-                <View style={{marginTop:px(56),flexDirection:'row',alignItems:'center',justifyContent:'center'}} onClick={()=>{UitlsRap.openChat('爱用科技1688');}}>
+                <View key={key + 1} style={{marginTop:px(56),flexDirection:'row',alignItems:'center',justifyContent:'center'}} onClick={()=>{UitlsRap.openChat('爱用科技1688');}}>
                     <Text style={{fontSize:px(28),color:'#999999'}}>添加店铺遇到问题？</Text>
                     <Text style={{fontSize:px(28),color:'#2357ff',marginLeft:px(6)}}>联系我们</Text>
                     <ItemIcon code={"\ue6ba"} iconStyle={[styles.addIcon,{fontSize:px(32)}]} boxStyle={{marginLeft:px(5)}}/>
@@ -452,9 +456,11 @@ export default class DistributionShops extends Component {
     }
 
     //渲染空列表
-    renderNull = (item,index) =>{
+    renderNull = (items) =>{
+        let index = items.index;
+        let item = items.item;
         return (
-            <View style={{flexDirection:'column',width:px(750),height:px(750),alignItems:'center',justifyContent:'center'}}>
+            <View key={0} style={{flexDirection:'column',width:px(750),height:px(750),alignItems:'center',justifyContent:'center'}}>
                 <Text style={{fontSize:px(32),color:'#4a4a4a'}}>请添加您的第一个店铺</Text>
                 <View style={styles.addBtn} onClick={()=>{this.addShops()}}>
                     <ItemIcon code={"\ue6b9"} iconStyle={styles.addIcon} onClick={()=>{this.addShops()}}/>
@@ -497,9 +503,9 @@ export default class DistributionShops extends Component {
                     imgSrc = item.urlgray;
                 }
                 tagDom.push(
-                    <View style={[this.state.lastShopType == item.name ? styles.tagImageActive:styles.tagImage,key==4?{marginRight:0}:{}]}
+                    <View key={key} style={[this.state.lastShopType == item.name ? styles.tagImageActive:styles.tagImage,key==4?{marginRight:px(0)}:{}]}
                     onClick={()=>{this.changShopType(item.name,item.isOk)}}>
-                        <Image src={imgSrc} style={{width:76,height:76}}/>
+                        <Image src={imgSrc} style={{width:px(76),height:px(76)}}/>
                     </View>
                 );
             });
@@ -523,14 +529,13 @@ export default class DistributionShops extends Component {
     //创建微信店铺
     creatWD =()=>{
         let self = this;
-        this.refs.creatWD.wrappedInstance.blur();
         setTimeout(()=>{
             if(self.state.from=='my'){
                 DoBeacon('TD20181012161059','mine_wcshop_create',self.userNick);
             }else{
                 DoBeacon('TD20181012161059','good_wcshop_create',self.userNick);
             }
-            Taro.showLoading({ title: '加载中...' });
+            self.loading = Toast.loading('加载中...');
             NetWork.Get({
                 url:'Distributeproxy/bindShopInfoWC',
                 // host:Domain.ITEM_TEST_URL,
@@ -557,18 +562,14 @@ export default class DistributionShops extends Component {
                         GoToView({status:'Openwd',query:{shopid:shopid,shopname:shopnamenew}});
                     }
                     self.refs.addDialog.hide();
-                    Taro.hideLoading();
+                    Portal.remove(self.loading);
                 })
               }else{
-                Taro.showToast({
-                    title: data.msg,
-                    icon: 'none',
-                    duration: 2000
-                });
-                Taro.hideLoading();
+                Toast.info(data.msg, 2);
+                Portal.remove(self.loading);
               }
             },(error)=>{
-                Taro.hideLoading();
+                Portal.remove(self.loading);
             });
         },1000);
 
@@ -612,11 +613,7 @@ export default class DistributionShops extends Component {
                     }
                 });
                 if (hasTaoShop && shopType == 'taobao') {
-                    Taro.showToast({
-                        title: '暂支持添加当前登录账号绑定的淘宝店铺',
-                        icon: 'none',
-                        duration: 2000
-                    });
+                    Toast.info('暂支持添加当前登录账号绑定的淘宝店铺', 2);
                     return ;
                 }
                 this.lastTime = GetTimeString('YY-MM-DD hh-mm-ss');
@@ -655,32 +652,32 @@ export default class DistributionShops extends Component {
                                     shopList:result
                                 });
                             }
-                            Taro.hideLoading();
+                            Portal.remove(self.loading);
                         })
                     } else if (rsp.code == '404') {
-                        Taro.hideLoading();
+                        Portal.remove(self.loading);
                         if (!isFirst) {
                             self.refs.sureDialog.show();
                             self.authorizationLink = rsp;
                             GoToView({status:rsp.authorLink,page_status:'special'});
                         } else {
                             self.setState({
-                                fromPage:GetQueryString({name:'fromPage'}),
+                                fromPage:GetQueryString({name:'fromPage',self:this}),
                                 isLoading:false
                             });
                         }
                     } else {
-                        Taro.hideLoading();
+                        Portal.remove(self.loading);
                     }
                 } else {
                     self.setState({
-                        fromPage:GetQueryString({name:'fromPage'}),
+                        fromPage:GetQueryString({name:'fromPage',self:this}),
                         isLoading:false
                     });
-                    Taro.hideLoading();
+                    Portal.remove(self.loading);
                 }
             },(error)=>{
-                alert(JSON.stringify(error));
+                console.error(error);
             });
         } else {
             this.retry = 0;
@@ -809,7 +806,7 @@ export default class DistributionShops extends Component {
             LocalStore.Set({'go_to_distribution_list':JSON.stringify(list)});
             //含有拼多多需要判断是否有未进行铺货设置的店铺
             if (hasPdd) {
-                Taro.showLoading({ title: '加载中...' });
+                self.loading = Toast.loading('加载中...');
                 let isSetted = false;
                 let notSetShop = [];
                 //判断是否有未进行铺货设置的店铺，有则返回shopIds
@@ -821,7 +818,7 @@ export default class DistributionShops extends Component {
                 },(rsp)=>{
                     console.log('Distributeproxy/getNotSetByids',rsp);
                     //有数据
-                    Taro.hideLoading();
+                    Portal.remove(self.loading);
                     //有结果，先设置
                     if (!IsEmpty(rsp.result)) {
                         notSetShop = rsp.result;
@@ -866,7 +863,7 @@ export default class DistributionShops extends Component {
                         //                     }
                         //                 }
                         //             },(error)=>{
-                        //                 alert(JSON.stringify(error));
+                        //                 console.error(error);
                         //             });
                         //     }
                         // }else{
@@ -900,11 +897,7 @@ export default class DistributionShops extends Component {
                                             })
                                             self.refs.lotsku.show()
                                         }else{
-                                            Taro.showToast({
-                                                title: '获取1688规格值失败',
-                                                icon: 'none',
-                                                duration: 2000
-                                            });
+                                            Toast.info('获取1688规格值失败', 2);
                                         }
                                     }
                                 }
@@ -915,8 +908,8 @@ export default class DistributionShops extends Component {
                         // }
                     }
                 },(error)=>{
-                    Taro.hideLoading();
-                    alert(JSON.stringify(error));
+                    Portal.remove(self.loading);
+                    console.error(error);
                 });
             } else {
             //没有则直接铺货
@@ -1000,8 +993,8 @@ export default class DistributionShops extends Component {
     }
     //删除店铺
     deleteshop=()=>{
-        Taro.showLoading({ title: '加载中...' });
         let self = this;
+        self.loading = Toast.loading('加载中...');
         const { chooseList } = this.state;
         NetWork.Get({
             url:'Orderreturn/deleteShop',
@@ -1009,17 +1002,13 @@ export default class DistributionShops extends Component {
                 shopIds:chooseList.join(',')
             }
         },(rsp)=>{
-            Taro.hideLoading();
-            Taro.showToast({
-                title: '删除成功',
-                icon: 'none',
-                duration: 2000
-            });
+            Portal.remove(self.loading);
+            Toast.info('删除成功', 2);
             this.state.chooseList = [];
             self.handleRefresh();
         },(error)=>{
-            Taro.hideLoading();
-            alert(JSON.stringify(error));
+            Portal.remove(self.loading);
+            console.error(error);
         });
     }
     //修改店铺名称
@@ -1066,28 +1055,36 @@ export default class DistributionShops extends Component {
                 </View>
             </View>
         );
-        let listDom = '';
-        let foots = '';
+        let listDom = null;
+        let foots = null;
         let {shopList,lastShopType,chooseList,isLoading,fromPage,from,questionnaireMsg,showWarning,imageUrl} = this.state;
         if (isLoading) {
-            listDom = '';
+            listDom = null;
         } else {
             if (IsEmpty(shopList)) {
-                listDom =(
-                    <ScrollView ref='mylist' scrollY = {true} style={{flex:1,backgroundColor:'#f5f5f5'}} scrollWithAnimation>
-                        {this.renderNull()}
-                    </ScrollView>
-                );
+                listDom =
+                <FlatList
+                ref="mylist"
+                style={{flex:1,backgroundColor:'#ffffff'}}
+                data={['null']}
+                horizontal={false}
+                renderItem={this.renderNull}
+                refreshing={this.state.isRefreshing}
+                onRefresh={()=>{this.handleRefresh()}}
+                keyExtractor={(item, index) => (index + '1')}
+                />;
             } else {
-                listDom =(
-                    <ScrollView ref='mylist' scrollY = {true} style={{flex:1,backgroundColor:'#f5f5f5'}} scrollWithAnimation>
-                        {
-                            this.state.shopList.map((item,key)=>{
-                                return this.renderRow(item,key)
-                            })
-                        }
-                    </ScrollView>
-                );
+                listDom =
+                <FlatList
+                ref="mylist"
+                style={{flex:1,backgroundColor:'#ffffff'}}
+                data={shopList}
+                horizontal={false}
+                renderItem={this.renderRow}
+                refreshing={this.state.isRefreshing}
+                onRefresh={()=>{this.handleRefresh()}}
+                keyExtractor={(item, index) => (index + '1')}
+                />;
             }
 
             if (fromPage == 'orderList') {
@@ -1139,15 +1136,15 @@ export default class DistributionShops extends Component {
                         !IsEmpty(imageUrl) ? 
                         <Image src={imageUrl} style={{width:px(750),height:px(992)}}/>
                         :
-                        ''
+                        null
                     }
                     </View>
                 </View>
             );
         } else {
             return (
-                <View>
-                    <Floattop/>
+                <View style={{flex:1,backgroundColor:'#ffffff'}}>
+                    {/* <Floattop/> */}
                     {/* <AlertBanner where='shop'/> */}
                     <View style={styles.topLine}>
                         <Text style={{fontSize:px(32),color:'#4a4a4a'}}>{from=='my' ? '管理您要铺货的店铺' : '请选择要铺货的店铺'}</Text>
@@ -1163,7 +1160,7 @@ export default class DistributionShops extends Component {
                         </View>*/}
                         {foots}
                     </View>
-                    {/* <Dialog ref={"addDialog"} duration={1000} maskStyle={styles.maskStyle} contentStyle={styles.modal2Style} maskClosable={false}>
+                    <Dialog ref={"addDialog"} contentStyle={styles.modal2Style} maskClosable={false}>
                         <View style={styles.dialogContent}>
                             <View style={styles.dialogBody}>
                                 <Text style={{fontSize:px(28),color:'#787993'}}>选择店铺类型</Text>
@@ -1171,7 +1168,7 @@ export default class DistributionShops extends Component {
                                     {this.renderShopTags()}
                                 </View>
                                 {
-                                        this.state.lastShopType == 'wc'?(<View style={styles.WDinputout}><ItemIcon code={"\ue6e7"} iconStyle={{fontSize:px(40),color:'#999999',marginRight:24,marginLeft:10}}/><Input ref={'creatWD'} maxLength={12} onChange={(value,e)=>{this.inputname(value)}} placeholder={'请给您的爱用旺铺起个名字'} style={styles.WDinput}></Input></View>):(null)
+                                        this.state.lastShopType == 'wc'?(<View style={styles.WDinputout}><ItemIcon code={"\ue6e7"} iconStyle={{fontSize:px(40),color:'#999999',marginRight:px(24),marginLeft:px(10)}}/><Input ref={'creatWD'} maxLength={12} onChange={(value,e)=>{this.inputname(value)}} placeholder={'请给您的爱用旺铺起个名字'} style={styles.WDinput}></Input></View>):(null)
                                 }
                                 <View style={styles.borderLine}>
                                     <Text style={{fontSize:px(24),color:'#999999'}}>{this.state.lastShopType == 'wc'? '什么是爱用旺铺？':'授权提醒'}</Text>
@@ -1201,7 +1198,7 @@ export default class DistributionShops extends Component {
                                     </View>)}
                             </View>
                         </View>
-                    </Dialog> */}
+                    </Dialog>
                     <AiyongDialog
                     maskClosable={true}
                     ref={"lotsku"}
@@ -1218,16 +1215,16 @@ export default class DistributionShops extends Component {
                     lastShopType={this.state.lastShopType}
                     authorizationLink={this.authorizationLink}
                     />
-                    {/* <ChooseSkuDialog ref={"skuDialog"}
+                    <ChooseSkuDialog ref={"skuDialog"}
                     offerId={this.offerId}
                     updateStates={this.updateStates}
                     from="chooseMore"
                     notChooseSpecs={this.state.notChooseSpecs}
-                    showLoading={()=>{Taro.showLoading({ title: '加载中...' });}}
-                    hideLoading={()=>{Taro.hideLoading();}}
+                    showLoading={()=>{this.loading = Toast.loading('加载中...');}}
+                    hideLoading={()=>{Portal.remove(this.loading);}}
                     skuDistribute = {this.skuDistribute}
-                    /> */}
-                    {/* <Dialog ref={"tellDialog"} duration={1000} maskStyle={styles.maskStyle} contentStyle={styles.modal2Style}>
+                    />
+                    <Dialog ref={"tellDialog"} contentStyle={styles.modal2Style}>
                         <View style={styles.dialogContent}>
                             <View style={{flexDirection:'row',justifyContent:'center'}}>
                                 <Text style={{marginTop:px(15),fontSize:px(38),color:'#4A4A4A'}}>锁定运费模板公告</Text>
@@ -1241,8 +1238,8 @@ export default class DistributionShops extends Component {
                                 </View>
                             </View>
                         </View>
-                    </Dialog> */}
-                    {/* <Dialog ref={"questionnaire"} duration={1000} closable={true} maskClosable={false} maskStyle={styles.maskStyle} contentStyle={styles.modalStyle}>
+                    </Dialog>
+                    <Dialog ref={"questionnaire"} maskClosable={false} contentStyle={styles.modalStyle}>
                         <View style={{flex:1,borderRadius: px(8),backgroundColor: '#fff',width: px(590),alignItems:'center',paddingBottom:px(24)}}>
                             <Image src={questionnaireMsg.pic} style={{height:238,width:590}}></Image>
                             {
@@ -1251,19 +1248,18 @@ export default class DistributionShops extends Component {
                                     <Text style={{fontSize:px(32),color:'#333333',lineHeight:px(40),fontWeight:700}}>{questionnaireMsg.message}</Text>
                                 </View>
                                 :
-                                ''
+                                null
                             }
                             {
                                 questionnaireMsg.buttons.map((item,key)=>{
-                                    return <Button style={styles.questionnairebutton} onClick={()=>{this.questionnaireClick(item.id)}}>{item.name}</Button>
+                                    return <AyButton style={styles.questionnairebutton} onClick={()=>{this.questionnaireClick(item.id)}}>{item.name}</AyButton>
                                 })
                             }
                         </View>
                         <View style={styles.closeout} onClick={()=>{this.questionnaireClick('close');}}>
                             <ItemIcon code={"\ue69a"}  iconStyle={styles.close}/>
                         </View>
-    
-                    </Dialog> */}
+                    </Dialog>
                 </View>
             );
         }

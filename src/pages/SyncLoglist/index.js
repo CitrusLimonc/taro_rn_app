@@ -1,5 +1,7 @@
 import Taro, { Component, Config } from '@tarojs/taro';
 import { View,Text,Input} from '@tarojs/components';
+import { Toast , Portal } from '@ant-design/react-native';
+import { FlatList , RefreshControl}  from 'react-native';
 import ProductCard from './ProductCard';
 import SideDialog from './SideDialog';
 import ItemIcon from '../../Component/ItemIcon';
@@ -37,15 +39,16 @@ export default class SyncLoglist extends Component{
         this.userNick = '';
         this.userId = '';
         this.memberId = '';
+        this.loading = '';
     }
 
-    // config: Config = {
-    //     navigationBarTitleText: '库存预警'
-    // }
+    config = {
+        navigationBarTitleText: '库存预警'
+    }
 
     componentDidMount(){
         let self = this;
-        Taro.showLoading({ title: '加载中...' });
+        this.loading = Toast.loading('加载中...');
         // RAP.user.getUserInfo({extraInfo: true}).then((info) => {
         //     console.log('getUserInfo',info);
         //     if(!IsEmpty(info.extraInfo) && info.extraInfo != false && info.extraInfo != 'false'){
@@ -84,7 +87,7 @@ export default class SyncLoglist extends Component{
                 self.setState({
                     showLoading:false
                 });
-                Taro.hideLoading();
+                Portal.remove(self.loading);
             }
         });
     }
@@ -106,14 +109,14 @@ export default class SyncLoglist extends Component{
             }
         },(error)=>{
             callback([]);
-            alert(JSON.stringify(error));
+            console.error(error);
         });
     }
 
 
     //底部文本
     renderFooter = () => {
-        let foot = '';
+        let foot = null;
         if (this.state.showLoading) {
             foot =
             <View style={{width: px(750),height: px(50),flexDirection: 'row',backgroundColor: '#f5f5f5',justifyContent: 'center',alignItems: 'flex-start'}}>
@@ -173,7 +176,7 @@ export default class SyncLoglist extends Component{
                 isLoading:false,
                 isRefreshing: false,
             });
-            Taro.hideLoading();
+            Portal.remove(this.loading);
         },(error)=>{
             this.setState({
                 dataSource:[],
@@ -182,7 +185,7 @@ export default class SyncLoglist extends Component{
                 isLoading:false,
                 isRefreshing: false,
             });
-            Taro.hideLoading();
+            Portal.remove(this.loading);
         });
     }
 
@@ -224,7 +227,9 @@ export default class SyncLoglist extends Component{
     }
 
     //空列表的内部
-    renderNull = (item,index) =>{
+    renderNull = (items) =>{
+        let index = items.index;
+        let item = items.item;
         return (
             <View style={{flex:1}}>
                 <View style={styles.midContent}>
@@ -236,7 +241,10 @@ export default class SyncLoglist extends Component{
     }
 
     //获取商品
-    getProductLists = (item, index) => {
+    getProductLists = (items) => {
+        let index = items.index;
+        let item = items.item;
+
         if (item == "null") {
             return ;
         }
@@ -247,7 +255,7 @@ export default class SyncLoglist extends Component{
     //搜索关键字
     onChangetext = (value) =>{
         let self = this;
-        Taro.showLoading({ title: '加载中...' });
+        this.loading = Toast.loading('加载中...');
         this.setState({
             searchtext:value,
         })
@@ -261,7 +269,7 @@ export default class SyncLoglist extends Component{
 
     //确认筛选
     submitFilter = (lastShop,issuccess,synctime) =>{
-        Taro.showLoading({ title: '加载中...' });
+        this.loading = Toast.loading('加载中...');
         let params = {
             pageNo:1
         };
@@ -285,7 +293,7 @@ export default class SyncLoglist extends Component{
     }
 
     render(){
-        let headSelect='';//搜索、选择状态
+        let headSelect=null;//搜索、选择状态
         let {isLoading,dataSource,shopList} = this.state;
 
         //批量状态的头部
@@ -301,30 +309,34 @@ export default class SyncLoglist extends Component{
                 </View>
             </View>
             );
-        let content = '';
+        let content = null;
         if (isLoading) {
-            content = '';
+            content = null;
         } else {
             if (IsEmpty(dataSource)) {
                 content =
-                <ListView
+                <FlatList
                 ref="itemListView"
-                dataSource={['null']}
-                renderHeader={this.renderHeader}
-                renderRow={this.renderNull}
-                showScrollbar={false}
+                data={['null']}
+                horizontal={false}
+                renderItem={this.renderNull}
+                refreshing={this.state.isRefreshing}
+                onRefresh={()=>{this.handleRefresh()}}
+                keyExtractor={(item, index) => (index + '1')}
                 />;
             } else {
                 content =
-                <ListView
+                <FlatList
                 ref="itemListView"
-                dataSource={dataSource}
-                renderRow={this.getProductLists}
-                renderHeader={this.renderHeader}
-                renderFooter={this.renderFooter}
-                onEndReached={this.onLoadMore}
+                data={dataSource}
+                horizontal={false}
+                renderItem={this.getProductLists}
+                ListFooterComponent={this.renderFooter}
+                refreshing={this.state.isRefreshing}
+                onRefresh={()=>{this.handleRefresh()}}
+                onEndReached = {()=>{this.onLoadMore()}}
                 onEndReachedThreshold={300}
-                showScrollbar={false}
+                keyExtractor={(item, index) => (index + '1')}
                 />;
             }
         }

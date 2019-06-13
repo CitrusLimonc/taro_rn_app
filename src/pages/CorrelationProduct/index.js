@@ -22,9 +22,9 @@ export default class CorrelationProduct extends Component {
         this.memberId = '';
     }
 
-    // config: Config = {
-    //     navigationBarTitleText: '关联商品'
-    // }
+    config = {
+        navigationBarTitleText: '关联商品'
+    }
 
     componentWillMount(){
 

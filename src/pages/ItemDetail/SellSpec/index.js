@@ -153,7 +153,7 @@ export default class SellSpec extends Component{
                             <Text style={{fontSize:px(28),color:'#727272'}}>{price}</Text>
                         </View>
                         :
-                        ''
+                        null
                     }
                     <View style={[styles.tableBodyLine,{marginLeft:px(-2),flex:1,height:px(height)}]}>
                         <Text style={{fontSize:px(28),color:'#727272'}}>{item.amountOnSale}</Text>
@@ -165,7 +165,7 @@ export default class SellSpec extends Component{
     }
 
     render(){
-        let content='';
+        let content=null;
         if (!IsEmpty(this.props.productInfo.saleInfo)) {
             if(this.props.productInfo.saleInfo.quoteType==0){
                 let amount='';
@@ -290,7 +290,7 @@ export default class SellSpec extends Component{
                                     <Text style={{fontSize:px(24),color:'#9e9e9e'}}>单价(元)</Text>
                                 </View>
                                 :
-                                ''
+                                null
                             }
                             <View style={[styles.tableHead,{marginLeft:px(-2),flex:1}]}>
                                 <Text style={{fontSize:px(24),color:'#9e9e9e'}}>可售数量</Text>
@@ -300,7 +300,7 @@ export default class SellSpec extends Component{
                     </View>
                 </View>;
             } else {
-                content = '';
+                content = null;
             }
         }
 

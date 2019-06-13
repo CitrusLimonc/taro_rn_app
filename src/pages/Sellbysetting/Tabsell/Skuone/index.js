@@ -1,5 +1,6 @@
 import Taro, { Component, Config } from '@tarojs/taro';
 import { View, Text ,Input} from '@tarojs/components';
+import { Toast , Portal } from '@ant-design/react-native';
 import styles from './styles';
 import ItemIcon from '../../../../Component/ItemIcon';
 import {NetWork} from '../../../../Public/Common/NetWork/NetWork.js';
@@ -32,11 +33,7 @@ export default class Skuone extends Component {
             console.log('true');
       
         }else{
-            Taro.showToast({
-                title: '请输入大于0的两位小数或整数',
-                icon: 'none',
-                duration: 2000
-            });
+            Toast.info('请输入大于0的两位小数或整数', 2);
             return;
         }
         //判断可售数量是否合法
@@ -45,14 +42,8 @@ export default class Skuone extends Component {
         if(pandunnum.test(this.state.defect_num)){
             item.defect_num = this.state.defect_num;
             console.log('true');
-    
-
         }else{
-            Taro.showToast({
-                title: '请输入大于等于0的整数',
-                icon: 'none',
-                duration: 2000
-            });
+            Toast.info('请输入大于等于0的整数', 2);
             return;
         }
             let skuInfos = [];
@@ -81,17 +72,9 @@ export default class Skuone extends Component {
                 params:params,
             },(data)=>{
                 if(data.code == 200){
-                    Taro.showToast({
-                        title: '修改成功',
-                        icon: 'none',
-                        duration: 2000
-                    });
+                    Toast.info('修改成功', 2);
                 }else{
-                    Taro.showToast({
-                        title: '修改失败',
-                        icon: 'none',
-                        duration: 2000
-                    });
+                    Toast.info('修改失败', 2);
                 }
             });
             this.setState({

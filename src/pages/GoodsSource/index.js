@@ -1,4 +1,5 @@
 import Taro, { Component, Config } from '@tarojs/taro';
+import { FlatList , RefreshControl}  from 'react-native';
 import { View, Text } from '@tarojs/components';
 import {IsEmpty} from '../../Public/Biz/IsEmpty.js';
 import GoodsProductMap from '../../Component/GoodsProductMap';
@@ -31,9 +32,9 @@ export default class GoodsSource extends Component {
 		this.getlisttoken = 0;
 	}
 	
-	// config: Config = {
-    //     navigationBarTitleText: '推荐货源'
-    // }
+	config = {
+        navigationBarTitleText: '推荐货源'
+    }
 
     componentWillMount(){
 		let self = this;
@@ -117,7 +118,7 @@ export default class GoodsSource extends Component {
             loadmore:false
 		});
 
-        this.refs.recommendList.resetLoadmore();
+        // this.refs.recommendList.resetLoadmore();
 	}
 
     // 底部加载更多
@@ -169,7 +170,7 @@ export default class GoodsSource extends Component {
     renderRow = () =>{
         let doms = [];
         doms.push(
-            <View style={{marginTop:px(24),backgroundColor:"#fff"}}>
+            <View style={{marginTop:px(24),backgroundColor:"#fff"}} key={0}>
                 <GoodsProductMap rows={2} dataSource={this.state.gridData} />
             </View>
         );
@@ -188,15 +189,17 @@ export default class GoodsSource extends Component {
 
     render(){
         return (
-			<ListView
+			<FlatList
 			ref = "recommendList"
 			style = {{flex:1,backgroundColor:'#f5f5f5'}}
-			onEndReachedThreshold = {800}
+			data={['null']}
+			horizontal={false}
+			renderItem={this.renderRow}
+			refreshing={this.state.isRefreshing}
+			onRefresh={()=>{this.handleRefresh()}}
 			onEndReached = {()=>{console.log('到底了。。',this.page_no);this.loadmore();}}
-			renderFooter = {this.renderFooter}
-			renderHeader = {this.renderHeader}
-			renderRow = {this.renderRow}
-			dataSource = {['null']}
+			onEndReachedThreshold={800}
+			keyExtractor={(item, index) => (index + '1')}s
 			/>
         );
     }

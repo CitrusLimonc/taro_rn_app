@@ -37,7 +37,7 @@ export default {
         height: px(100),
         paddingTop: px(10),
         paddingBottom: px(10),
-        position:'fixed',
+        position:'absolute',
         bottom: px(0),
         left: px(0),
         right: px(0),
@@ -125,12 +125,9 @@ export default {
     searchIcon:{
         fontSize: px(32),
         color: '#a8a8a8',
-        position: 'absolute',
-        left: px(35),
-        top: px(31),
     },
-    maskStyle:{
-        backgroundColor:'rgba(0,0,0,0.5)'
+    searchIconBox:{
+        marginLeft: px(24),
     },
     modalStyle:{
         position: 'absolute',

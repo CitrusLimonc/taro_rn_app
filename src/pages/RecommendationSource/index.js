@@ -1,5 +1,7 @@
 import Taro, { Component, Config } from '@tarojs/taro';
 import { View, Text,ScrollView,Image} from '@tarojs/components';
+import { Toast , Portal , Grid } from '@ant-design/react-native';
+import { FlatList , RefreshControl}  from 'react-native';
 import {IsEmpty} from '../../Public/Biz/IsEmpty.js';
 import GoodsProductMap from '../../Component/GoodsProductMap';
 import {GoToView} from '../../Public/Biz/GoToView.js';
@@ -40,9 +42,9 @@ export default class RecommendationSource extends Component {
 		this.userInfo = {}; //用户信息
 	}
 	
-	// config: Config = {
-    //     navigationBarTitleText: '货源推荐'
-    // }
+	config = {
+        navigationBarTitleText: '货源推荐'
+    }
 
     componentWillMount(){
 		let self = this;
@@ -52,11 +54,11 @@ export default class RecommendationSource extends Component {
 			'userId':'2190174972'
 		};
 		DoBeacon('TD20181012161059','goodspage_show',self.userInfo.loginId);
-		this.getSumSuggest();
-		this.getSlider();
-		this.querySuppliers();
-		this.getNewBestSupplier();	
-		this.getCargo();	
+		// this.getSumSuggest();
+		// this.getSlider();
+		// this.querySuppliers();
+		// this.getNewBestSupplier();	
+		// this.getCargo();	
 		// this.getbestsupplier();
 	}
 
@@ -93,13 +95,8 @@ export default class RecommendationSource extends Component {
 	// 			}
 
 	// 		}else{
-				// Taro.showToast({
-				// 	title: '获取数据失败',
-				// 	icon: 'none',
-				// 	duration: 2000
-				// });
+	// 			Toast.info('获取数据失败', 2);
 	// 		}
-
     //     });
 	// }
 
@@ -117,11 +114,7 @@ export default class RecommendationSource extends Component {
 					slider:rsp.value
 				})
 			}else{
-				Taro.showToast({
-					title: '获取数据失败',
-					icon: 'none',
-					duration: 2000
-				});
+				Toast.info('获取数据失败', 2);
 			}
 
         });
@@ -160,11 +153,7 @@ export default class RecommendationSource extends Component {
 				}
 
 			}else{
-				Taro.showToast({
-					title: '获取供应商数据失败',
-					icon: 'none',
-					duration: 2000
-				});
+				Toast.info('获取供应商数据失败', 2);
 			}
 
         });
@@ -223,11 +212,7 @@ export default class RecommendationSource extends Component {
 		let self = this;
 		NetWork.Get({
 			url:"Distributeproxy/querySuppliers",
-			data:{
-				supplierMemberId: item.primaryID,
-				pageNo: 1,
-				pageSize: 1,
-			}
+			data:{}
 		},(result)=>{
 			if (IsEmpty(result.errorCode)) {
 				let querySuppliersResult = result.result;
@@ -314,7 +299,7 @@ export default class RecommendationSource extends Component {
             loadmore:false
 		});
 
-        this.refs.recommendList.resetLoadmore();
+        // this.refs.recommendList.resetLoadmore();
 	}
 
 	// 获取包邮活动商品信息
@@ -330,11 +315,7 @@ export default class RecommendationSource extends Component {
 					titlePic:data.titlePic,
                 });
             }else{
-				Taro.showToast({
-					title: '获取包邮活动商品信息失败',
-					icon: 'none',
-					duration: 2000
-				});
+				Toast.info('获取包邮活动商品信息失败', 2);
             }
         });
     }
@@ -413,7 +394,7 @@ export default class RecommendationSource extends Component {
 		if(!IsEmpty(data)){
 			data.map((item,key)=>{
 				let pic = "https://cbu01.alicdn.com/"+item.picURI;
-				dom.push(<Image src={pic} style={{width:px(130),height:px(130),borderRadius: px(8), borderWidth:px(1),borderColor:'#e5e5e5',}}/>)
+				dom.push(<Image key={key} src={pic} style={{width:px(130),height:px(130),borderRadius: px(8), borderWidth:px(1),borderColor:'#e5e5e5',}}/>)
 			});
 		}
 		return dom;
@@ -434,7 +415,7 @@ export default class RecommendationSource extends Component {
 			let supplierData = JSON.stringify(gotoData);
 			let supplierDatanew = encodeURI(supplierData);
 			doms.push(
-				<View>
+				<View key={j}>
 					<View onClick={()=>{
 						DoBeacon('TD20181012161059','goodspage_qualitysupplier_click',self.userInfo.loginId);
 						GoToView({status:'SupplierGoods',query:{fromPage:'RecommendationSource',supplierdata:supplierDatanew}});
@@ -484,7 +465,7 @@ export default class RecommendationSource extends Component {
 		this.state.slider.map((item, index) => {
 			let beacon = 'goodspage_banner'+(index+1);
 			body.push(
-				<View style={{ width: px(750), height: px(200) }}>
+				<View key={index} style={{ width: px(750), height: px(200) }}>
 					<Image resizeMode={"contain"} src={item.sliderimg} onClick={()=>{this.gotoOutUrl(item.sliderurl);}} style={{ width: px(750), height: 200 }} />
 				</View>
 			);
@@ -510,7 +491,7 @@ export default class RecommendationSource extends Component {
     renderGridCell = (item, index) => {
 		let url = 'https://detail.1688.com/offer/'+item.cargonumid+'.html'
         return(
-            <View onClick={()=>{this.gotoOutUrl(url,item.cargoid)}} style={styles.imgBody}>
+            <View onClick={()=>{this.gotoOutUrl(url,item.cargoid)}} style={styles.imgBody} key={index}>
             {/* <View style={styles.imgBody}> */}
                 <Image  src={item.cargoimg} style={styles.imgOne}/>
             </View>
@@ -519,7 +500,7 @@ export default class RecommendationSource extends Component {
     renderRow = () =>{
 		let doms = [];
 		doms.push(
-			<View onClick={()=>{GoToView({status:'ItemSelectPage',query:{from:'searchSource'}})}}>
+			<View key={0} onClick={()=>{GoToView({status:'ItemSelectPage',query:{from:'searchSource'}})}}>
 				<Image src={'https://q.aiyongbao.com/1688/web/img/newSearchTitle.png'} style={{width:px(750),height:px(128)}}/>
 			</View>
 		)
@@ -539,7 +520,7 @@ export default class RecommendationSource extends Component {
 		// 	</Slider>
 		// )
         doms.push(
-            <View style={{backgroundColor:"#fff"}}>
+            <View key={1} style={{backgroundColor:"#fff"}}>
                 <View style={{justifyContent:"space-between",flexDirection: 'row',alignItems:'center',paddingBottom: px(30), paddingLeft: px(24), paddingRight: px(24), paddingTop: px(30)}}>
                     <View><Text style={{ color: "#333333", fontSize: px(32), fontWeight:"bold"}}>合作商家</Text></View>
                     <View onClick={this.goToView.bind(this,{status:'SupplierList',backgroundColor:'red'})} style={{flex:1,flexDirection:'row',justifyContent:'flex-end',alignItems:'center'}}>
@@ -552,16 +533,16 @@ export default class RecommendationSource extends Component {
 		);
 		if(!IsEmpty(this.state.titlePic)&&!IsEmpty(this.state.cargo)){
 			doms.push(
-				<View style={{ marginTop: px(32),backgroundColor:'#ffffff'}}>
+				<View key={2} style={{ marginTop: px(32),backgroundColor:'#ffffff'}}>
 					<View style={styles.titleImg}>
 						<Image src={this.state.titlePic} style={styles.titleImg}/>
 					</View>
-					<MultiRow
-						dataSource={this.state.cargo}
-						rows = {2}
-						renderCell={this.renderGridCell}
-						style={{ marginBottom: px(20)}}
-					/>
+					<Grid
+                    data = { this.state.cargo }
+                    columnNum = { 2 }
+                    renderItem = {this.renderGridCell}
+					style={{ marginBottom: px(20)}}
+                    />
 				</View>
 			)
 		}
@@ -577,7 +558,7 @@ export default class RecommendationSource extends Component {
         //     </View>
 		// );
 		doms.push(
-            <View style={{marginTop:px(24),backgroundColor:"#fff"}}>
+            <View key={3} style={{marginTop:px(24),backgroundColor:"#fff"}}>
                 <View style={{justifyContent:"space-between",flexDirection: 'row',alignItems:'center',paddingBottom: px(30), paddingLeft: px(24), paddingRight: px(24), paddingTop: px(30)}}>
                     <View><Text style={{ color: "#333333", fontSize: px(32)}}>推荐货源</Text></View>
                     <View onClick={this.goToView.bind(this,{status:'GoodsSource'})} style={{flex:1,flexDirection:'row',justifyContent:'flex-end',alignItems:'center'}}>
@@ -589,7 +570,7 @@ export default class RecommendationSource extends Component {
             </View>
 		);
 		doms.push(
-            <View style={{marginTop:px(24),backgroundColor:"#fff",alignItems:'center'}}>
+            <View key={4} style={{marginTop:px(24),backgroundColor:"#fff",alignItems:'center'}}>
                 <View style={{width:px(750),justifyContent:"flex-start",flexDirection: 'row',alignItems:'center',paddingBottom: px(30), paddingLeft: px(24), paddingRight: px(24), paddingTop: px(30)}}>
                     <View><Text style={{ color: "#333333", fontSize: px(32),fontWeight:"bold"}}>优质供应商</Text></View>
                 </View>
@@ -613,24 +594,19 @@ export default class RecommendationSource extends Component {
 
     render(){
         return (
-			// <ListView
-			// ref = "recommendList"
-			// style = {{flex:1,backgroundColor:'#f5f5f5'}}
-			// onEndReachedThreshold = {800}
-			// onEndReached = {()=>{console.log('到底了。。',this.page_no);this.loadmore();}}
-			// renderFooter = {this.renderFooter}
-			// renderHeader = {this.renderHeader}
-			// renderRow = {this.renderRow}
-			// dataSource = {['null']}
-			// />
-			<ScrollView 
-			ref = "recommendList" 
-			scrollY = {true} 
-			style={{flex:1,backgroundColor:'#f5f5f5'}} 
-			scrollWithAnimation
-			>
-				{this.renderRow()}
-			</ScrollView>
+			<FlatList
+			ref="recommendList"
+			style = {{flex:1,backgroundColor:'#f5f5f5'}}
+			data={['null']}
+			horizontal={false}
+			renderItem={this.renderRow}
+			ListFooterComponent={this.renderFooter}
+			refreshing={this.state.isRefreshing}
+			onRefresh={()=>{this.handleRefresh()}}
+			onEndReached = {()=>{console.log('到底了。。',this.page_no);this.loadmore();}}
+			onEndReachedThreshold={800}
+			keyExtractor={(item, index) => (index + '1')}
+			/>
         );
     }
 }

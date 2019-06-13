@@ -2,6 +2,7 @@
 
 import Taro, { Component, Config } from '@tarojs/taro';
 import { View, Text } from '@tarojs/components';
+import { Toast , Portal } from '@ant-design/react-native';
 import {IsEmpty} from '../../Public/Biz/IsEmpty.js';
 import px from '../../Biz/px.js';
 /*
@@ -87,11 +88,7 @@ class Vouch extends Component {
     copyVou(){
         const { tid } = this.props;
         UitlsRap.clipboard(tid,()=>{
-            Taro.showToast({
-                title: '订单号已复制',
-                icon: 'none',
-                duration: 2000
-            });
+            Toast.info('订单号已复制', 2);
         });
     }
 

@@ -22,8 +22,8 @@ export default {
         backgroundColor:'#eeefee',
         height:px(52),
         flexDirection:'row',
-        paddingLeft:12,
-        paddingRight:12,
+        paddingLeft:px(12),
+        paddingRight:px(12),
         borderRadius:px(4),
         alignItems:'center',
         justifyContent:'center',
@@ -36,8 +36,8 @@ export default {
         backgroundColor:'#ffefe5',
         height:px(52),
         flexDirection:'row',
-        paddingLeft:12,
-        paddingRight:12,
+        paddingLeft:px(12),
+        paddingRight:px(12),
         borderRadius:px(4),
         alignItems:'center',
         justifyContent:'center',
@@ -96,8 +96,8 @@ export default {
     },
     tagIcon:{
         position:'absolute',
-        right:0,
-        bottom:0,
+        right:px(0),
+        bottom:px(0),
         color:'#ff6000',
         fontSize:px(28),
     },
@@ -159,7 +159,7 @@ export default {
     inputLine:{
         flexDirection:'row',
         height:px(88),
-        borderBottomWidth:2,
+        borderBottomWidth:px(2),
         borderBottomColor:'#f5f5f5'
     },
     filterLine:{
@@ -170,10 +170,10 @@ export default {
     },
     selectTouch:{
         position:'absolute',
-        left:0,
-        right:0,
-        top:0,
-        bottom:0,
+        left:px(0),
+        right:px(0),
+        top:px(0),
+        bottom:px(0),
         height:px(88),
         width:px(520)
     },

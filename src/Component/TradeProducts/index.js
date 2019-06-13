@@ -1,5 +1,3 @@
-'use strict';
-
 import Taro, { Component, Config } from '@tarojs/taro';
 import { View, Text,Image } from '@tarojs/components';
 import {IsEmpty} from '../../Public/Biz/IsEmpty.js';
@@ -56,7 +54,7 @@ export default class TradeProducts extends Component {
         if(flag){
             textFlag = true;
         }
-        let ns_hs = '';
+        let ns_hs = null;
         let itemText='';
         if (item.store_id == 'taobao') {
             //淘宝的sku信息处理一下

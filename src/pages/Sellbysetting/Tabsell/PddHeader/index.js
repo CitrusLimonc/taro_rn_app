@@ -1,5 +1,7 @@
 import Taro, { Component, Config } from '@tarojs/taro';
-import { View, Text ,Input,Button} from '@tarojs/components';
+import { View, Text ,Input} from '@tarojs/components';
+import { Toast , Portal } from '@ant-design/react-native';
+import AyButton from '../../../../Component/AyButton/index';
 import styles from './styles';
 import px from '../../../../Biz/px.js';
 
@@ -14,6 +16,7 @@ export default class PddHeader extends Component {
             multi_price:0,
             price:0,
         };
+        this.loading = '';
     }
 
     //修改全部价格
@@ -32,13 +35,11 @@ export default class PddHeader extends Component {
 
     //点击批量修改
     blurInput=()=>{
-        this.refs.input1.wrappedInstance.blur();
-        this.refs.input2.wrappedInstance.blur();
         let self = this;
-        Taro.showLoading({ title: '加载中...' });
+        this.loading = Toast.loading('加载中...');
         setTimeout(()=>{
             self.batchEdit();
-            Taro.hideLoading();
+            Portal.remove(self.loading);
         },1000);
     }
 
@@ -47,19 +48,11 @@ export default class PddHeader extends Component {
         let pandun = /^(0|[1-9]\d*)(\s|$|\.\d{1,2}\b)/;
         //判断价格是否合法
         if(!pandun.test(price)){
-            Taro.showToast({
-                title: '单买价需为大于0的小数或整数',
-                icon: 'none',
-                duration: 2000
-            });
+            Toast.info('单买价需为大于0的小数或整数', 2);
             return ;
         }
         if(!pandun.test(multi_price)){
-            Taro.showToast({
-                title: '团购价需为大于0的小数或整数',
-                icon: 'none',
-                duration: 2000
-            });
+            Toast.info('团购价需为大于0的小数或整数', 2);
             return ;
         }
 
@@ -72,18 +65,10 @@ export default class PddHeader extends Component {
         };
         this.props.editItemForPdd(params,(rsp)=>{
             if (rsp.code == '200') {
-                Taro.showToast({
-                    title: '修改成功',
-                    icon: 'none',
-                    duration: 2000
-                });
+                Toast.info('修改成功', 2);
                 this.props.updateItems(price,multi_price);
             } else {
-                Taro.showToast({
-                    title: rsp.msg,
-                    icon: 'none',
-                    duration: 2000
-                });
+                Toast.info(rsp.msg, 2);
             }
         });
     }
@@ -95,13 +80,13 @@ export default class PddHeader extends Component {
                 <View style={styles.whiteBody}>
                     <View style={styles.skuoneMidtext}>
                         <Text style={styles.skuoneMidtextLeft}>团购价:&nbsp;</Text>
-                        <Input ref="input1" type={'number'} style={styles.skuoneMidtextRightinput} onChange={(value,e)=>{this.changePrice(value,'multi')}} defaultValue={multi_price} />
+                        <Input ref="input1" type={'number'} style={styles.skuoneMidtextRightinput} onInput={(value)=>{this.changePrice(value,'multi')}} defaultValue={multi_price} />
                     </View>
                     <View style={[styles.skuoneMidtext,{marginLeft:px(12)}]}>
                         <Text style={styles.skuoneMidtextLeft}>单买价:&nbsp;</Text>
-                        <Input ref="input2" type={'number'} maxLength={7} style={styles.skuoneMidtextRightinput} onChange={(value,e)=>{this.changePrice(value,'single')}} defaultValue={price} />
+                        <Input ref="input2" type={'number'} maxLength={7} style={styles.skuoneMidtextRightinput} onInput={(value)=>{this.changePrice(value,'single')}} defaultValue={price} />
                     </View>
-                    <Button style={{height:px(50), width:px(150),marginLeft:px(18)}} type="secondary" onClick={()=>{this.blurInput()}}>批量修改</Button>
+                    <AyButton style={{height:px(50), width:px(150),marginLeft:px(18)}} type="primary" onClick={()=>{this.blurInput()}}>批量修改</AyButton>
                 </View>
             </View>
         );

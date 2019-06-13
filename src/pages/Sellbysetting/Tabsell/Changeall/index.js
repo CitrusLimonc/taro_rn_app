@@ -1,5 +1,6 @@
 import Taro, { Component, Config } from '@tarojs/taro';
-import { View, Text ,Button,Input} from '@tarojs/components';
+import { View, Text ,Input} from '@tarojs/components';
+import AyButton from '../../../../Component/AyButton/index';
 import styles from './styles';
 import px from '../../../../Biz/px.js';
 /**
@@ -27,7 +28,6 @@ export default class Changeall extends Component {
 
     //点击批量修改
     blurinput=()=>{
-        this.refs.allinput.wrappedInstance.blur();
         setTimeout(()=>{
             this.props.hideallModalok(this.state);
         },1000);
@@ -49,7 +49,7 @@ export default class Changeall extends Component {
                             defaultValue={this.state.allprice}
                             onChange={(value,e)=>{this.changeallprice(value)}}
                         />
-                        <Button style={{height:px(56), width:px(150),}} type="secondary" onClick={()=>{this.blurinput()}}>批量修改</Button>
+                        <AyButton style={{height:px(56), width:px(150),}} type="primary" onClick={()=>{this.blurinput()}}>批量修改</AyButton>
                     </View>
             </View>
         );

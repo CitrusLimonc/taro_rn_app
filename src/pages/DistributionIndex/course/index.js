@@ -36,24 +36,16 @@ export default class Course extends Component{
                         </View>
                     </View>
                 <ScrollView horizontal={true} style={styles.table_body}>
-                    {orderinfo.map((item,key)=>{
-                        if(key == orderinfo.length-1){
+                    {
+                        orderinfo.map((item,key)=>{
                             return(
                                 <View onClick={()=>{this.goList(item.mark)}} key={key} style={[styles.table_item,{marginRight:px(0)}]}>
                                     <Image src={item.pic} style={styles.textPIc}></Image>
                                     <Text style={[styles.textBlack,{marginTop:px(12)}]}>{item.text}</Text>
                                 </View>
-                            );
-                        }else{
-                            return(
-                                <View onClick={()=>{this.goList(item.mark)}} key={key} style={[styles.table_item,{marginRight:px(0)}]}>
-                                    <Image src={item.pic} style={styles.textPIc}></Image>
-                                    <Text style={[styles.textBlack,{marginTop:px(12)}]}>{item.text}</Text>
-                                </View>
-                            );
-                        }
-
-                    })}
+                            )
+                        })
+                    }
                 </ScrollView>
             </View>
         )

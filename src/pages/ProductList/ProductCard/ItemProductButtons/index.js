@@ -1,5 +1,7 @@
 import Taro, { Component, Config } from '@tarojs/taro';
-import { View, Text, Dialog, Checkbox} from '@tarojs/components';
+import { View, Text, Checkbox,CheckboxGroup} from '@tarojs/components';
+import { Toast , Portal } from '@ant-design/react-native';
+import Dialog from '../../../../Component/Dialog';
 import Event from 'ay-event';
 import {UitlsRap} from '../../../../Public/Biz/UitlsRap.js';
 import {IsEmpty} from '../../../../Public/Biz/IsEmpty.js';
@@ -33,6 +35,7 @@ export default class ItemProductButtons extends Component {
         };
         this.retry = 0;
         this.userNick = '';
+        this.loading = '';
 
     }
 
@@ -184,18 +187,10 @@ export default class ItemProductButtons extends Component {
                     }
                 },(rsp)=>{
                     if(rsp.code == 200){
-                        Taro.showToast({
-                            title: rsp.value,
-                            icon: 'none',
-                            duration: 2000
-                        });
+                        Toast.info(rsp.value, 2);
                         Event.emit('App.product_list_reload',{});
                     }else{
-                        Taro.showToast({
-                            title: rsp.value,
-                            icon: 'none',
-                            duration: 2000
-                        });
+                        Toast.info(rsp.value, 2);
                         self.setState({
                             dialogSet:{
                                 dialogTitle:'恢复代销关系失败',
@@ -233,7 +228,7 @@ export default class ItemProductButtons extends Component {
             if (!IsEmpty(result.productInfo)) {
                 callback(result.productInfo);
             } else {
-                Taro.hideLoading();
+                Portal.remove(this.loading);
                 //弹出错误信息
                 if (!IsEmpty(result.errorMsg)) {
                     if (result.errorMsg == "without consign relation") {
@@ -253,7 +248,7 @@ export default class ItemProductButtons extends Component {
             }
         },(error)=>{
             console.error(error);
-            Taro.hideLoading();
+            Portal.remove(this.loading);
             callback({});
         });
     }
@@ -263,7 +258,7 @@ export default class ItemProductButtons extends Component {
         let {dialogSet,delChecked} = this.state;
         this.refs.sureDialog.hide();
         if (dialogSet.dialogTitle == '同步1688货源信息') {
-            Taro.showLoading({ title: '加载中...' });
+            this.loading = Toast.loading('加载中...');
             //获取一遍1688信息
             let param = {
                 shopName:item.shop_name,
@@ -279,7 +274,7 @@ export default class ItemProductButtons extends Component {
                 data:param
             },(rsp)=>{
                 console.log('Orderreturn/synchroOneProduct',rsp);
-                Taro.hideLoading();
+                Portal.remove(this.loading);
                 //有结果
                 if (!IsEmpty(rsp.code) && rsp.code == '200') {
                     item.amount_1688 = rsp.amountOnSale;
@@ -291,11 +286,7 @@ export default class ItemProductButtons extends Component {
                     item.min_list_price = rsp.min_list_price;
                     item.min_defect_num = rsp.min_defect_num;
                     callback('update',item);
-                    Taro.showToast({
-                        title: '同步成功~',
-                        icon: 'none',
-                        duration: 2000
-                    });
+                    Toast.info('同步成功~', 2);
                 } else {
                     //弹出错误信息
                     if (!IsEmpty(rsp.errorMsg)) {
@@ -314,15 +305,15 @@ export default class ItemProductButtons extends Component {
                     }
                 }
             },(error)=>{
-                alert(JSON.stringify(error));
-                Taro.hideLoading();
+                console.error(error);
+                Portal.remove(this.loading);
             });
 
         } else if (dialogSet.dialogTitle == '温馨提示') {
             //申请分销
             GoToView({status:"https://page.1688.com/html/fa9028cc.html?sellerId=" + item.origin_id,page_status:'special'});
         } else if (dialogSet.dialogTitle == '取消代销') {
-            Taro.showLoading({ title: '加载中...' });
+            this.loading = Toast.loading('加载中...');
             if (item.shop_type == 'taobao') { //淘宝需要取消真实代销关系
                 NetWork({
                     url:"Distributeproxy/unLinkConsignSellItem",
@@ -336,28 +327,16 @@ export default class ItemProductButtons extends Component {
                         this.updateRelation(item,'',callback);
                     // } else {
                     //     if (!IsEmpty(result.errorMsg)){
-                                // Taro.showToast({
-                                //     title: result.errorMsg,
-                                //     icon: 'none',
-                                //     duration: 2000
-                                // });
+                                // Toast.info(result.errorMsg, 2);
                     //     } else {
-                                // Taro.showToast({
-                                //     title: '取消代销失败',
-                                //     icon: 'none',
-                                //     duration: 2000
-                                // });
+                                // Toast.info('取消代销失败', 2);
                     //     }
-                    //     Taro.hideLoading();
+                    //     Portal.remove(this.loading);
                     // }
                 },(error)=>{
                     console.error(error);
-                    Taro.showToast({
-                        title: '取消代销失败，请稍候再试',
-                        icon: 'none',
-                        duration: 2000
-                    });
-                    Taro.hideLoading();
+                    Toast.info('取消代销失败，请稍候再试', 2);
+                    Portal.remove(this.loading);
                 });
             } else {
                 this.updateRelation(item,'',callback);
@@ -393,168 +372,84 @@ export default class ItemProductButtons extends Component {
         },(rsp)=>{
             console.log('Orderreturn/deleteRelation',rsp);
             //有结果
-            Taro.hideLoading();
+            Portal.remove(this.loading);
             if (!IsEmpty(rsp)) {
                 callback('del',item);
                 if (param.needDelete == '0') {
                     if (updateType == 'delete') {
-                        Taro.showToast({
-                            title: '删除成功~',
-                            icon: 'none',
-                            duration: 2000
-                        });
+                        Toast.info('删除成功~', 2);
                     } else {
-                        Taro.showToast({
-                            title: '取消代销成功~',
-                            icon: 'none',
-                            duration: 2000
-                        });
+                        Toast.info('取消代销成功~', 2);
                     }
                 } else {
                     if (item.shop_type == 'taobao') {
                         if (!IsEmpty(rsp.item)) {
                             if (updateType == 'delete') {
-                                Taro.showToast({
-                                    title: '删除并下架成功~',
-                                    icon: 'none',
-                                    duration: 2000
-                                });
+                                Toast.info('删除并下架成功~', 2);
                             } else {
-                                Taro.showToast({
-                                    title: '取消代销并下架成功~',
-                                    icon: 'none',
-                                    duration: 2000
-                                });
+                                Toast.info('取消代销并下架成功~', 2);
                             }
                         } else {
                             if (!IsEmpty(rsp.sub_msg)) {
                                 if (updateType == 'delete') {
-                                    Taro.showToast({
-                                        title: '已从列表删除，淘宝商品删除失败:' + rsp.sub_msg,
-                                        icon: 'none',
-                                        duration: 2000
-                                    });
+                                    Toast.info('已从列表删除，淘宝商品删除失败:' + rsp.sub_msg, 2);
                                 } else {
-                                    Taro.showToast({
-                                        title: '取消代销成功，下架失败:'+rsp.sub_msg,
-                                        icon: 'none',
-                                        duration: 2000
-                                    });
+                                    Toast.info('取消代销成功，下架失败:' + rsp.sub_msg, 2);
                                 }
                             } else {
                                 if (updateType == 'delete') {
-                                    Taro.showToast({
-                                        title: '取消代销成功，下架失败',
-                                        icon: 'none',
-                                        duration: 2000
-                                    });
+                                    Toast.info('取消代销成功，下架失败', 2);
                                 } else {
-                                    Taro.showToast({
-                                        title: '取消代销成功，删除失败',
-                                        icon: 'none',
-                                        duration: 2000
-                                    });
+                                    Toast.info('取消代销成功，删除失败', 2);
                                 }
                             }
                         }
                     } else {
                         if(item.shop_type=='wc'){
-                            Taro.showToast({
-                                title: '取消代销成功~',
-                                icon: 'none',
-                                duration: 2000
-                            });
+                            Toast.info('取消代销成功~', 2);
                         }else if(item.shop_type=='pdd'){
                             if (!IsEmpty(rsp.goods_sale_status_set_response) && !IsEmpty(rsp.goods_sale_status_set_response.is_success)) {
 
                                 if (updateType == 'delete') {
-                                    Taro.showToast({
-                                        title: '删除并下架成功~',
-                                        icon: 'none',
-                                        duration: 2000
-                                    });
+                                    Toast.info('删除并下架成功~', 2);
                                 } else {
-                                    Taro.showToast({
-                                        title: '取消代销并下架成功~',
-                                        icon: 'none',
-                                        duration: 2000
-                                    });
+                                    Toast.info('取消代销并下架成功~', 2);
                                 }
                             } else {
                                 if (!IsEmpty(rsp.error_response) && !IsEmpty(rsp.error_response.error_msg)) {
                                     if (updateType == 'delete') {
-                                        Taro.showToast({
-                                            title: '已从列表删除，拼多多商品删除失败:' + rsp.error_response.error_msg,
-                                            icon: 'none',
-                                            duration: 2000
-                                        });
+                                        Toast.info('已从列表删除，拼多多商品删除失败:' + rsp.error_response.error_msg, 2);
                                     } else {
-                                        Taro.showToast({
-                                            title: '取消代销成功，下架失败：:' + rsp.error_response.error_msg,
-                                            icon: 'none',
-                                            duration: 2000
-                                        });
+                                        Toast.info('取消代销成功，下架失败：:' + rsp.error_response.error_msg, 2);
                                     }
                                 } else {
                                     if (updateType == 'delete') {
-                                        Taro.showToast({
-                                            title: '成功从列表移除，下架失败',
-                                            icon: 'none',
-                                            duration: 2000
-                                        });
+                                        Toast.info('成功从列表移除，下架失败', 2);
                                     } else {
-                                        Taro.showToast({
-                                            title: '取消代销成功，下架失败',
-                                            icon: 'none',
-                                            duration: 2000
-                                        });
+                                        Toast.info('取消代销成功，下架失败', 2);
                                     }
                                 }
                             }
                         } else {
                             if (!IsEmpty(rsp.isSuccess) && rsp.isSuccess == true) {
                                 if (updateType == 'delete') {
-                                    Taro.showToast({
-                                        title: '删除并下架成功~',
-                                        icon: 'none',
-                                        duration: 2000
-                                    });
+                                    Toast.info('删除并下架成功~', 2);
                                 } else {
-                                    Taro.showToast({
-                                        title: '取消代销并下架成功~',
-                                        icon: 'none',
-                                        duration: 2000
-                                    });
+                                    Toast.info('取消代销并下架成功~', 2);
                                 }
                                 
                             } else {
                                 if (!IsEmpty(rsp.errorMsg)) {
                                     if (updateType == 'delete') {
-                                        Taro.showToast({
-                                            title: '已从列表删除，商品删除失败:' + rsp.errorMsg,
-                                            icon: 'none',
-                                            duration: 2000
-                                        });
+                                        Toast.info('已从列表删除，商品删除失败:' + rsp.errorMsg, 2);
                                     } else {
-                                        Taro.showToast({
-                                            title: '取消代销成功，下架失败：:' + rsp.errorMsg,
-                                            icon: 'none',
-                                            duration: 2000
-                                        });
+                                        Toast.info('取消代销成功，下架失败:' + rsp.errorMsg, 2);
                                     }
                                 } else {
                                     if (updateType == 'delete') {
-                                        Taro.showToast({
-                                            title: '成功从列表移除，下架失败',
-                                            icon: 'none',
-                                            duration: 2000
-                                        });
+                                        Toast.info('成功从列表移除，下架失败', 2);
                                     } else {
-                                        Taro.showToast({
-                                            title: '取消代销成功，下架失败',
-                                            icon: 'none',
-                                            duration: 2000
-                                        });
+                                        Toast.info('取消代销成功，下架失败', 2);
                                     }
                                 }
                             }
@@ -569,8 +464,8 @@ export default class ItemProductButtons extends Component {
                 this.updateRelation(item,updateType,callback);
             } else {
                 this.retry = 0;
-                alert(JSON.stringify(error));
-                Taro.hideLoading();
+                console.error(error);
+                Portal.remove(this.loading);
             }
         });
     }
@@ -584,12 +479,11 @@ export default class ItemProductButtons extends Component {
         console.log('props',status,this.props.item);
         const {status,item,callback} = this.props;
         const {dialogSet} = this.state;
-        let buttons='';
+        let buttons=null;
         let amountOnSale = 0;
         if (!IsEmpty(item.amount_1688)) {
             amountOnSale = item.amount_1688;
         }
-
 
         //各状态显示不同的按钮
         switch (status) {
@@ -598,12 +492,12 @@ export default class ItemProductButtons extends Component {
                 <View style={styles.buttonGroup}>
                     {
                         item.shop_type == 'pdd' || item.shop_type == 'wc' ? 
-                        '' 
+                        null 
                         : !IsEmpty(item.origin_login_name) ?
                         <View style={styles.buttons} onClick={()=>{this.btnClick('供应商')}}>
                             <Text style={styles.buttonText}>供应商</Text>
                         </View> :
-                        ''
+                        null
                     }
                     <View style={styles.buttons} onClick={()=>{this.btnClick('同步信息')}}>
                         <Text style={styles.buttonText}>同步信息</Text>
@@ -620,7 +514,7 @@ export default class ItemProductButtons extends Component {
                             <Text style={styles.buttonText}>采购</Text>
                         </View>
                         :
-                        ''
+                        null
                     }
                     {
                         this.props.type =='recycle'?(
@@ -634,7 +528,7 @@ export default class ItemProductButtons extends Component {
                             <Text style={[styles.buttonText,{color:'#ff6000'}]}>编辑代销商品</Text>
                         </View> 
                         :
-                        ''
+                        null
                     }
                 </View>;
                 break;
@@ -656,7 +550,7 @@ export default class ItemProductButtons extends Component {
                             <Text style={[styles.buttonText,{color:'#ff6000'}]}>编辑代销商品</Text>
                         </View> 
                         :
-                        ''
+                        null
                     }
                 </View>;
                 break;
@@ -678,7 +572,7 @@ export default class ItemProductButtons extends Component {
                             <Text style={[styles.buttonText,{color:'#ff6000'}]}>编辑代销商品</Text>
                         </View> 
                         :
-                        ''
+                        null
                     }
                 </View>;
                 break;
@@ -689,7 +583,7 @@ export default class ItemProductButtons extends Component {
         return (
             <View>
                 {buttons}
-                <Dialog ref={"sureDialog"} duration={1000} maskStyle={styles.maskStyle} contentStyle={styles.modal2Style}>
+                <Dialog ref={"sureDialog"} contentStyle={styles.modal2Style}>
                     <View style={styles.dialogContent}>
                         <Text style={{marginTop:px(15),fontSize:px(38),fontWeight:'300',color:'#4A4A4A',textAlign:'center',width:px(612)}}>{dialogSet.dialogTitle}</Text>
                         <View style={{width:px(612),marginTop:px(24),minHeight:px(200)}}>
@@ -698,7 +592,7 @@ export default class ItemProductButtons extends Component {
                             </Text>
                             {
                                 dialogSet.dialogTitle == "取消代销" || dialogSet.dialogTitle == "删除已取消货品"?
-                                <Checkbox.Group value={this.state.changeItemSet} onChange={(value)=>{this.changeSetDel(value,'group')}}>
+                                <CheckboxGroup value={this.state.changeItemSet} onChange={(value)=>{this.changeSetDel(value,'group')}}>
                                     <View style={{flexDirection:'row',alignItems:'center'}} onClick={()=>{this.changeSetDel('1','line')}}>
                                         <Checkbox
                                         value={"1"}
@@ -709,9 +603,9 @@ export default class ItemProductButtons extends Component {
                                         同时{dialogSet.dialogTitle == "取消代销" ? "下架":"删除"}已铺货到下游店铺的商品
                                         </Text>
                                     </View>
-                                </Checkbox.Group>
+                                </CheckboxGroup>
                                 :
-                                ''
+                                null
                             }
                         </View>
                         <View style={styles.foot}>

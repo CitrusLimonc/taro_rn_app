@@ -4,7 +4,6 @@ import {View,Text,ScrollView,Image} from '@tarojs/components';
 import ItemIcon from '../../../Component/ItemIcon';
 import styles from './styles.js';
 import px from '../../../Biz/px.js';
-// const {MultiRow}=Layout;
 /**
 *  @author cy
 *  此处显示所有订单状态
@@ -123,12 +122,10 @@ export default class OrderStatus extends Component {
         return (
             <View style={{paddingRight:px(100),backgroundColor:'#fff'}}>
                 <ScrollView
-                    ref="scroller1"
-                    style={styles.listContainer}
-                    horizontal={true}
-                    disabledPtr={true}
-                    onEndReachedThreshold={20}
-                    showsHorizontalScrollIndicator={false}>
+                ref="scroller1"
+                style={styles.listContainer}
+                scrollX={true}
+                >
                     {this.getViews()}
                 </ScrollView>
                 <View style={styles.arrowDown} onClick={this.props.showSideDialog}>

@@ -1,5 +1,6 @@
 import Taro, { Component, Config } from '@tarojs/taro';
-import {ScrollView,Switch,View,Text,Radio} from '@tarojs/components';
+import {ScrollView,Switch,View,Text,Radio,RadioGroup} from '@tarojs/components';
+import { Toast , Portal } from '@ant-design/react-native';
 import Event from 'ay-event';
 import ItemIcon from '../../Component/ItemIcon';
 import SureDialog from '../../Component/SureDialog';
@@ -45,28 +46,26 @@ export default class SyncNumber extends Component {
         this.lastTime = '';
         this.lastShopId = ''; //当前店铺id
         this.authorizationLink = '';
+        this.loading = '';
         const self = this;
         Event.on('back',function(e){
             let swibutton = self.state.switchbutton;
             self.savesetting(swibutton,function(rsp){
-                Taro.showToast({
-					title: rsp.value,
-					icon: 'none',
-					duration: 2000
-				});
+                Toast.info(rsp.value, 2);
                 GoToView({page_status:'pop'});
             });
         });
     }
 
-    // config: Config = {
-    //     navigationBarTitleText: '库存预警'
-    // }
+    config = {
+        navigationBarTitleText: '库存预警'
+    }
 
     componentWillMount(){
         //获取用户设置信息
         let self = this;
-        self.state.from = GetQueryString({name:'from'});
+        this.loading = Toast.loading('加载中...');
+        self.state.from = GetQueryString({name:'from',self:this});
         // RAP.user.getUserInfo({extraInfo: true}).then((info) => {
         //     console.log('getUserInfo',info);
         //     if(!IsEmpty(info.extraInfo) && info.extraInfo != false && info.extraInfo != 'false'){
@@ -99,7 +98,7 @@ export default class SyncNumber extends Component {
                         if(!IsEmpty(rsp.value.cycle)){
                             cycle = rsp.value.cycle;
                         }
-                        Taro.hideLoading();
+                        Portal.remove(self.loading);
                         let switchdisable = false;
                         if(IsEmpty(shopids)){
                             switchdisable = true;
@@ -123,11 +122,7 @@ export default class SyncNumber extends Component {
                             }
                         })
                     }else{
-                        Taro.showToast({
-                            title: '获取数据失败',
-                            icon: 'none',
-                            duration: 2000
-                        });
+                        Toast.info('获取数据失败', 2);
                     }
                 }
             })
@@ -171,11 +166,7 @@ export default class SyncNumber extends Component {
                 })
             }
         },(error)=>{
-            Taro.showToast({
-                title: '获取最近一次日志失败',
-                icon: 'none',
-                duration: 2000
-            });
+            Toast.info('获取最近一次日志失败', 2);
             self.setState({
                 lastsynctime:'无',
             })
@@ -217,9 +208,9 @@ export default class SyncNumber extends Component {
                     }
                     callback(shopList);
                 },(error)=>{
-                    alert(JSON.stringify(error));
+                    console.error(error);
                     callback(shopList);
-                    Taro.hideLoading();
+                    Portal.remove(this.loading);
                 });
             } else {
                 callback([]);
@@ -227,8 +218,8 @@ export default class SyncNumber extends Component {
 
         },(error)=>{
             callback([]);
-            alert(JSON.stringify(error));
-            Taro.hideLoading();
+            console.error(error);
+            Portal.remove(this.loading);
         });
     }
 
@@ -294,11 +285,7 @@ export default class SyncNumber extends Component {
             switchbutton:value
         })
         this.savesetting(value,function(rsp){
-            Taro.showToast({
-                title: rsp.value,
-                icon: 'none',
-                duration: 2000
-            });
+            Toast.info(rsp.value, 2);
         });
     }
 
@@ -336,11 +323,7 @@ export default class SyncNumber extends Component {
             if(rsp.code == 200){
                 callback(rsp);
             }else{
-                Taro.showToast({
-                    title: '获取数据失败',
-                    icon: 'none',
-                    duration: 2000
-                });
+                Toast.info('获取数据失败', 2);
             }
         });
     }
@@ -372,11 +355,7 @@ export default class SyncNumber extends Component {
                     }
                 });
                 if (hasTaoShop && shopType == 'taobao') {
-                    Taro.showToast({
-                        title: '暂支持添加当前登录账号绑定的淘宝店铺',
-                        icon: 'none',
-                        duration: 2000
-                    });
+                    Toast.info('暂支持添加当前登录账号绑定的淘宝店铺', 2);
                     return ;
                 }
                 this.lastTime = GetTimeString('YY-MM-DD hh-mm-ss');
@@ -415,10 +394,10 @@ export default class SyncNumber extends Component {
                                     shopList:result
                                 });
                             }
-                            Taro.hideLoading();
+                            Portal.remove(self.loading);
                         })
                     } else if (rsp.code == '404') {
-                        Taro.hideLoading();
+                        Portal.remove(self.loading);
                         if (!isFirst) {
                             self.refs.sureDialog.show();
                             self.authorizationLink = rsp;
@@ -429,16 +408,16 @@ export default class SyncNumber extends Component {
                             });
                         }
                     } else {
-                        Taro.hideLoading();
+                        Portal.remove(self.loading);
                     }
                 } else {
                     self.setState({
                         isLoading:false
                     });
-                    Taro.hideLoading();
+                    Portal.remove(self.loading);
                 }
             },(error)=>{
-                alert(JSON.stringify(error));
+                console.error(error);
             });
         } else {
             this.retry = 0;
@@ -465,11 +444,7 @@ export default class SyncNumber extends Component {
                 switchdisable:true,
             })
             if (this.state.switchbutton) {
-                Taro.showToast({
-                    title: '请至少选择一个店铺',
-                    icon: 'none',
-                    duration: 2000
-                });
+                Toast.info('请至少选择一个店铺', 2);
             }
         }else{
             this.setState({
@@ -494,11 +469,7 @@ export default class SyncNumber extends Component {
     switchOnClick = () =>{
         console.log('switchOnClick',this.state.switchdisable,this.state.switchbutton);
         if (this.state.switchdisable) {
-            Taro.showToast({
-                title: '请至少选择一个店铺',
-                icon: 'none',
-                duration: 2000
-            });
+            Toast.info('请至少选择一个店铺', 2);
         }
     }
     render() {
@@ -508,7 +479,7 @@ export default class SyncNumber extends Component {
                 <View style={styles.topswitch}>
                     <Text style={styles.topswitchText}>代销货品库存预警</Text>
                     {
-                        this.state.switchbutton == undefined?'':(
+                        this.state.switchbutton == undefined?null:(
                             <View style={styles.switchBox}>
                                 <Switch
                                 disabled={this.state.switchdisable}
@@ -519,7 +490,7 @@ export default class SyncNumber extends Component {
                                     this.state.switchdisable ?
                                     <View onClick={this.switchOnClick} style={styles.switchBoxDisable}></View>
                                     :
-                                    ''
+                                    null
                                 }
                             </View>
                         )
@@ -529,7 +500,7 @@ export default class SyncNumber extends Component {
                 <Text style={styles.blocktext}>选择要开启库存预警的店铺</Text>
                 {this.renderRow()}
                 <Text style={styles.blocktext}>货源库存为0时，店铺中与该货源对应的分销商品如何处理</Text>
-                <Radio.Group style={styles.groupWrap} onChange = {this.zerogroup} value={this.state.zerogroup}>
+                <RadioGroup style={styles.groupWrap} onChange = {this.zerogroup} value={this.state.zerogroup}>
                     <View style={styles.groupitem}>
                         <Radio type="dot" value="1"></Radio>
                         <Text style={{fontSize:28,color:'#333333'}}>下架</Text>
@@ -538,9 +509,9 @@ export default class SyncNumber extends Component {
                         <Radio type="dot" value="2"></Radio>
                         <Text style={{fontSize:28,color:'#333333'}}>删除并取消代销关系</Text>
                     </View>
-                </Radio.Group>
+                </RadioGroup>
                 <Text style={styles.blocktext}>选择库存同步周期</Text>
-                <Radio.Group style={styles.groupWrap} onChange = {this.timeGroup} value={this.state.timeGroup}>
+                <RadioGroup style={styles.groupWrap} onChange = {this.timeGroup} value={this.state.timeGroup}>
                     <View style={styles.groupitem}>
                         <Radio type="dot" value="1"></Radio>
                         <Text style={{fontSize:28,color:'#333333'}}>每天</Text>
@@ -551,7 +522,7 @@ export default class SyncNumber extends Component {
                         <Text style={{fontSize:28,color:'#333333'}}>每7天</Text>
                         <Text style={{fontSize:24,color:'#999999',marginLeft:24}}>开启同步功能后每7天进行一次同步</Text>
                     </View>
-                </Radio.Group>
+                </RadioGroup>
                 <Text style={styles.blocktext}>开启微信通知</Text>
                 <View style={[styles.topswitch,{marginTop:0}]} onClick={()=>{GoToView({status:'WechartMsg'});}}>
                     <Text style={styles.topswitchText}>关注“代发助手服务号”，接收库存预警通知</Text>

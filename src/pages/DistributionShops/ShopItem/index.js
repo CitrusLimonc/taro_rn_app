@@ -1,5 +1,6 @@
 import Taro, { Component, Config } from '@tarojs/taro';
-import {View,Text,Checkbox,Image,Button} from '@tarojs/components';
+import {View,Text,Checkbox,Image} from '@tarojs/components';
+import { Toast , Portal } from '@ant-design/react-native';
 import Event from 'ay-event';
 import {IsEmpty} from '../../../Public/Biz/IsEmpty.js';
 import styles from './styles';
@@ -7,7 +8,7 @@ import { SyncShop,GetOrderState } from '../../../Biz/Apis';
 import {NetWork} from '../../../Public/Common/NetWork/NetWork.js';
 import {Domain} from '../../../Env/Domain';
 import px from '../../../Biz/px.js';
-
+import AyButton from '../../../Component/AyButton/index';
 
 /*
 * @author cy
@@ -29,29 +30,29 @@ export default class ShopItem extends Component {
     componentDidMount(){
         //同步订单
         const {item} = this.props;
-        this.syncshop(item);
+        // this.syncshop(item);
         this.getrunning();
     }
 
     //同步订单
-    syncshop=(item)=>{
-        GetOrderState({
-            shopId:item.id,
-            SuccessCallBack:(res)=>{
-                console.log('GetOrderState',res);
-                if(res.isend){
-                    SyncShop({
-                        shopId:item.id,
-                        shopName:item.shop_name,
-                        shopType:item.shop_type,
-                        SuccessCallBack:(res)=>{
-                            console.log('SyncShop',res);
-                        }
-                    });
-                }
-            }
-        });
-    }
+    // syncshop=(item)=>{
+    //     GetOrderState({
+    //         shopId:item.id,
+    //         SuccessCallBack:(res)=>{
+    //             console.log('GetOrderState',res);
+    //             if(res.isend){
+    //                 SyncShop({
+    //                     shopId:item.id,
+    //                     shopName:item.shop_name,
+    //                     shopType:item.shop_type,
+    //                     SuccessCallBack:(res)=>{
+    //                         console.log('SyncShop',res);
+    //                     }
+    //                 });
+    //             }
+    //         }
+    //     });
+    // }
     //获取队列中信息
     getrunning=()=>{
         const self = this;
@@ -106,36 +107,37 @@ export default class ShopItem extends Component {
                         <Text style={{fontSize:px(24),color:'#ff6000'}}>店铺授权失效，请授权后再铺货</Text>
                     </View>
                     :
-                    ''
+                    null
                 }
-                <Checkbox size="small" style={checkboxStyle} checked={isChecked} disabled={diaabledone} onChange={()=>{this.props.checkboxOnChange(item.id)}}/>
-                <View style={{flexDirection:'row',alignItems:'center'}} onClick={()=>{
+                <Checkbox 
+                color = "#ff6000"
+                style={checkboxStyle} 
+                checked={isChecked} 
+                disabled={diaabledone} 
+                onChange={()=>{this.props.checkboxOnChange(item.id)}}
+                />
+                <View style={{flexDirection:'row',alignItems:'center',marginLeft:px(24)}} onClick={()=>{
                     if(diaabledone){
                         if(item.shop_type == 'wc'&&isrunning == '0'){
-                            Taro.showToast({
-                                title: '删除旺铺请联系客服',
-                                icon: 'none',
-                                duration: 2000
-                            });
+                            Toast.info('删除旺铺请联系客服', 2);
                         }
                     }else{
                         this.props.checkboxOnChange(item.id,hasAuth,item.shop_type)
                     }
                 }}>
                     <Image src={item.pic_url} style={styles.shopImage}/>
-                    <View style={{justifyContent:'center'}}>
+                    <View style={{flexDirection:'row',justifyContent:'center'}}>
                         <Text style={{fontSize:px(28),color:'#4a4a4a',marginLeft:px(12),}}>{item.shop_name}</Text>
                         <Text style={{fontSize:px(24),color:'#ff6600',marginLeft:px(12),}}>{name}</Text>
                         <Text style={{fontSize:px(24),color:'#ff6600',marginLeft:px(12),}}>{time}</Text>
-
                     </View>
                 </View>
                 <View style={{flex:1,flexDirection:'row',justifyContent:'flex-end'}}>
                 {
                     hasAuth == false ?
-                    <Button type="secondary" style={{width:px(152),height:px(56)}} onClick={()=>{this.props.sureAccess(item.shop_type,false,false,item.id)}}>去授权</Button>
+                    <AyButton type="primary" style={{width:px(152),height:px(56)}} onClick={()=>{this.props.sureAccess(item.shop_type,false,false,item.id)}}>去授权</AyButton>
                     :
-                    <Button type="secondary" style={{width:px(152),height:px(56)}} onClick={()=>{this.props.goToPage(item.id)}}>铺货设置</Button>
+                    <AyButton type="primary" style={{width:px(152),height:px(56)}} onClick={()=>{this.props.goToPage(item.id)}}>铺货设置</AyButton>
                 }
                 </View>
             </View>

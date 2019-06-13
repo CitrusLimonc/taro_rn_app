@@ -15,7 +15,9 @@ export default {
         paddingBottom:px(16),
         paddingLeft:24,
         paddingRight:24,
-        borderRadius:8,
+        borderRadius:8
+    },
+    btnText:{
         color:'#333'
     },
     footer:{

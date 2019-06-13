@@ -1,7 +1,7 @@
 import px from '../../../Biz/px.js';
 export default {
     footBottom:{
-        position:'fixed',
+        position:'absolute',
         bottom: px(0),
         left: px(0),
         right: px(0),

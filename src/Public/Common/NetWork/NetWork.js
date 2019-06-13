@@ -7,6 +7,7 @@ import {ToQueryString} from '../../Biz/ToQueryString.js';
 import { IsEmpty } from '../../Biz/IsEmpty.js';
 import {Parse2json} from '../../Biz/Parse2json.js';
 import Taro from '@tarojs/taro';
+import { Toast , Portal } from '@ant-design/react-native';
 
 var NetWork={};
 const WEB_URL=Domain.WEB_URL;
@@ -74,28 +75,26 @@ NetWork.Post = function({url,params,host=WEB_URL,data=undefined,retry=0},callbac
     Taro.request({
         method: 'POST',
         url: encodeURI(codeUrl),
-        dataType: 'jsonp',
-        mode: 'same-origin',
-        body: '',
-        headers:{
-            "X-Request-Auth": "UserId/AES"
+        dataType: 'json',
+        data: '',
+        header: {// HTTP的请求头，默认为{}
+            "Content-Type":"application/json",
+            "X-From-App":"webdistribute1688",
+            "Cookie":"X-Header-Canary=always; canary=always"
         },
+        credentials:'include'
     }).then((result) => {
-        console.log(result);
-        if (!IsEmpty(result) && !IsEmpty(result.body)) {
-            if (result.body == 'fail') {
-                Taro.showToast({
-                    title: '用户信息已失效，请退出重启',
-                    icon: 'none',
-                    duration: 2000
-                });
+        console.log(codeUrl,'result::' + JSON.stringify(result));
+        if (!IsEmpty(result) && !IsEmpty(result.data)) {
+            if (result.data == 'fail') {
+                Toast.info('用户信息已失效，请退出重启', 2);
             } else {
                 if (callback) {
                     try {
-                        callback(Parse2json(result.body));
+                        callback(Parse2json(result.data));
                     } catch (e) {
                         console.error("NetWork-jsonparse", e);
-                        callback(result.body);
+                        callback(result.data);
                     }
                 }
             }
@@ -105,7 +104,7 @@ NetWork.Post = function({url,params,host=WEB_URL,data=undefined,retry=0},callbac
             }
         }
     }).catch((e) => {
-        console.error('FAIL::' + JSON.stringify(e));
+        console.error('FAIL::url--' + codeUrl + '---error---' + JSON.stringify(e));
         if (retry<3) {
             console.log('Error-retry::' + retry);
             retry ++;
@@ -144,25 +143,24 @@ NetWork.Get = function({url,params=undefined,host=WEB_URL,data=undefined,retry=0
     Taro.request({
         method: 'GET',
         url: encodeURI(codeUrl),
-        dataType: 'jsonp',
-        mode: 'same-origin',
-        headers:{
-            "X-Request-Auth": "UserId/AES"
+        dataType: 'json',
+        header: {// HTTP的请求头，默认为{}
+            "Content-Type":"application/json",
+            "X-From-App":"webdistribute1688",
+            "X-Header-Canary":"always",
+            "Cookie":"X-Header-Canary=always; canary=always"
         },
+        credentials:'include'
     }).then((result) => {
-        console.log(result);
-        if(result.body=='fail'){
-            Taro.showToast({
-                title: '用户信息已失效，请退出重启',
-                icon: 'none',
-                duration: 2000
-            });
+        console.log(codeUrl,'result::' + JSON.stringify(result));
+        if(result.data=='fail'){
+            Toast.info('用户信息已失效，请退出重启', 2);
             return;
         }
         if(IsEmpty(callback)){return;}
-        if(!IsEmpty(result) && !IsEmpty(result.body)){
+        if(!IsEmpty(result) && !IsEmpty(result.data)){
             try{
-                callback(Parse2json(result.body));
+                callback(Parse2json(result.data));
             }catch(e){
                 console.error("NetWork-jsonparse", e);
             }
@@ -170,7 +168,7 @@ NetWork.Get = function({url,params=undefined,host=WEB_URL,data=undefined,retry=0
             callback({});
         }
     }).catch((e) => {
-        console.error('GetUserSets-Error::' + JSON.stringify(e));
+        console.error('FAIL::url--' + codeUrl + '---error---' + JSON.stringify(e));
         if (retry<3) {
             console.log('Error-retry::' + retry);
             retry ++;
@@ -188,24 +186,23 @@ NetWork.GetSpe = function({url,retry=0},callback,error_callback){
     Taro.request({
         method: 'GET',
         url: encodeURI(url),
-        dataType: 'jsonp',
-        mode: 'same-origin',
-        headers:{
-            "X-Request-Auth": "UserId/AES"
-        }
+        dataType: 'json',
+        responseType:'text',
+        header: {// HTTP的请求头，默认为{}
+            "Content-Type":"application/json",
+            "X-From-App":"webdistribute1688",
+            "Cookie":"X-Header-Canary=always; canary=always"
+        },
+        credentials:'include'
     }).then((result) => {
         console.log(url,result);
-        if(result.body=='fail'){
-            Taro.showToast({
-                title: '用户信息已失效，请退出重启',
-                icon: 'none',
-                duration: 2000
-            });
+        if(result.data=='fail'){
+            Toast.info('用户信息已失效，请退出重启', 2);
             return;
         }
         if(IsEmpty(callback)){return;}
-        if(!IsEmpty(result) && !IsEmpty(result.body)){
-            callback(Parse2json(result.body));
+        if(!IsEmpty(result) && !IsEmpty(result.data)){
+            callback(Parse2json(result.data));
         }else{
             callback('');
         }

@@ -1,5 +1,7 @@
 import Taro, { Component, Config } from '@tarojs/taro';
 import { View, Text,} from '@tarojs/components';
+import { Toast , Portal } from '@ant-design/react-native';
+import { FlatList , RefreshControl}  from 'react-native';
 import Event from 'ay-event';
 import {IsEmpty} from '../../Public/Biz/IsEmpty.js';
 import Foot from './Foot';
@@ -33,7 +35,7 @@ export default class OrderDetail extends Component {
             refreshText: '↓ 下拉刷新',
             updateMsg:{}
         };
-
+        this.loading = '';
         let self = this;
 
         //刷新1688订单
@@ -48,13 +50,13 @@ export default class OrderDetail extends Component {
         });
     }
 
-    // config: Config = {
-    //     navigationBarTitleText: '订单详情'
-    // }
+    config = {
+        navigationBarTitleText: '订单详情'
+    }
 
     componentDidMount(){
         let self = this;
-        let orderId = GetQueryString({name:'orderId'});
+        let orderId = GetQueryString({name:'orderId',self:this});
         // RAP.biz.getIdentity().then((data)=> {
         //     let jflag = data.isBuyer;
         //     if(jflag){
@@ -86,10 +88,10 @@ export default class OrderDetail extends Component {
     //加载订单详情
     redetail = (callback) =>{
         let self = this;
-        Taro.showLoading({ title: '加载中...' });
-        let orderId = GetQueryString({name:'orderId'});
-        let refundFlag = GetQueryString({name:'refundId'});
-        let shopType = GetQueryString({name:'shopType'});
+        self.loading = Toast.loading('加载中...');
+        let orderId = GetQueryString({name:'orderId',self:this});
+        let refundFlag = GetQueryString({name:'refundId',self:this});
+        let shopType = GetQueryString({name:'shopType',self:this});
 
         //获取订单详情
 
@@ -101,7 +103,7 @@ export default class OrderDetail extends Component {
             }
         },(data)=>{
             console.log('Orderreturn/getOrderList',data);
-            Taro.hideLoading();
+            Portal.remove(self.loading);
             if(!IsEmpty(data.errorCode)||IsEmpty(data)){
                 alert(data.errorMessage)
                 return;
@@ -132,7 +134,7 @@ export default class OrderDetail extends Component {
             if(callback){
                 callback();
             }
-            alert(JSON.stringify(error));
+            console.error(error);
         });
     }
 
@@ -256,7 +258,7 @@ export default class OrderDetail extends Component {
 
     //刷新1688订单
     updateOrder1688 = () =>{
-        Taro.showLoading({ title: '加载中...' });
+        this.loading = Toast.loading('加载中...');
         NetWork.Get({
             url:'Orderreturn/updateOrder1688',
             data:{
@@ -269,36 +271,24 @@ export default class OrderDetail extends Component {
         },(rsp)=>{
             console.log('Orderreturn/updateOrder1688',rsp);
             //有结果
-            Taro.hideLoading();
+            Portal.remove(this.loading);
             if (!IsEmpty(rsp)) {
                 if (this.state.updateMsg.updateOrderStatus == '付款采购' || this.state.updateMsg.updateOrderStatus == '向供应商付款') {
                     if (rsp.status != 'waitbuyerpay') {
-                        Taro.showToast({
-                            title: '支付成功',
-                            icon: 'none',
-                            duration: 2000
-                        });
+                        Toast.info('支付成功', 2);
                     } else {
-                        Taro.showToast({
-                            title: '支付失败',
-                            icon: 'none',
-                            duration: 2000
-                        });
+                        Toast.info('支付失败', 2);
                     }
                 }
                 this.redetail();
                 Event.emit('App.update_shop_orders',{});
             } else {
-                Taro.showToast({
-                    title: '操作失败',
-                    icon: 'none',
-                    duration: 2000
-                });
+                Toast.info('操作失败', 2);
             }
             this.refs.surePayDialog.hide();
         },(error)=>{
-            Taro.hideLoading();
-            alert(JSON.stringify(error));
+            Portal.remove(this.loading);
+            console.error(error);
         });
     }
 
@@ -351,14 +341,20 @@ export default class OrderDetail extends Component {
         const { time,cardData,tiddata,type,showRe } = this.state;
         let allpay = '';
         if(IsEmpty(tiddata)){
-            return '';
+            return null;
         }else{
             return (
                 <View>
                     <View style={{flex:1}}>
-                        <ListView style={styles.vescro}
-                        renderHeader={this.renderHeader}
-                        dataSource={['null']} renderRow={this.renderRow} />
+                        <FlatList
+                        style={styles.vescro}
+                        data={['null']}
+                        horizontal={false}
+                        renderItem={this.renderRow}
+                        refreshing={this.state.isRefreshing}
+                        onRefresh={()=>{this.handleRefresh()}}
+                        keyExtractor={(item, index) => (index + '1')}
+                        />
                         {type=='退款中'?(
                             <View>
                                 {IsEmpty(showRe)?(null):(

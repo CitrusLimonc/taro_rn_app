@@ -21,9 +21,6 @@ export default {
         paddingRight:px(24),
         paddingBottom:px(24),
         paddingTop:px(24),
-        fontSize: px(24),
-        color: '#333',
-        fontWeight: '200',
     },
     errorLine:{
         borderBottomWidth:px(1),
@@ -34,9 +31,6 @@ export default {
         paddingTop:px(24),
         alignItems: 'center',
         flexDirection: 'row',
-        fontSize: px(24),
-        color: '#333',
-        fontWeight: '200',
     },
     orderText:{
         color: '#999',
@@ -52,12 +46,6 @@ export default {
         color: '#666',
         marginLeft: px(8),
     },
-    time:{
-        color: '#999',
-        marginLeft: px(12),
-        fontSize: px(24),
-        flex:1,
-    },
     totals:{
         flexDirection: 'row',
         justifyContent: 'flex-end',
@@ -66,15 +54,12 @@ export default {
         borderTopColor:'#e5e5e5',
         borderBottomWidth:px(1),
         borderBottomColor:'#e5e5e5',
-        color: '#575757',
         height: px(75),
         paddingLeft:px(24),
         paddingRight:px(24),
         paddingBottom:px(24),
         paddingTop:px(24),
-        fontSize: px(24),
         marginTop: px(-1),
-        //font-family: 'Microsoft YaHei',
     },
     buyerFeedback:{
         flexDirection: 'row',
@@ -118,14 +103,6 @@ export default {
         color: '#b4b4b4',
         fontSize: px(24),
         fontWeight: '200',
-    },
-    dackIcon:{
-        position: 'absolute',
-        right: px(20),
-        top: px(12),
-        fontSize: px(45),
-        color: '#cecece',
-        textAlign: 'right',
     },
     new:{
         height: px(24),
@@ -175,12 +152,4 @@ export default {
     dlgBtn:{
         flex:1,
     },
-    closeTag:{
-        position:'absolute',
-        right:px(24),
-        top:px(34),
-        fontSize:px(28),
-        color:'#999999'
-    }
-
 }

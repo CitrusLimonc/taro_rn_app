@@ -165,7 +165,7 @@ export default {
         color: '#4A4A4A'
     },
     footBtn:{
-        position: 'fixed',
+        position: 'absolute',
         height: px(100),
         left: px(0),
         right: px(0),

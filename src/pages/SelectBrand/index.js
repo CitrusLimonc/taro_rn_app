@@ -1,5 +1,7 @@
 import Taro, { Component, Config } from '@tarojs/taro';
 import { View, Text,Input} from '@tarojs/components';
+import { Toast , Portal } from '@ant-design/react-native';
+import { FlatList , RefreshControl}  from 'react-native';
 import Event from 'ay-event';
 import {LocalStore} from '../../Public/Biz/LocalStore.js';
 import {GoToView} from '../../Public/Biz/GoToView.js';
@@ -24,14 +26,15 @@ export default class SelectBrand extends Component {
         }
         this.pageNo = 1; //页码
         this.cid = '50000671'; //类目id
+        this.loading = '';
     }
 
-    // config: Config = {
-    //     navigationBarTitleText: '搜索品牌'
-    // }
+    config = {
+        navigationBarTitleText: '搜索品牌'
+    }
     
     componentDidMount(){
-        Taro.showLoading({ title: '加载中...' });
+        this.loading = Toast.loading('加载中...');
         let self=this;
         //获取cid
         LocalStore.Get(['go_to_select_brands'],(result) => {
@@ -45,7 +48,7 @@ export default class SelectBrand extends Component {
                 this.setState({
                     dataSource:result
                 });
-                Taro.hideLoading();
+                Portal.remove(this.loading);
             });
 
         });
@@ -58,7 +61,10 @@ export default class SelectBrand extends Component {
     }
 
     //获取所有品牌
-    renderRow = (item, index) =>{
+    renderRow = (items) =>{
+        let index = items.index;
+        let item = items.item;
+
         return (
             <View style={styles.brandLine} onClick={()=>{this.goBack(item)}}>
                 <Text style={{fontSize:px(28),color:'#4a4a4a'}}>{item.displayName}</Text>
@@ -82,9 +88,9 @@ export default class SelectBrand extends Component {
                 refreshText:'↓ 下拉刷新'
             });
         });
-        if (this.state.dataSource.length>0) {
-            this.refs.mylist.resetLoadmore();
-        }
+        // if (this.state.dataSource.length>0) {
+        //     this.refs.mylist.resetLoadmore();
+        // }
     }
 
     //下拉刷新头部
@@ -143,15 +149,14 @@ export default class SelectBrand extends Component {
 
     //搜索操作
     searchProduct = () =>{
-        Taro.showLoading({ title: '加载中...' });
-        this.refs.searchInput.wrappedInstance.blur();
+        this.loading = Toast.loading('加载中...');
         let self=this;
         setTimeout(()=>{
             self.getBrands(1,(result)=>{
                 self.setState({
                     dataSource:result
                 });
-                Taro.hideLoading();
+                Portal.remove(self.loading);
             });
         },1000);
 
@@ -179,13 +184,13 @@ export default class SelectBrand extends Component {
                 callback([]);
             }
         },(error)=>{
-            Taro.hideLoading();
-            alert(JSON.stringify(error));
+            Portal.remove(this.loading);
+            console.error(error);
         });
     }
     //清除搜索
     clearAll = () =>{
-        Taro.showLoading({ title: '加载中...' });
+        this.loading = Toast.loading('加载中...');
         this.setState({
             searchValue:''
         });
@@ -193,13 +198,13 @@ export default class SelectBrand extends Component {
             this.setState({
                 dataSource:result
             });
-            Taro.hideLoading();
+            Portal.remove(this.loading);
         });
     }
 
     render(){
 
-        let deleteIcon='';
+        let deleteIcon=null;
         if (this.state.searchValue!='') {
             deleteIcon=
             <ItemIcon code={"\ue658"} iconStyle={styles.deleteIcon} onClick={()=>{this.clearAll()}}/>;
@@ -221,15 +226,17 @@ export default class SelectBrand extends Component {
                             <Text style={{fontSize:px(30),fontWeight:'300',color:'#3D4145'}}>搜索</Text>
                         </View>
                     </View>
-                    <ListView
+                    <FlatList
+                    ref="mylist"
                     style={{flex:1}}
-                    ref='mylist'
-                    dataSource={this.state.dataSource}
-                    renderRow={this.renderRow}
-                    renderFooter={this.renderFooter}
-                    renderHeader={this.renderHeader}
-                    onEndReached={this.onEndReached}
-                    showScrollbar={false}
+                    data={this.state.dataSource}
+                    horizontal={false}
+                    renderItem={this.renderRow}
+                    ListFooterComponent={this.renderFooter}
+                    refreshing={this.state.isRefreshing}
+                    onRefresh={()=>{this.handleRefresh()}}
+                    onEndReached={()=>{this.onEndReached()}}
+                    keyExtractor={(item, index) => (index + '1')}
                     />
                 </View>
             </View>

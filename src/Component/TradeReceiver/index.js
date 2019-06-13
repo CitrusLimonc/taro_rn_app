@@ -2,6 +2,7 @@
 
 import Taro, { Component, Config } from '@tarojs/taro';
 import { View, Text,Image,Link } from '@tarojs/components';
+import { Toast , Portal } from '@ant-design/react-native';
 import {IsEmpty} from '../../Public/Biz/IsEmpty.js';
 import {LocalStore} from '../../Public/Biz/LocalStore.js';
 import {Parse2json} from '../../Public/Biz/Parse2json.js';
@@ -33,11 +34,7 @@ export default class TradeReceiver extends Component {
 
         let text = `联系人：${data.receiver_name}  联系电话：${this.state.phone}  联系地址：${address} 邮编${data.receiver_zip}`;
         UitlsRap.clipboard(text,()=>{
-            Taro.showToast({
-                title: '信息已复制',
-                icon: 'none',
-                duration: 2000
-            });
+            Toast.info('信息已复制', 2);
         });
 	}
 
@@ -57,6 +54,10 @@ export default class TradeReceiver extends Component {
         }
     }
 
+    makePhoneCall = (phone) =>{
+        Taro.makePhoneCall({phoneNumber:phone});
+    }
+
     render() {
         const { data } = this.props;
         const { phone } = this.state;
@@ -74,10 +75,10 @@ export default class TradeReceiver extends Component {
  					<Text style={styles.text_grey}>收 件 人  ：</Text>
  					<Text style={[styles.text_bl,{flex:1}]}>{data.receiver_name}</Text>
  					{!IsEmpty(phone)?(
-						<Link style={{flexDirection:'row'}} href={`tel:${phone}`}>
+						<View style={{flexDirection:'row'}} onClick={()=>{this.makePhoneCall(phone)}}>
 						    <Text style={styles.text_blue}>{phone}</Text>
 							<ItemIcon iconStyle={{marginLeft:px(20),color:'#3d97e1',fontSize:px(28)}} code={"\ue662"} />
-						</Link>
+						</View>
  					):(null)}
                 </View>
                 <View onClick={this.copyAddress} style={[styles.row_view,{alignItems:'flex-start',marginTop:px(12)}]}>

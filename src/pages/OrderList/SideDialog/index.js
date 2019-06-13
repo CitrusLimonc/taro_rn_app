@@ -1,5 +1,6 @@
 import Taro, { Component, Config } from '@tarojs/taro';
-import { View, Text, Dialog ,Input} from '@tarojs/components';
+import { View, Text, Input} from '@tarojs/components';
+import Dialog from '../../../Component/Dialog';
 import { IsEmpty } from '../../../Public/Biz/IsEmpty';
 import {Parse2json} from '../../../Public/Biz/Parse2json.js';
 import ItemIcon from '../../../Component/ItemIcon';
@@ -102,7 +103,7 @@ export default class SideDialog extends Component {
                         <View style={styles.items}>
                             {
                                 item.list.map((listItem,index)=>{
-                                    let icon='';
+                                    let icon=null;
                                     if (item.active==listItem.id) {
                                         {/* if (window.__weex_env__.platform == "android") { */}
                                             icon=<ItemIcon code={"\ue8b7"} iconStyle={styles.tagIcon}/>;
@@ -187,7 +188,7 @@ export default class SideDialog extends Component {
         }
 
         return(
-            <Dialog ref="modal1" maskStyle={maskStyle} contentStyle={contentStyle}  maskClosable={false}>
+            <Dialog ref="modal1" contentStyle={contentStyle}  maskClosable={false}>
                 <View style={styles.normalLine}>
                     <Text style={{fontSize:px(24)}}>筛选</Text>
                 </View>

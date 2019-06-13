@@ -1,5 +1,5 @@
 import Taro, { Component, Config } from '@tarojs/taro';
-import { View, Text, Icon, Input, Radio } from '@tarojs/components';
+import { View, Text, Input, Radio } from '@tarojs/components';
 import px from '../../Biz/px.js';
 import styles from './styles';
 /**
@@ -28,7 +28,7 @@ export default class ItemTextArea extends Component {
     }
     //获得输入框中的内容并判断长度
     changeWords =(e)=>{
-        let string=e.value;
+        let string=e.target.value;
         let length=string.replace(/[\u0391-\uFFE5]/g,"aa").length;
         this.setState({
             wordNum:length
@@ -55,14 +55,14 @@ export default class ItemTextArea extends Component {
 
     render(){
         //是否带检测信息
-        let text='';
+        let text=null;
         if (this.props.test) {
             if (this.state.wordNum==0) {
                 text=<Text style={styles.placehold}>{this.props.test}</Text>;
             }
         }
 
-        let num='';
+        let num=null;
         if (this.props.maxLength) {
             num=
             <View style={{flex:1}}>
@@ -70,7 +70,7 @@ export default class ItemTextArea extends Component {
             </View>;
         }
 
-        let radio='';
+        let radio=null;
         if (this.props.radio) {
             radio=
             <View onClick={this.changeRadio} style={{flex:1,flexDirection:'row',alignItems:'center'}}>

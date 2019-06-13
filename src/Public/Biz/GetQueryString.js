@@ -3,14 +3,21 @@
  **/
 import Taro from '@tarojs/taro';
 import { IsEmpty } from './IsEmpty.js';
-var GetQueryString = function({name,string=''}){
-	var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+var GetQueryString = function({name,self=''}){
+	let lastParam = '';
+	if (!IsEmpty(self)) {
+		let querys = self.props.navigation.state.params;
 
-	// let currentPages = Taro.getCurrentPages();
-	// let lastPage = currentPages[currentPages.length];
-	// var destr = IsEmpty(string)?lastPage:string;
-	// var r = destr.substring(destr.indexOf('?')+1,destr.length).match(reg);
-	// if (r != null)return unescape(decodeURI(r[2]));
+
+		if (!IsEmpty(querys)) {
+			lastParam = querys[name];
+		}
+	}
+	
+	// let destr = IsEmpty(string)?lastParam:string;
+	// let r = destr.substring(destr.indexOf('?')+1,destr.length).match(reg);
+	
+	if (lastParam != null && lastParam != undefined) return lastParam;
 	return null;
 }
 export { GetQueryString };

@@ -18,5 +18,17 @@ export default {
     loadmore_text:{
         fontSize: px(24),
         color: '#FF6000'
+    },
+    content:{
+        flex:1,
+        width:px(750),
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    addShopBtn:{
+        width:px(176),
+        height:px(72),
+        backgroundColor:'#ff6000',
+        borderColor:'#ff6000',
     }
 }

@@ -1,12 +1,14 @@
 import Taro, { Component, Config } from '@tarojs/taro';
 import { View, Text,Image} from '@tarojs/components';
+import { Toast,Portal} from '@ant-design/react-native';
+import { FlatList , RefreshControl}  from 'react-native';
 import Event from 'ay-event';
 import {IsEmpty} from '../../Public/Biz/IsEmpty.js';
 import {NetWork} from '../../Public/Common/NetWork/NetWork.js';
 import styles from './styles';
 import ItemIcon from '../../Component/ItemIcon';
 import AiyongDialog from '../../Component/AiyongDialog';
-import Toast from '../../Component/Toast';
+import AyToast from '../../Component/AyToast';
 import OrderCard from './OrderCard';
 import SideDialog from './SideDialog';
 import ChooseStatus from './ChooseStatus';
@@ -38,14 +40,15 @@ export default class BatchPay extends Component {
         this.chooseTotalBf = 0;
         this.chooseItems = []; //选择的商品
         this.totalPrice = 0.00;
+        this.loading = '';
     }
 
-    // config: Config = {
-    //     navigationBarTitleText: '批量付款'
-    // }
+    config = {
+        navigationBarTitleText: '批量付款'
+    }
 
     componentDidMount(){
-        Taro.showLoading({ title: '加载中...' });
+        this.loading = Toast.loading('加载中...');
         this.getOrderList({pageNo:1},(result)=>{
             this.setState({
                 ...result,
@@ -69,7 +72,7 @@ export default class BatchPay extends Component {
             url:'Orderreturn/getWaitPayOrders',
             data:param
         },(rsp)=>{
-            Taro.hideLoading();
+            Portal.remove(this.loading);
             if (!IsEmpty(rsp)) {
                 if (param.pageNo > 1) {
                     dataSource = this.state.dataSource.concat(rsp.result);
@@ -89,14 +92,13 @@ export default class BatchPay extends Component {
                 }
             }
         },(error)=>{
-            Taro.hideLoading();
-            alert(error);
+            Portal.remove(this.loading);
         });
     }
 
     //确认筛选
     submitFilter = (shopInfo) =>{
-        Taro.showLoading({ title: '加载中...' });
+        this.loading = Toast.loading('加载中...');
         this.pageNo = 1;
         console.log('shopInfo',shopInfo);
         this.state.shopId = shopInfo.id;
@@ -110,13 +112,12 @@ export default class BatchPay extends Component {
     }
 
     //获取所有品牌
-    renderRow = (item, index) =>{
+    renderRow = (items) =>{
         let isLastOne = false;
-        if (index == this.state.dataSource.length -1 && this.state.headType) {
-            isLastOne = true;
-        }
+        let index = items.index;
+        let item = items.item;
         return (
-            <OrderCard 
+            <OrderCard
             order = {item} 
             chooseNum = {this.chooseNum}
             isLastOne = {isLastOne}
@@ -140,11 +141,7 @@ export default class BatchPay extends Component {
                 // let orderIds = this.state.chooseItem.join(';');
                 // url = url + orderIds;
                 // UitlsRap.clipboard(url,(result)=>{
-                        // Taro.showToast({
-                        //     title: '链接已复制',
-                        //     icon: 'none',
-                        //     duration: 2000
-                        // });
+                //     Toast.info('链接已复制', 2);
                 // });
                 this.refs.surePayDialog.show();
                 GoToView({status:url,page_status:'special'});
@@ -173,9 +170,9 @@ export default class BatchPay extends Component {
                 refreshText:'↓ 下拉刷新'
             });
         });
-        if (this.state.dataSource.length>0) {
-            this.refs.mylist.resetLoadmore();
-        }
+        // if (this.state.dataSource.length>0) {
+        //     this.refs.mylist.resetLoadmore();
+        // }
     }
 
     //下拉刷新头部
@@ -227,7 +224,9 @@ export default class BatchPay extends Component {
     }
 
     //空列表的内部
-    renderNull = (item,index) =>{
+    renderNull = (items) =>{
+        let index = items.index;
+        let item = items.item;
         return (
             <View style={{flex:1}}>
                 <View style={styles.midContent}>
@@ -254,11 +253,7 @@ export default class BatchPay extends Component {
         let arr = this.state.chooseItem; //当前选择项
         let allMessArr = this.chooseItems;
         if (checked && this.chooseTotal >= 10) {
-            Taro.showToast({
-                title: '一次最多只可选择10笔订单',
-                icon: 'none',
-                duration: 2000
-            });
+            Toast.info('一次最多只可选择10笔订单', 2);
             callback(this.chooseTotal,false);
             return ;
         }
@@ -338,11 +333,7 @@ export default class BatchPay extends Component {
             this.chooseTotal = 0;
             this.totalPrice = 0.00;
             this.chooseItems = [];
-            Taro.showToast({
-                title: msg,
-                icon: 'none',
-                duration: 2000
-            });
+            Toast.info(msg, 2);
             this.refs.successToast.hide();
             this.getOrderList({},(result)=>{
                 this.setState({
@@ -374,7 +365,7 @@ export default class BatchPay extends Component {
                 });
                 this.updateOrderOne(chooseItem,index,result,callback);
             },(error)=>{
-                alert(JSON.stringify(error));
+                console.error(error);
             });
         } else {
             callback(result);
@@ -384,41 +375,44 @@ export default class BatchPay extends Component {
 
     render(){
         let {dataSource,shopUrl,headType,showLoading,progress} = this.state;
-        let content = '';
+        let content = null;
         console.log('shop_pic',shopUrl);
         console.log('headType------------BatchPay',headType);
         
         if (showLoading) {
-            content = '';
+            content = null;
         } else {
             if (IsEmpty(dataSource)) {
                 content =
-                <ListView
-                style={{flex:1}}
+                <FlatList
                 ref="mylist"
-                dataSource={['null']}
-                renderHeader={this.renderHeader}
-                renderRow={this.renderNull}
-                showScrollbar={false}
+                style={{flex:1}}
+                data={['null']}
+                horizontal={false}
+                renderItem={this.renderNull}
+                refreshing={this.state.isRefreshing}
+                onRefresh={()=>{this.handleRefresh()}}
+                keyExtractor={(item, index) => (index + '1')}
                 />;
             } else {
                 content =
-                <ListView
-                style={{flex:1,backgroundColor:'#f5f5f5'}}
+                <FlatList
                 ref="mylist"
-                dataSource={dataSource}
-                renderRow={this.renderRow}
-                renderHeader={this.renderHeader}
-                renderFooter={this.renderFooter}
-                onEndReached={this.onEndReached}
+                style={{flex:1,backgroundColor:'#f5f5f5'}}
+                data={dataSource}
+                horizontal={false}
+                renderItem={this.renderRow}
+                refreshing={this.state.isRefreshing}
+                onRefresh={()=>{this.handleRefresh()}}
+                onEndReached={()=>{this.onEndReached()}}
                 onEndReachedThreshold={300}
-                showScrollbar={false}
+                keyExtractor={(item, index) => (index + '1')}
                 />;
             }
         }
 
-        let headSelect = '';
-        let footButton = '';
+        let headSelect = null;
+        let footButton = null;
 
         //批量状态的头部
         if (headType) {

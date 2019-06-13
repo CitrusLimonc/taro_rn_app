@@ -1,5 +1,8 @@
 import Taro, { Component, Config } from '@tarojs/taro';
 import { View, Text} from '@tarojs/components';
+import { Toast , Portal } from '@ant-design/react-native';
+import AyButton from '../../Component/AyButton/index';
+import { FlatList , RefreshControl}  from 'react-native';
 import {IsEmpty} from '../../Public/Biz/IsEmpty.js';
 import GoodsProductMap from '../../Component/GoodsProductMap';
 import {GoToView} from '../../Public/Biz/GoToView.js';
@@ -34,13 +37,13 @@ export default class SupplierGoods extends Component {
 		this.apiPageNo = 1;
 	}
 	
-	// config: Config = {
-    //     navigationBarTitleText: '优质供应商'
-	// }
+	config = {
+        navigationBarTitleText: '优质供应商'
+    }
 
     componentWillMount(){
 		const self = this;
-		let supplierdata = GetQueryString({name:'supplierdata'});
+		let supplierdata = GetQueryString({name:'supplierdata',self:this});
 		let supplierdatanew = decodeURI(supplierdata);
 		console.log('supplier',supplierdatanew);
 		let supplier = JSON.parse(supplierdatanew);
@@ -111,11 +114,7 @@ export default class SupplierGoods extends Component {
 
 
 			}else{
-				Taro.showToast({
-					title: rsp.value,
-					icon: 'none',
-					duration: 2000
-				});
+				Toast.info(rsp.value, 2);
 				self.setState({
 					loadmore:false,
 				})
@@ -134,7 +133,7 @@ export default class SupplierGoods extends Component {
 			});
 		}
 		this.getproducts(selfdata,function(gridData){
-			self.refs.recommendList.resetLoadmore();
+			// self.refs.recommendList.resetLoadmore();
 			let gridDatanew = self.state.gridData.concat(gridData);
 			if(!IsEmpty(gridData)){
 				self.page_no = self.page_no + 1;
@@ -208,7 +207,7 @@ export default class SupplierGoods extends Component {
 					{this.gettag()}
 				</View>
                	<View style={{flexDirection:"row",alignItems:'center',justifyContent:'flex-end',height:98}}>
-				   {/* <Button type="normal" style={{height:48,width:128,marginRight:24}} onpress={()=>{}}>拨打电话</Button> */}
+				   {/* <AyButton type="normal" style={{height:48,width:128,marginRight:24}} onpress={()=>{}}>拨打电话</AyButton> */}
 				   {/* <Link style={{height:48,width:128,marginRight:24,flexDirection:'row',justifyContent:'center',alignItems:'center',borderWidth:px(1),borderColor:'#c5c5c5',borderRadius:4,}} onClick={()=>{console.log('usephone');DoBeacon('TD20181012161059','supplierpage_btn_call',self.state.loginId);}} href={`tel:${phone}`}>
 						<Text style={{color: "#999999", fontSize: "px(28)",}}>拨打电话</Text>
 					</Link> */}
@@ -245,15 +244,18 @@ export default class SupplierGoods extends Component {
 
     render(){
         return (
-			<ListView
-			ref = "recommendList"
-			style = {{flex:1,backgroundColor:'#f5f5f5'}}
-			onEndReachedThreshold = {800}
+			<FlatList
+			ref="recommendList"
+			style={{flex:1,backgroundColor:'#f5f5f5'}}
+			data={dataSource}
+			horizontal={false}
+			renderItem={this.renderRow}
+			ListFooterComponent={this.renderFooter}
+			refreshing={this.state.isRefreshing}
+			onRefresh={()=>{this.handleRefresh()}}
 			onEndReached = {()=>{console.log('到底了。。',this.page_no);this.loadmore();}}
-			renderFooter = {this.renderFooter}
-			renderHeader = {this.renderHeader}
-			renderRow = {this.renderRow}
-			dataSource = {['null']}
+			onEndReachedThreshold={800}
+			keyExtractor={(item, index) => (index + '1')}
 			/>
         );
     }

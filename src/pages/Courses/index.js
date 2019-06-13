@@ -16,12 +16,12 @@ export default class Courses extends Component{
 
     }
 
-    // config: Config = {
-    //     navigationBarTitleText: '代发教程'
-    // }
+    config = {
+        navigationBarTitleText: '代发教程'
+    }
 
     componentWillMount(){
-        let mark = GetQueryString({name:'type'});
+        let mark = GetQueryString({name:'type',self:this});
         if(mark == 'look'){
             this.setState({
                 Picinfo:[
@@ -52,7 +52,14 @@ export default class Courses extends Component{
         let pics = [];
         pics = this.state.Picinfo;
         pics.map((item,index)=>{
-            body.push(<Image ref="testimage" src={item.pic}  style={[{quality:'original'},{width:item.width,height:item.height}]} />)
+            body.push(
+                <Image 
+                key={index} 
+                ref="testimage" 
+                src={item.pic}  
+                style={[{width:item.width,height:item.height}]} 
+                />
+            )
         })
         return body;
     }

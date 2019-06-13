@@ -1,5 +1,6 @@
 import Taro, { Component, Config } from '@tarojs/taro';
-import { View, Text, Dialog } from '@tarojs/components';
+import { View, Text } from '@tarojs/components';
+import Dialog from '../Dialog';
 import {IsEmpty} from '../../Public/Biz/IsEmpty.js';
 import px from '../../Biz/px.js';
 import styles from './styles';
@@ -54,7 +55,10 @@ export default class ItemConfirmDialog extends Component {
     render(){
         console.log('----------render confrimDialog----------');
         return (
-            <Dialog ref={"sureDialog"} duration={1000} maskStyle={styles.maskStyle} contentStyle={styles.modal2Style}>
+            <Dialog 
+            ref={"sureDialog"} 
+            contentStyle={styles.modal2Style}
+            >
                 <View style={styles.dialogContent}>
                     <Text style={{marginTop:px(15),fontSize:px(38),fontWeight:'300',color:'#4A4A4A',marginLeft:px(25)}}>{this.props.title}</Text>
                     {this.props.content}

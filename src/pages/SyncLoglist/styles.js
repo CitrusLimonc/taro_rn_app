@@ -39,7 +39,7 @@ export default {
         height: px(100),
         paddingTop: px(10),
         paddingBottom: px(10),
-        position:'fixed',
+        position:'absolute',
         bottom: px(0),
         left: px(0),
         right: px(0),

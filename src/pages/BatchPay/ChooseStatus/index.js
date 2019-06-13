@@ -1,5 +1,6 @@
 import Taro, { Component, Config } from '@tarojs/taro';
-import { View, Text , Button} from '@tarojs/components';
+import { View, Text } from '@tarojs/components';
+import AyButton from '../../../Component/AyButton/index';
 import px from '../../../Biz/px.js';
 import styles from './styles';
 /**
@@ -28,10 +29,10 @@ export default class ChooseStatus extends Component {
         //console.log(this.state.chooseNum);
         return (
             <View style={styles.batchHead}>
-                <Button type="normal"
+                <AyButton type="normal"
                 style={styles.cancelBtn}
                 onClick={this.props.cancelBatch}
-                >取消</Button>
+                >取消</AyButton>
                 <View style={styles.cancelTouch}
                 onClick={this.props.cancelBatch}>
                 </View>

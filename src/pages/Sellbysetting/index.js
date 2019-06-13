@@ -1,5 +1,6 @@
 import Taro, { Component, Config } from '@tarojs/taro';
 import {View,Text,Image} from '@tarojs/components';
+import { Toast , Portal } from '@ant-design/react-native';
 import Event from 'ay-event';
 import ItemConfirmDialog from '../../Component/ItemConfirmDialog';
 import ItemTextArea from '../../Component/ItemTextArea';
@@ -45,9 +46,10 @@ export default class Sellbysetting extends Component {
         this.from = '';
         this.numIid = '';
         this.productId = '';
+        this.loading = '';
         let self = this;
         Event.on('App.changeAlldata', (data) => {
-            Taro.showLoading({ title: '加载中...' });
+            self.loading = Toast.loading('加载中...');
             let params = {
                 numIid:self.numIid,
                 shopType:self.state.lastShopType,
@@ -58,7 +60,7 @@ export default class Sellbysetting extends Component {
                 self.setState({
                     alldata:data,
                 })
-                Taro.hideLoading();
+                Portal.remove(self.loading);
             });
         }).then(result => {
             console.log('注册成功');
@@ -67,22 +69,22 @@ export default class Sellbysetting extends Component {
         })
     }
 
-    // config: Config = {
-    //     navigationBarTitleText: '代销设置'
-	// }
+    config = {
+        navigationBarTitleText: '代销设置'
+    }
 
     componentDidMount(){
         let self = this;
-        Taro.showLoading({ title: '加载中...' });
+        self.loading = Toast.loading('加载中...');
 
-        let shopId = GetQueryString({name:'shopid'});
-        let numIid = GetQueryString({name:'numIid'});
-        let productId = GetQueryString({name:'productId'});
+        let shopId = GetQueryString({name:'shopid',self:this});
+        let numIid = GetQueryString({name:'numIid',self:this});
+        let productId = GetQueryString({name:'productId',self:this});
 
         this.numIid = numIid;
         this.productId = productId;
         self.getAllSettings(shopId,(result)=>{
-            Taro.hideLoading();
+            Portal.remove(self.loading);
             console.log('getAllSettings',result);
             let params = {
                 numIid:numIid,
@@ -92,11 +94,7 @@ export default class Sellbysetting extends Component {
             };
             self.getOneGoodSetting(params,(data)=>{
                 if (!IsEmpty(data.code) && data.code == px(100)) {
-                    Taro.showToast({
-                        title: '该商品不存在',
-                        icon: 'none',
-                        duration: 2000
-                    });
+                    Toast.info('该商品不存在', 2);
                     GoToView({page_status:'pop'});
                 }
                 self.setState({
@@ -180,7 +178,7 @@ export default class Sellbysetting extends Component {
             }
         },(error)=>{
             callback({});
-            alert(JSON.stringify(error));
+            console.error(error);
         });
     }
 
@@ -190,10 +188,10 @@ export default class Sellbysetting extends Component {
         if (this.state.hasChanged) {
             self.willShowShop = item.shop_id;
         } else {
-            Taro.showLoading({ title: '加载中...' });
+            self.loading = Toast.loading('加载中...');
             // 获取铺货设置  加loading
             self.getAllSettings(item.shop_id,(result)=>{
-                Taro.hideLoading();
+                Portal.remove(self.loading);
                 console.log('getAllSettings',result);
                 let params = {
                     numIid:item.num_iid,
@@ -203,11 +201,7 @@ export default class Sellbysetting extends Component {
                 };
                 self.getOneGoodSetting(params,(data)=>{
                     if (!IsEmpty(data.code) && data.code == px(100)) {
-                        Taro.showToast({
-                            title: '该商品不存在',
-                            icon: 'none',
-                            duration: 2000
-                        });
+                        Toast.info('该商品不存在', 2);
                     } else {
                         this.numIid = item.num_iid;
                         this.state.lastShopType = item.shop_type;
@@ -277,7 +271,7 @@ export default class Sellbysetting extends Component {
             callback(rsp);
         },(error)=>{
             callback({});
-            alert(JSON.stringify(error));
+            console.error(error);
         });
     }
 
@@ -296,32 +290,24 @@ export default class Sellbysetting extends Component {
             editType:'title',
             title:this.state.newSubject
         };
-        Taro.showLoading({ title: '加载中...' });
+        this.loading = Toast.loading('加载中...');
         this.editItemForPdd(param,(rsp)=>{
-            Taro.hideLoading();
+            Portal.remove(this.loading);
             this.refs.editTitle.hide();
             if (rsp.code == '200') {
-                Taro.showToast({
-                    title: '修改成功',
-                    icon: 'none',
-                    duration: 2000
-                });
+                Toast.info('修改成功', 2);
                 alldata.name = this.state.newSubject;
                 this.setState({
                     alldata:alldata
                 });
             } else {
-                Taro.showToast({
-                    title: '修改失败',
-                    icon: 'none',
-                    duration: 2000
-                });
+                Toast.info('修改失败', 2);
             }
         });
     }
 
     render() {
-        let html ='';
+        let html =null;
         switch (this.state.nowPageStatus.status) {
             case '基本信息':{
                 html = 
@@ -382,7 +368,7 @@ export default class Sellbysetting extends Component {
                         <ProductStatus pageStatus={this.state.pageStatus} nowPageStatus={this.state.nowPageStatus} changeStaus={this.changeStaus} />
                         {html}
                 </View>
-                {/* <View style={{position:'fixed',bottom:0,left:0,right:0,height:px(96),flexDirection:'row',alignItems:'center',justifyContent:'center'}}>
+                {/* <View style={{position:'absolute',bottom:0,left:0,right:0,height:px(96),flexDirection:'row',alignItems:'center',justifyContent:'center'}}>
                     <View style={{backgroundColor:'#ffffff',width:375,height:px(96),alignItems:'center',justifyContent:'center'}}>
                         <Text style={{color:'#333333',fontSize:px(32)}}>取消代销</Text>
                     </View>

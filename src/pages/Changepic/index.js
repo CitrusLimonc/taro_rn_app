@@ -1,5 +1,6 @@
 import Taro, { Component, Config } from '@tarojs/taro';
 import { View, Text, Image, ScrollView, Radio } from '@tarojs/components';
+import { Toast , Portal ,Grid } from '@ant-design/react-native';
 import Event from 'ay-event';
 import styles from './styles';
 import {NetWork} from '../../Public/Common/NetWork/NetWork.js';
@@ -25,11 +26,12 @@ export default class Changepic extends Component {
         this.shopType = ''; //店铺类型
         this.addnum =0; //添加个数
         this.shopId = '';
+        this.loading = '';
     }
 
-    // config: Config = {
-    //     navigationBarTitleText: '分享商品'
-    // }
+    config = {
+        navigationBarTitleText: '分享商品'
+    }
 
     componentWillMount(){
         const self = this;
@@ -41,7 +43,8 @@ export default class Changepic extends Component {
         this.productId = productId;
         this.shopType = shopType;
         this.shopId = shopId;
-        // Taro.showLoading({ title: '加载中...' });
+        this.loading = Toast.loading('加载中...');
+
         //获取商品设置信息
         NetWork.Get({
             url:'Orderreturn/getOneGoodSetting',
@@ -65,7 +68,7 @@ export default class Changepic extends Component {
             self.setState({
                 gridData:pics,
             })
-            // Taro.hideLoading();
+            Portal.remove(self.loading);
         });
     }
 
@@ -95,11 +98,7 @@ export default class Changepic extends Component {
 
         changes = changes.substring(0, changes.lastIndexOf(','));
         if(IsEmpty(changes)){
-            Taro.showToast({
-                title: '请至少保留一张详情图片',
-                icon: 'none',
-                duration: 2000
-            });
+            Toast.info('请至少保留一张详情图片', 2);
         }else{
             let url = 'Orderreturn/changeProductSetting';
             let params = {
@@ -127,17 +126,9 @@ export default class Changepic extends Component {
                     GoToView({page_status:'pop'});
                 }else{
                     if (!IsEmpty(data.msg)) {
-                        Taro.showToast({
-                            title: data.msg,
-                            icon: 'none',
-                            duration: 2000
-                        });
+                        Toast.info(data.msg, 2);
                     } else {
-                        Taro.showToast({
-                            title: '修改失败',
-                            icon: 'none',
-                            duration: 2000
-                        });
+                        Toast.info('修改失败', 2);
                     }
                 }
             });
@@ -185,9 +176,13 @@ export default class Changepic extends Component {
             <View>
                 <ScrollView style={styles.body}>
                     <Text style={styles.title}>请选择要{name}展示的详情图片</Text>
-                    <MultiRow dataSource={this.state.gridData} rows={4} renderCell={this.renderGridCell.bind(this)} />
+                    <Grid
+                    data = { this.state.gridData }
+                    columnNum = { 4 }
+                    renderItem = {this.renderGridCell}
+                    />
                 </ScrollView>
-                <View onClick={()=>{this.save()}} style={{position:'fixed',bottom:px(0),left:px(0),right:px(0),backgroundColor:'#ff6000',height:px(96),alignItems:'center',justifyContent:'center'}}>
+                <View onClick={()=>{this.save()}} style={{position:'absolute',bottom:px(0),left:px(0),right:px(0),backgroundColor:'#ff6000',height:px(96),alignItems:'center',justifyContent:'center'}}>
                     <Text style={{color:'#ffffff',fontSize:px(32)}}>保存</Text>
                 </View>
             </View>

@@ -1,5 +1,7 @@
 import Taro, { Component, Config } from '@tarojs/taro';
-import {ScrollView,View,Text,Image,Dialog} from '@tarojs/components';
+import {ScrollView,View,Text,Image} from '@tarojs/components';
+import { Toast , Portal } from '@ant-design/react-native';
+import Dialog from '../../Component/Dialog';
 import Event from 'ay-event';
 import {NetWork} from '../../Public/Common/NetWork/NetWork.js';
 import {GoToView} from '../../Public/Biz/GoToView.js';
@@ -24,6 +26,7 @@ export default class WechartMsg extends Component {
             openId:'',
             relationId:''
         };
+        this.loading = '';
         let self = this;
         Event.on('back',function(e){
             if (self.state.isOpen) {
@@ -54,16 +57,12 @@ export default class WechartMsg extends Component {
         });
     }
 
-    // config: Config = {
-    //     navigationBarTitleText: '消息通知'
-    // }
-
-    componentWillMount(){
-        // SetTitle({"text": "消息通知"});
+    config = {
+        navigationBarTitleText: '消息通知'
     }
 
     componentDidMount(){
-        Taro.showLoading({ title: '加载中...' });
+        this.loading = Toast.loading('加载中...');
         this.getList((rsp)=>{
             if (!IsEmpty(rsp)) {
                 this.setState({
@@ -79,7 +78,7 @@ export default class WechartMsg extends Component {
                     isLoading:false
                 });
             }
-            Taro.hideLoading();
+            Portal.remove(this.loading);
         });
     }
 
@@ -94,19 +93,15 @@ export default class WechartMsg extends Component {
         },(rsp)=>{
             console.log('Wx/getWechartLists',rsp);
             if (!IsEmpty(rsp.msg)) {
-                Taro.showToast({
-                    title: rsp.msg,
-                    icon: 'none',
-                    duration: 2000
-                });
+                Toast.info(rsp.msg, 2);
                 callback({});
             } else {
                 callback(rsp);
             }
         },(error)=>{
             callback({});
-            alert(JSON.stringify(error));
-            Taro.hideLoading();
+            console.error(error);
+            Portal.remove(this.loading);
         });
     }
 
@@ -164,26 +159,14 @@ export default class WechartMsg extends Component {
             console.log('Wx/changeWechartSet',rsp);
             if (!IsEmpty(rsp.code)) {
                 if (rsp.code != '200') {
-                    Taro.showToast({
-                        title: rsp.msg,
-                        icon: 'none',
-                        duration: 2000
-                    });
+                    Toast.info(rsp.msg, 2);
                 }
             } else {
-                Taro.showToast({
-                    title: "修改失败",
-                    icon: 'none',
-                    duration: 2000
-                });
+                Toast.info("修改失败", 2);
             }
         },(error)=>{
             console.log(error);
-            Taro.showToast({
-                title: "修改失败，网络错误，请稍后再试",
-                icon: 'none',
-                duration: 2000
-            });
+            Toast.info("修改失败，网络错误，请稍后再试", 2);
         });
     }
 
@@ -197,11 +180,7 @@ export default class WechartMsg extends Component {
                 });
                 this.refs.codeDialog.show();
             } else {
-                Taro.showToast({
-                    title: "二维码获取失败",
-                    icon: 'none',
-                    duration: 2000
-                });
+                Toast.info("二维码获取失败", 2);
             }
         });
     }
@@ -209,7 +188,7 @@ export default class WechartMsg extends Component {
     render() {
         let {isLoading,isOpen,imageUrl} = this.state;
         if (isLoading) {
-            return '';
+            return null;
         }
 
         return (
@@ -236,14 +215,14 @@ export default class WechartMsg extends Component {
                     }
                     {
                         isOpen ?
-                        ''
+                        null
                         :
                         <View style={styles.btnBox} onClick={()=>{this.refs.codeDialog.show()}}>
                             <Text style={styles.btnText}>点击查看并截图保存到相册</Text>
                         </View>
                     }
                 </View>
-                <Dialog ref='codeDialog' duration={1000} contentStyle={styles.adStyle} maskClosable={true}>
+                <Dialog ref='codeDialog' contentStyle={styles.adStyle} maskClosable={true}>
                     <Image style={{width:px(600),height:px(600)}} src={imageUrl}/>
                     <Text style={[styles.btnText,{marginTop:px(80),fontSize:px(28)}]}>截图保存二维码到相册</Text>
                     <Text style={[styles.btnText,{marginTop:px(24),fontSize:px(28)}]}>微信扫码关注“代发助手服务号”，开通消息通知</Text>

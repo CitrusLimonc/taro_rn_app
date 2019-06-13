@@ -47,7 +47,7 @@ export default class GridCell extends Component {
 		let imageDom = [];
 		if (IsEmpty(dataSource.image)) {
 			imageDom.push(
-				<View style={styles['gridcellnoimage'+size]}></View>
+				<View key={0} style={styles['gridcellnoimage'+size]}></View>
 			);
 		}else{
 			let imgUrl = dataSource.image;
@@ -56,12 +56,9 @@ export default class GridCell extends Component {
 			}
 			imageDom.push(
 				<Image
-				src = {
-					imgUrl
-				}
-				style = {
-					styles['gridcellimage'+size]
-				}
+				key={0}
+				src = {imgUrl}
+				style = {styles['gridcellimage'+size]}
 				autoFit={false}
 				/>
 			);
@@ -69,16 +66,16 @@ export default class GridCell extends Component {
 		let titleDom = [];
 		if (dataSource.title == undefined) {
 		}else if(dataSource.title == ""){
-			titleDom.push(<View style={{backgroundColor: "#fafafa",height:px(64),marginTop: px(8),}}></View>);
+			titleDom.push(<View key={0} style={{backgroundColor: "#fafafa",height:px(64),marginTop: px(8),}}></View>);
 		}else{
-			titleDom.push(<Text style={[styles.gridtitle,{marginTop:px(8)}]} numberOfLines={2}>{dataSource.title}</Text>);
+			titleDom.push(<Text key={0} style={[styles.gridtitle,{marginTop:px(8)}]} numberOfLines={2}>{dataSource.title}</Text>);
 		}
 		let priceDom = [];
 		if (dataSource.price == undefined) {
 		} else if (dataSource.price == "") {
-			priceDom.push(<View style={{height:px(28),width:px(100),backgroundColor:"#fafafa",marginTop:px(8)}}></View>);
+			priceDom.push(<View key={1} style={{height:px(28),width:px(100),backgroundColor:"#fafafa",marginTop:px(8)}}></View>);
 		}else{
-			priceDom.push(<Text style={{fontSize:px(24),color:"#333333",marginTop:px(8)}}>¥{dataSource.price}</Text>);
+			priceDom.push(<Text key={1} style={{fontSize:px(24),color:"#333333",marginTop:px(8)}}>¥{dataSource.price}</Text>);
 		}
         return (
 

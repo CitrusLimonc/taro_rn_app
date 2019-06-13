@@ -2,6 +2,7 @@
 
 import Taro, { Component, Config } from '@tarojs/taro';
 import { View,Text } from '@tarojs/components';
+import { Toast , Portal } from '@ant-design/react-native';
 import Event from 'ay-event';
 import { GetOrderInfo } from '../../../Biz/Apis.js';
 import ItemIcon from '../../../Component/ItemIcon';
@@ -128,8 +129,6 @@ export default class Head extends Component{
             }
         },(error)=>{
             callback({});
-            alert(JSON.stringify(error));
-            Taro.hideLoading();
         });
     }
 
@@ -143,21 +142,17 @@ export default class Head extends Component{
                     needShow:false
                 });
             } else {
-                Taro.showToast({
-                    title: '请求失败，请稍候再试',
-                    icon: 'none',
-                    duration: 2000
-                });
+                Toast.info('请求失败，请稍候再试', 2);
             }
         },(error)=>{
-            alert(JSON.stringify(error));
+            console.error(error);
         });
     }
 
     render(){
         const { orderinfo,isLoading,needShow } = this.state;
         if (isLoading) {
-            return '';
+            return null;
         } else {
             if (needShow) {
                 return (

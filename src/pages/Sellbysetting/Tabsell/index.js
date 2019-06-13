@@ -1,5 +1,6 @@
 import Taro, { Component, Config } from '@tarojs/taro';
 import { View,ScrollView} from '@tarojs/components';
+import { Toast , Portal } from '@ant-design/react-native';
 import styles from './styles';
 import Skuone from './Skuone';
 import PddSku from './PddSku';
@@ -22,6 +23,7 @@ export default class Tabsell extends Component {
             changeradio:1,
             onlyone:false, //是否单规格
         };
+        this.loading = '';
     }
     componentWillMount(){
         const self = this;
@@ -62,8 +64,7 @@ export default class Tabsell extends Component {
 
     //保存修改
     hideallModalok = (data) =>{
-        const selfs = this;
-        selfs.Taro.showLoading({ title: '加载中...' });
+        this.loading = Toast.loading('加载中...');
         if(!IsEmpty(data)){
             let skuInfos = '';
             const self = data;
@@ -79,11 +80,7 @@ export default class Tabsell extends Component {
                 });
                 // this.refs.changeallDialog.hide();
             }else{
-                Taro.showToast({
-                    title: '请输入大于0的两位小数或整数',
-                    icon: 'none',
-                    duration: 2000
-                });
+                Toast.info('请输入大于0的两位小数或整数', 2);
                 return;
             }
             NetWork.Post({
@@ -99,19 +96,11 @@ export default class Tabsell extends Component {
                 }
             },(data)=>{
                 if(data.code == 200){
-                    Taro.showToast({
-                        title: '修改成功',
-                        icon: 'none',
-                        duration: 2000
-                    });
-                    selfs.Taro.hideLoading();
+                    Toast.info('修改成功', 2);
+                    Portal.remove(this.loading);
                 }else{
-                    Taro.showToast({
-                        title: '修改失败',
-                        icon: 'none',
-                        duration: 2000
-                    });
-                    selfs.Taro.hideLoading();
+                    Toast.info('修改失败', 2);
+                    Portal.remove(this.loading);
                 }
             });
         }

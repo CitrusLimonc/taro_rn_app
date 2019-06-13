@@ -120,7 +120,7 @@ export default class ProductCard extends Component {
         if(maskShow){
             flag = true;
         }
-        let chooseModal='';
+        let chooseModal=null;
         //是否包含遮盖层
         if (headType) {
             if (flag) {
@@ -131,7 +131,7 @@ export default class ProductCard extends Component {
         }
 
         //是否包含按钮
-        let buttonsDom = '';
+        let buttonsDom = null;
         if (this.props.buttons) {
             buttonsDom = (<ItemProductButtons
             status={status}
@@ -145,7 +145,7 @@ export default class ProductCard extends Component {
 
         let productID = item.origin_num_iid;
         let imgUrl = item.pic_1688;
-        let warningIcon = '';
+        let warningIcon = null;
 
         let amountOnSale = '待同步';
         if(!IsEmpty(item.amount_1688)){
@@ -163,7 +163,7 @@ export default class ProductCard extends Component {
             }
         }
 
-        let image='';
+        let image=null;
         if (IsEmpty(imgUrl)) {
             image =
             <ItemIcon code={"\ue7ed"} iconStyle={{fontSize:px(100),color:'#e6e6e6'}}/>;
@@ -174,7 +174,7 @@ export default class ProductCard extends Component {
             resizeMode={"contain"}
             />;
         }
-        let line2 = '';
+        let line2 = null;
         if (item.status_1688 != 'published' && item.status_1688 != 'new' && item.status_1688 != 'modified') {
             switch (item.status_1688) {
                 case 'member expired':
@@ -222,7 +222,7 @@ export default class ProductCard extends Component {
 
        
         return (
-            <View style={{marginBottom:px(25)}}>
+            <View style={{marginBottom:px(25)}} key={this.props.key}>
                 <View style={styles.cardContent}>
                     <View onClick={this.showPage.bind(this,productID,item.origin_id)} style={styles.imgBox}>
                         {image}
@@ -244,7 +244,7 @@ export default class ProductCard extends Component {
                                 </View>
                             </View>
                             :
-                            ''
+                            null
                         }
                         {line2}
                     </View>

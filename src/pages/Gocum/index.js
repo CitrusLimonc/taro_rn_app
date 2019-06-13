@@ -1,5 +1,7 @@
 import Taro, { Component, Config } from '@tarojs/taro';
-import { View, Text, Image, Button,Input} from '@tarojs/components';
+import { View, Text, Image, Input} from '@tarojs/components';
+import { Toast , Portal } from '@ant-design/react-native';
+import AyButton from '../../Component/AyButton/index';
 import styles from './styles';
 import {UitlsRap} from '../../Public/Biz/UitlsRap.js';
 import {NetWork} from '../../Public/Common/NetWork/NetWork';
@@ -28,12 +30,12 @@ export default class Gocum extends Component {
             inputbutton:false,
         }
         this.userNick = '';
-
+        this.loading = '';
     }
 
-    // config: Config = {
-    //     navigationBarTitleText: '开通旺铺'
-    // }
+    config = {
+        navigationBarTitleText: '开通旺铺'
+    }
 
     componentWillMount(){
         // RAP.user.getUserInfo({extraInfo: true}).then((info) => {
@@ -63,20 +65,15 @@ export default class Gocum extends Component {
         this.setState({
             inputbutton:true,
         })
-        this.refs.creatWD.wrappedInstance.blur();
         setTimeout(()=>{
             if(IsEmpty(this.state.inputname)){
-                Taro.showToast({
-                    title: '店铺名不能为空',
-                    icon: 'none',
-                    duration: 2000
-                });
+                Toast.info('店铺名不能为空', 2);
                 self.setState({
                     inputbutton:false,
                 })
                 return;
             }
-            Taro.showLoading({ title: '加载中...' });
+            self.loading = Toast.loading('加载中...');
             NetWork.Get({
                 url:'Distributeproxy/bindShopInfoWC',
                 // host:Domain.ITEM_TEST_URL,
@@ -106,21 +103,17 @@ export default class Gocum extends Component {
                             GoToView({status:'Openwd',query:{shopid:shopid,shopname:shopnamenew}});
                         }
                         self.refs.addDialog.hide();
-                        Taro.hideLoading();
+                        Portal.remove(self.loading);
                     });
                 }else{
-                    Taro.showToast({
-                        title: data.msg,
-                        icon: 'none',
-                        duration: 2000
-                    });
-                    Taro.hideLoading();
+                    Toast.info(data.msg, 2);
+                    Portal.remove(self.loading);
                 }
             },(error)=>{
                 self.setState({
                     inputbutton:false,
                 })
-                Taro.hideLoading();
+                Portal.remove(self.loading);
             });
         },1000);
     }
@@ -131,20 +124,15 @@ export default class Gocum extends Component {
         self.setState({
             bindbutton:true,
         })
-        this.refs.BindWD.wrappedInstance.blur();
         setTimeout(()=>{
             if(IsEmpty(this.state.bindname)){
-                Taro.showToast({
-                    title: '绑定码不能为空',
-                    icon: 'none',
-                    duration: 2000
-                });
+                Toast.info('绑定码不能为空', 2);
                 self.setState({
                     bindbutton:false,
                 })
                 return;
             }
-            Taro.showLoading({ title: '加载中...' });
+            self.loading = Toast.loading('加载中...');
             let token = encodeURIComponent(this.state.bindname);
             NetWork.Get({
                 url:'dishelper/bindWx',
@@ -157,31 +145,19 @@ export default class Gocum extends Component {
                     bindbutton:false,
                 })
                 if(data.code == 200){
-                    Taro.showToast({
-                        title: '绑定成功，您可以直接铺货到爱用旺铺',
-                        icon: 'none',
-                        duration: 2000
-                    });                  
+                    Toast.info('绑定成功，您可以直接铺货到爱用旺铺', 2);               
                 }else if(data.code ==504){
                     self.refs.bind.show();
                 }else{
-                    Taro.showToast({
-                        title: data.value,
-                        icon: 'none',
-                        duration: 2000
-                    }); 
+                    Toast.info(data.value, 2);
                 }
-                Taro.hideLoading();
+                Portal.remove(self.loading);
             },(error)=>{
                 self.setState({
                     bindbutton:false,
                 })
-                Taro.showToast({
-                    title: '绑定失败',
-                    icon: 'none',
-                    duration: 2000
-                });                   
-                Taro.hideLoading();
+                Toast.info('绑定失败', 2);
+                Portal.remove(self.loading);
             });
         },1000);
     }
@@ -197,12 +173,12 @@ export default class Gocum extends Component {
                     <Text style={styles.TitleText}>1.我已经有自己的独立店铺</Text>
                     <View style={styles.TitleBody}>
                         <Input ref={'BindWD'} onChange={(value,e)=>{this.bindname(value)}} placeholder={'请输入您的绑定码，点击授权添加'} style={styles.TitleInput}></Input>
-                        <Button disabled={this.state.bindbutton} type="secondary" onClick={()=>{this.BindWD()}}  style={styles.TitleButton}>授权添加</Button>
+                        <AyButton disabled={this.state.bindbutton} type="primary" onClick={()=>{this.BindWD()}}  style={styles.TitleButton}>授权添加</AyButton>
                     </View>
                     <Text style={styles.TitleText}>2.我想创建一个专属店铺</Text>
                     <View style={styles.TitleBody}>
                         <Input ref={'creatWD'} maxLength={12} onChange={(value,e)=>{this.inputname(value)}} placeholder={'输入想要的店名，然后点击”创建店铺”'} style={styles.TitleInput}></Input>
-                        <Button disabled={this.state.inputbutton} type="secondary" onClick={()=>{this.creatWD()}} style={styles.TitleButton}>创建店铺</Button>
+                        <AyButton disabled={this.state.inputbutton} type="primary" onClick={()=>{this.creatWD()}} style={styles.TitleButton}>创建店铺</AyButton>
                     </View>
                     <Text style={styles.TipRed}>*已有店铺或绑定码的用户请勿重复创建店铺，否则会导致店铺数据异常，无法恢复</Text>
                     <View style={styles.wangwangbody} onClick={()=>{UitlsRap.openChat('爱用科技1688')}}>

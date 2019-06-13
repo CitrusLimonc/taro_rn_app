@@ -1,5 +1,7 @@
 import Taro, { Component, Config } from '@tarojs/taro';
 import {View,Text} from '@tarojs/components';
+import { Toast , Portal } from '@ant-design/react-native';
+import { FlatList , RefreshControl}  from 'react-native';
 import Event from 'ay-event';
 import styles from './styles';
 import GoodsProductMap from '../../Component/GoodsProductMap';
@@ -28,6 +30,7 @@ export default class SupplierList extends Component {
 		this.relationModels = [];
 		this.suppliersCount = 0; //供应商总数
 		this.singleSuppliersCount = 0;
+		this.loading = '';
 
 		let self = this;
 		//刷新供应商列表
@@ -36,17 +39,17 @@ export default class SupplierList extends Component {
 			self.setState({
 				rowData:[],
 			});
-			Taro.showLoading({ title: '供应商列表加载中...' });
+			self.loading = Toast.loading('加载中...');
 			self.querySuppliers(1);
 		});
 	}
 
-	// config: Config = {
-    //     navigationBarTitleText: '合作中的供应商'
-	// }
+	config = {
+        navigationBarTitleText: '合作中的供应商'
+    }
 	
 	componentDidMount(){
-		Taro.showLoading({ title: '供应商列表加载中...' });
+		this.loading = Toast.loading('供应商列表加载中...');
 		this.querySuppliers(1);
 	}
 
@@ -88,14 +91,14 @@ export default class SupplierList extends Component {
                     isRefreshing:false
                 });
             }
-			Taro.hideLoading();
+			Portal.remove(self.loading);
 		},(error)=>{
 			self.setState({
                 loadmore:false,
                 refreshText: '↓ 下拉刷新',
                 isRefreshing:false
             });
-			Taro.hideLoading();
+			Portal.remove(self.loading);
 			console.error(error);
 		});
 	}
@@ -136,7 +139,7 @@ export default class SupplierList extends Component {
 				// console.log("self.singleSuppliersCount", self.singleSuppliersCount);
 				if (index == (self.suppliersCount - 1) || index == self.singleSuppliersCount - 1) {
 					// console.log("listForAllConsignment-2", JSON.stringify(self.relationModels));
-					Taro.hideLoading();
+					Portal.remove(self.loading);
 					setTimeout(function () {
 						self.setState({
 							rowData: self.state.rowData.concat(self.relationModels),
@@ -153,7 +156,7 @@ export default class SupplierList extends Component {
                     refreshText: '↓ 下拉刷新',
                     isRefreshing:false
                 });
-				Taro.hideLoading();
+				Portal.remove(self.loading);
 				console.error(error);
 			});
 		});
@@ -184,7 +187,9 @@ export default class SupplierList extends Component {
 		// });
 	}
     //渲染页面主体
-	showLists = (item,index)=>{
+	showLists = (items)=>{
+		let index = items.index;
+        let item = items.item;
         return (
             <View style={{backgroundColor:"#fff",marginBottom:px(24)}}>
                 <View style={{justifyContent:"space-between",flexDirection: 'row',alignItems:'center',paddingBottom: px(24), paddingLeft: px(24), paddingRight: px(24), paddingTop: px(24),}}>
@@ -242,7 +247,9 @@ export default class SupplierList extends Component {
             ):(null)
     }
     //渲染空列表
-    rederNull = (item,index) =>{
+    rederNull = (items) =>{
+		let index = items.index;
+        let item = items.item;
         return(
             <View style={{backgroundColor:"#fff",marginBottom:px(24)}}>
                 <View style={{justifyContent:"space-between",flexDirection: 'row',alignItems:'center',paddingBottom: px(24), paddingLeft: px(24), paddingRight: px(24), paddingTop: px(24),}}>
@@ -266,23 +273,29 @@ export default class SupplierList extends Component {
             <View>
                 {
                     this.state.rowData.length > 0 ?
-                    <ListView
-                    ref = "supperlierList"
-                    style = {{flex:1,backgroundColor:'#f5f5f5'}}
-                    onEndReachedThreshold = {300}
-                    onEndReached = {this.listLoadMore}
-                    renderFooter = {this.renderFooter}
-                    renderHeader = {this.renderHeader}
-                    renderRow = {this.showLists}
-                    dataSource = {this.state.rowData}
-                    />
+					<FlatList
+					ref="supperlierList"
+					style={{flex:1,backgroundColor:'#f5f5f5'}}
+					data={this.state.rowData}
+					horizontal={false}
+					renderItem={this.showLists}
+					ListFooterComponent={this.renderFooter}
+					refreshing={this.state.isRefreshing}
+					onRefresh={()=>{this.handleRefresh()}}
+					onEndReached = {()=>{this.listLoadMore()}}
+					onEndReachedThreshold={300}
+					keyExtractor={(item, index) => (index + '1')}
+					/>
                     :
-                    <ListView
-                    style = {{flex:1,backgroundColor:'#f5f5f5'}}
-                    renderHeader = {this.renderHeader}
-                    renderRow = {this.rederNull}
-                    dataSource = {['1','2','3']}
-                    />
+					<FlatList
+					style={{flex:1,backgroundColor:'#f5f5f5'}}
+					data={['1','2','3']}
+					horizontal={false}
+					renderItem={this.rederNull}
+					refreshing={this.state.isRefreshing}
+					onRefresh={()=>{this.handleRefresh()}}
+					keyExtractor={(item, index) => (index + '1')}
+					/>
                 }
             </View>
         );

@@ -3,9 +3,9 @@ export default {
     shopLine:{
         borderBottomColor:'#f5f5f5',
         borderBottomWidth:px(2),
-        height:170,
-        marginLeft:24,
-        paddingRight:24,
+        height:px(170),
+        marginLeft:px(24),
+        paddingRight:px(24),
         flexDirection:'row',
         alignItems:'center',
         width:px(750),
@@ -14,13 +14,13 @@ export default {
         backgroundColor:'#ffffff',
     },
     shopImage:{
-        width:82,
-        height:82,
-        borderRadius:8
+        width:px(82),
+        height:px(82),
+        borderRadius:px(8)
     },
     authError:{
         position:'absolute',
-        top:112,
-        left:204
+        top:px(112),
+        left:px(204)
     },
 };

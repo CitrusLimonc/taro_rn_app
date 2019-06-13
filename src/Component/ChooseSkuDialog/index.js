@@ -1,11 +1,14 @@
 import Taro, { Component, Config } from '@tarojs/taro';
-import { View, Text , Image ,ScrollView,Dialog,Button} from '@tarojs/components';
-import ItemIcon from '../../Component/ItemIcon';
+import { View, Text , Image ,ScrollView} from '@tarojs/components';
+import { Toast } from '@ant-design/react-native';
+import Dialog from '../Dialog';
+import ItemIcon from '../ItemIcon';
 import {IsEmpty} from '../../Public/Biz/IsEmpty.js';
 import {NetWork} from '../../Public/Common/NetWork/NetWork.js';
 import px from '../../Biz/px.js';
 import styles from './styles';
 import {GetPrice} from '../../Biz/GetPrice.js';
+import AyButton from '../../Component/AyButton/index';
 /**
  * @author cy
  * 选择sku弹窗
@@ -26,7 +29,7 @@ export default class ChooseSkuDialog extends Component {
             from:!IsEmpty(this.props.from) ? this.props.from : '', //来自详情页或者列表
             notChooseSpecs:!IsEmpty(this.props.notChooseSpecs) ? this.props.notChooseSpecs : '', //不可选择的sku specId
             lastSkuPrice:'', //当前选择的sku的价格
-            lastSkuAmount:'' //当前选择的sku的可售数量
+            lastSkuAmount:'', //当前选择的sku的可售数量
         };
     }
 
@@ -157,16 +160,12 @@ export default class ChooseSkuDialog extends Component {
                     this.refs.chooseSkuDialog.show();
                 } else {
                     if (!IsEmpty(rsp.msg)) {
-                        Taro.showToast({
-                            title: rsp.msg,
-                            icon: 'none',
-                            duration: 2000
-                        });
+                        Toast.info(rsp.msg, 2);
                     }
                 }
             },(error)=>{
                 this.props.hideLoading();
-                alert(JSON.stringify(error));
+                console.error(error);
             });
         } else {
             //以简单商品详情获取
@@ -215,17 +214,9 @@ export default class ChooseSkuDialog extends Component {
                     this.refs.chooseSkuDialog.show();
                 } else {
                     if (!IsEmpty(result.errMsg)) {
-                        Taro.showToast({
-                            title: result.errMsg,
-                            icon: 'none',
-                            duration: 2000
-                        });
+                        Toast.info(result.errMsg, 2);
                     } else {
-                        Taro.showToast({
-                            title: '服务器开小差了，请稍候再试',
-                            icon: 'none',
-                            duration: 2000
-                        });
+                        Toast.info('服务器开小差了，请稍候再试', 2);
                     }
                 }
 
@@ -403,21 +394,18 @@ export default class ChooseSkuDialog extends Component {
                     lastSubOrder:lastSubOrder,
                     btnStatus:true
                 });
+                this.refs.chooseSkuDialog.hide();
             } else {
                 this.setState({
                     lastSubOrder:lastSubOrder
                 });
+                this.refs.chooseSkuDialog.hide();
                 this.props.updateStates({
                     lastSubOrder:lastSubOrder
                 });
                 // this.props.updateOrder(lastSubOrder);
             }
-            Taro.showToast({
-                title: '修改成功',
-                icon: 'none',
-                duration: 2000
-            });
-            this.refs.chooseSkuDialog.hide();
+            Toast.info('修改成功', 2);
         } else {
             this.props.showLoading();
             lastSubOrder.innerSpec = {};
@@ -516,17 +504,9 @@ export default class ChooseSkuDialog extends Component {
                         });
                         this.props.updateOrder(lastSubOrder);
                     }
-                    Taro.showToast({
-                        title: '修改成功',
-                        icon: 'none',
-                        duration: 2000
-                    });
+                    Toast.info('修改成功', 2);
                 } else {
-                    Taro.showToast({
-                        title: '修改失败，请稍后重试',
-                        icon: 'none',
-                        duration: 2000
-                    });
+                    Toast.info('修改失败，请稍后重试', 2);
                 }
             });
         }
@@ -550,7 +530,7 @@ export default class ChooseSkuDialog extends Component {
             callback(data);
         },(error)=>{
             this.props.hideLoading();
-            alert(JSON.stringify(error));
+            console.error(error);
         });
     }
 
@@ -619,7 +599,7 @@ export default class ChooseSkuDialog extends Component {
                 </View>
             );
         } else {
-            return '';
+            return null;
         }
     }
 
@@ -764,11 +744,14 @@ export default class ChooseSkuDialog extends Component {
     render(){
         const {skuBtnStatus,from} = this.state;
         return (
-            <Dialog ref="chooseSkuDialog" duration={1000} maskClosable={true} maskStyle={styles.mask} contentStyle={styles.categoryModel}>
+            <Dialog ref="chooseSkuDialog"
+            maskClosable={true} 
+            contentStyle={styles.categoryModel}
+            >
                 <View style={styles.body}>
                     <View style={styles.headLine}>
                         <Text style={{fontSize:px(28),color:'#666666'}}>{from == 'chooseMore' ? "请选择要铺货的1688商品规格" : "请选择要匹配的1688商品规格"}</Text>
-                        <ItemIcon code={"\ue69a"} iconStyle={{fontSize:px(32),color:'#666666'}} boxStyle={styles.closeTag} onClick={()=>{this.refs.chooseSkuDialog.hide()}}/>
+                        <ItemIcon code={"\ue69a"} iconStyle={{fontSize:px(32),color:'#666666'}} boxStyle={styles.closeTag} onClick={()=>{this.refs.chooseSkuDialog.hide();}}/>
                         {
                             from == 'chooseMore' ?(<Text style={{fontSize:px(24),color:'#ff6000'}}>{"建议选择价格接近的规格提高成功率"}</Text>):null
                         }
@@ -779,9 +762,10 @@ export default class ChooseSkuDialog extends Component {
                     {
 
                         skuBtnStatus ?
-                        <Button rect block
-                        style={[styles.dlgBtn,{backgroundColor:'#ff6000',color:'#ffffff'}]}
-                        type="primary" size="large"
+                        <AyButton
+                        style={[styles.dlgBtn,{backgroundColor:'#ff6000'}]}
+                        textStyle={{color:'#ffffff'}}
+                        type="primary"
                         onClick={()=>{
                             if (from == 'chooseMore') {
                                 this.pushProduct();
@@ -789,12 +773,13 @@ export default class ChooseSkuDialog extends Component {
                                 this.changeSubOrder();
                             }
                         }}
-                        >确定</Button>
+                        >确定</AyButton>
                         :
-                        <Button rect block
-                        style={[styles.dlgBtn,{backgroundColor:'#E5E5E5',color:'#BFBFBF'}]}
-                        type="primary" size="large"
-                        >确定</Button>
+                        <AyButton
+                        style={[styles.dlgBtn,{backgroundColor:'#E5E5E5'}]}
+                        textStyle={{color:'#BFBFBF'}}
+                        type="primary"
+                        >确定</AyButton>
                     }
                 </View>
             </Dialog>

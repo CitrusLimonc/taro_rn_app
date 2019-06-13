@@ -180,7 +180,7 @@ export default class OrderCard extends Component{
                                         <Text style={styles.tagText}>{statusText}</Text>
                                     </View>
                                     :
-                                    ''
+                                    null
                                 }
                                 {
                                     priceText != '' ?
@@ -189,7 +189,7 @@ export default class OrderCard extends Component{
                                         <Text style={{fontSize:px(28),color:'#ff6000'}}>¥{!IsEmpty(subOrder.order.payment) ? parseFloat(subOrder.order.payment).toFixed(2):'暂无'}</Text>
                                     </View>
                                     :
-                                    ''
+                                    null
                                 }
                             </View>
                             {
@@ -199,7 +199,7 @@ export default class OrderCard extends Component{
                                     <Text style={{fontSize:px(24),color:'#ff6000',width:px(600)}}>{sendErrorMsg}</Text>
                                 </View>
                                 :
-                                ''
+                                null
                             }
                         </View>
                     )
@@ -322,7 +322,7 @@ export default class OrderCard extends Component{
                     !IsEmpty(order.buyer_nick) ?
                     <TradeNick loginid={order.buyer_nick} text={order.buyer_nick} title={'买家旺旺'} />
                     :
-                    ''
+                    null
                 */}
                 <View style={styles.orderNum}>
                     <Text style={styles.orderText}>订 单 号  ：</Text>

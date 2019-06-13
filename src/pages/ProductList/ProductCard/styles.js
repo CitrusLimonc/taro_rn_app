@@ -53,7 +53,6 @@ export default {
         top:px(0),
         textAlign:'center',
         lineHeight:px(30),
-        fontFamily:"Microsoft YaHei",
         backgroundColor:'rgba(82,159,107,0.8)',
         transform:'rotate(-45deg)'
     },
@@ -91,7 +90,7 @@ export default {
         right:px(0),
         bottom:px(0),
         backgroundColor:'#FF0000',
-        opacity:'0.5',
+        opacity:0.5,
         flexDirection:'row',
         justifyContent:'center',
         height:px(36),

@@ -1,6 +1,6 @@
 import Taro, { Component, Config } from '@tarojs/taro';
 import { View, Text } from '@tarojs/components';
-// import {AtModal, AtModalHeader, AtModalContent, AtModalAction} from 'taro-ui';
+import Dialog from '../../../Component/Dialog';
 import { IsEmpty } from '../../../Public/Biz/IsEmpty';
 import {Parse2json} from '../../../Public/Biz/Parse2json.js';
 import ItemIcon from '../../../Component/ItemIcon';
@@ -25,7 +25,6 @@ export default class SideDialog extends Component {
                 }
             ],
             searchValue:'', //搜索框中的值
-            modalIsOpened:false
         };
     }
 
@@ -101,7 +100,7 @@ export default class SideDialog extends Component {
                         <View style={styles.items}>
                             {
                                 item.list.map((listItem,index)=>{
-                                    let icon='';
+                                    let icon=null;
                                     if (item.active==listItem.id) {
                                         {/* if (window.__weex_env__.platform == "android") { */}
                                             icon=<ItemIcon code={"\ue8b7"} iconStyle={styles.tagIcon}/>;
@@ -171,25 +170,24 @@ export default class SideDialog extends Component {
         //         backgroundColor: '#ffffff',
         //     }
         // }
-        return '';
 
-        // return(
-        //     <AtModal isOpened={this.state.modalIsOpened} style={contentStyle}>
-        //         <View style={styles.normalLine}>
-        //             <Text style={{fontSize:px(24)}}>筛选</Text>
-        //         </View>
-        //         <View>
-        //             {this.getFilterList()}
-        //         </View>
-        //         <View style={styles.filterFoot}>
-        //             <View style={styles.filterFootLeft} onClick={this.reset}>
-        //                 <Text style={{fontSize:px(32),color:'#999999'}}>重置</Text>
-        //             </View>
-        //             <View style={styles.filterFootRight} onClick={this.submitFilter}>
-        //                 <Text style={{fontSize:px(32),color:'#fff'}}>确定</Text>
-        //             </View>
-        //         </View>
-        //     </AtModal>
-        // );
+        return(
+            <Dialog ref={"modal1"} contentStyle={contentStyle}>
+                <View style={styles.normalLine}>
+                    <Text style={{fontSize:px(24)}}>筛选</Text>
+                </View>
+                <View>
+                    {this.getFilterList()}
+                </View>
+                <View style={styles.filterFoot}>
+                    <View style={styles.filterFootLeft} onClick={this.reset}>
+                        <Text style={{fontSize:px(32),color:'#999999'}}>重置</Text>
+                    </View>
+                    <View style={styles.filterFootRight} onClick={this.submitFilter}>
+                        <Text style={{fontSize:px(32),color:'#fff'}}>确定</Text>
+                    </View>
+                </View>
+            </Dialog>
+        );
     }
 }

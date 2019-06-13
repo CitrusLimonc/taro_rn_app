@@ -76,7 +76,7 @@ export default class Header extends Component{
                 </View>
             );
         } else {
-            return '';
+            return null;
         }
     }
 }

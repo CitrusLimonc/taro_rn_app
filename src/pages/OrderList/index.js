@@ -1,11 +1,15 @@
 
 import Taro, { Component, Config } from '@tarojs/taro';
 import { View,Text,Image} from '@tarojs/components';
+import { Toast , Portal } from '@ant-design/react-native';
+import { FlatList , RefreshControl}  from 'react-native';
+import AyButton from '../../Component/AyButton/index';
 import Event from 'ay-event';
 import OrderStatus from './OrderStatus';
 import OrderCard from './OrderCard';
 import NoList from './NoList';
 import Header from './Header';
+import ItemIcon from '../../Component/ItemIcon';
 import AiyongDialog from '../../Component/AiyongDialog';
 import SureDialog from '../../Component/SureDialog';
 import SideDialog from './SideDialog';
@@ -55,6 +59,7 @@ export default class OrderList extends Component {
         this.userNick = '';
         this.checktid = '';
         this.lastSendTid = '';
+        this.loading = '';
 
         let self = this;
         //打开聊天
@@ -65,11 +70,7 @@ export default class OrderList extends Component {
         Event.on('App.trclbd',(data)=>{
             UitlsRap.clipboard(data.msg,(result)=>{
                 if(data.cal){
-                    Taro.showToast({
-                        title: data.cal,
-                        icon: 'none',
-                        duration: 2000
-                    });
+                    Toast.info(data.cal, 2);
                 }
             });
         });
@@ -86,13 +87,13 @@ export default class OrderList extends Component {
         });
         //刷新订单列表
         Event.on('App.update_shop_orders',(data)=>{
-            Taro.showLoading({ title: '加载中...' });
+            self.loading = Toast.loading('加载中...');
             self.getTradeList(1,{},(result)=>{
                 self.setState({
                     dataSource:result,
                     bonepng:false
                 });
-                Taro.hideLoading();
+                Portal.remove(self.loading);
             });
         });
         //进入页面带参，修改当前状态
@@ -148,26 +149,26 @@ export default class OrderList extends Component {
 
         if(this.catchflag){
             LocalStore.Get(['tradecon'],(result) => {
-                if(!IsEmpty(result)){
-                    LocalStore.Remove(['tradecon']);
-                    let str = Parse2json(result['tradecon']);
-                    console.log('tradecon',str);
-                    self.changeStatus(str.split(',')[0]);
-                    self.state.choseshopid = str.split(',')[1];
-                    if(!IsEmpty(self.state.choseshopid)){
-                        self.submitFilter('',self.state.choseshopid);
-                    }
-                }else{
-                    self.changeStatus('待采购');
-                }
+                // if(!IsEmpty(result)){
+                //     LocalStore.Remove(['tradecon']);
+                //     let str = Parse2json(result['tradecon']);
+                //     console.log('tradecon',str);
+                //     self.changeStatus(str.split(',')[0]);
+                //     self.state.choseshopid = str.split(',')[1];
+                //     if(!IsEmpty(self.state.choseshopid)){
+                //         self.submitFilter('',self.state.choseshopid);
+                //     }
+                // }else{
+                //     self.changeStatus('待采购');
+                // }
 
             })
         }//初始化时获取列表备用
     }
 
-    // config: Config = {
-    //     navigationBarTitleText: '订单'
-    // }
+    config = {
+        navigationBarTitleText: '订单'
+    }
 
     componentDidMount(){
         let self = this;
@@ -187,7 +188,7 @@ export default class OrderList extends Component {
     //初始化数据
     loadData = () =>{
         let self = this;
-        Taro.showLoading({ title: '加载中...' });
+        self.loading = Toast.loading('加载中...');
         //获取店铺列表
         self.getShopLists((shopList)=>{
             let lastShopId = '';
@@ -224,7 +225,7 @@ export default class OrderList extends Component {
                         isRefreshing: false,
                         refreshText: '↓ 下拉刷新'
                     });
-                    Taro.hideLoading();
+                    Portal.remove(self.loading);
                 });
             } else {
                 self.setState({
@@ -232,7 +233,7 @@ export default class OrderList extends Component {
                     isRefreshing: false,
                     refreshText: '↓ 下拉刷新'
                 });
-                Taro.hideLoading();
+                Portal.remove(self.loading);
             }
         });
     }
@@ -252,7 +253,7 @@ export default class OrderList extends Component {
             }
         },(error)=>{
             callback([]);
-            alert(JSON.stringify(error));
+            console.error(error);
         });
     }
 
@@ -260,7 +261,7 @@ export default class OrderList extends Component {
     showList = (tabStatus) =>{
         //获取不同状态的列表
         if (this.state.tabStatus != tabStatus) {
-            Taro.showLoading({ title: '加载中...' });
+            this.loading = Toast.loading('加载中...');
             this.setState({
                 total:0,
                 tabStatus:tabStatus,
@@ -271,7 +272,7 @@ export default class OrderList extends Component {
                     dataSource:result,
                     bonepng:false
                 });
-                Taro.hideLoading();
+                Portal.remove(this.loading);
             });
         }
     }
@@ -325,10 +326,12 @@ export default class OrderList extends Component {
             if (!IsEmpty(rsp)) {
                 this.state.total = rsp.totalRecord;
                 callback(rsp.result);
+            } else {
+                callback([]);
             }
         },(error)=>{
             callback([]);
-            alert(JSON.stringify(error));
+            console.error(error);
         });
     }
 
@@ -348,11 +351,7 @@ export default class OrderList extends Component {
             }
         },(res)=>{
             if(res.code==200){
-                Taro.showToast({
-                    title: '关闭成功',
-                    icon: 'none',
-                    duration: 2000
-                });
+                Toast.info('关闭成功', 2);
                 Event.emit('App.hidecloseorder');
                 self.getTradeList(1,{},(result)=>{
                     self.setState({
@@ -360,11 +359,7 @@ export default class OrderList extends Component {
                     });
                 });
             }else{
-                Taro.showToast({
-                    title: '关闭失败',
-                    icon: 'none',
-                    duration: 2000
-                });
+                Toast.info('关闭失败', 2);
                 Event.emit('App.hidecloseorder');
             }
         });
@@ -383,7 +378,6 @@ export default class OrderList extends Component {
             self.loadData();
             return;
         }
-
         // self.getTradeList(1,{},(result)=>{
         //     self.setState({
         //         dataSource:result,
@@ -434,25 +428,21 @@ export default class OrderList extends Component {
                                             refreshText: '↓ 下拉刷新'
                                         });
                                         self.refs.orderHead.loadData();
-                                        Taro.hideLoading();
+                                        Portal.remove(self.loading);
                                     });
                                 }
                             } else {
-                                Taro.showToast({
-                                    title: '同步出错啦，请稍候重试哦',
-                                    icon: 'none',
-                                    duration: 2000
-                                });
-                                Taro.hideLoading();
+                                Toast.info('同步出错啦，请稍候重试哦', 2);
+                                Portal.remove(self.loading);
                                 clearInterval(self.interval);
                             }
                         },(error)=>{
                             console.log(JSON.stringify(error));
-                            Taro.hideLoading();
+                            Portal.remove(self.loading);
                         });
                     },3000);
                 } else if (rsp.code == '500') {
-                    Taro.hideLoading();
+                    Portal.remove(self.loading);
                     self.setState({
                         isRefreshing: false,
                         refreshText: '↓ 下拉刷新'
@@ -464,15 +454,11 @@ export default class OrderList extends Component {
                     }
                 }
             } else {
-                Taro.showToast({
-                    title: '同步出错啦，请稍候重试哦',
-                    icon: 'none',
-                    duration: 2000
-                });
-                Taro.hideLoading();
+                Toast.info('同步出错啦，请稍候重试哦', 2);
+                Portal.remove(self.loading);
             }
         },(error)=>{
-            alert(JSON.stringify(error));
+            console.error(error);
         });
     }
 
@@ -507,11 +493,13 @@ export default class OrderList extends Component {
                 dataSource:self.state.dataSource.concat(result),
                 loadmore: false
             });
-            self.refs.vscroller.resetLoadmore();
+            // self.refs.vscroller.resetLoadmore();
         });
     }
     //渲染订单卡片
-    renderItem = (order,index) => {
+    renderItem = (items) => {
+        let index = items.index;
+        let order = items.item;
         const {tabStatus,shopType} = this.state;
         return (
             <OrderCard
@@ -527,7 +515,7 @@ export default class OrderList extends Component {
     //确认筛选
     submitFilter = (keyWord,shopId) =>{
         this.state.choseshopid = shopId;
-        Taro.showLoading({ title: '加载中...' });
+        this.loading = Toast.loading('加载中...');
         let params = {};
         if (!IsEmpty(keyWord)) {
             params.keyWord = keyWord;
@@ -551,7 +539,7 @@ export default class OrderList extends Component {
                 lastShopId:params.shopId,
                 lastShopName:params.shopName,
             });
-            Taro.hideLoading();
+            Portal.remove(this.loading);
         });
     }
     //删除关键字
@@ -571,7 +559,7 @@ export default class OrderList extends Component {
     //更新1688订单
     updateOrder = () =>{
         const {lastPayOrders,lastShopId,lastTaoTid,shopType,lastShopName,updateOrderStatus} = this.state;
-        Taro.showLoading({ title: '加载中...' });
+        this.loading = Toast.loading('加载中...');
         NetWork.Get({
             url:'Orderreturn/updateOrder1688',
             data:{
@@ -587,26 +575,18 @@ export default class OrderList extends Component {
             if (!IsEmpty(rsp)) {
                 if (updateOrderStatus == '向供应商付款'){
                     if (rsp.status != 'waitbuyerpay') {
-                        Taro.showToast({
-                            title: '支付成功',
-                            icon: 'none',
-                            duration: 2000
-                        });
+                        Toast.info('支付成功', 2);
                     } else {
-                        Taro.showToast({
-                            title: '支付失败',
-                            icon: 'none',
-                            duration: 2000
-                        });
+                        Toast.info('支付失败', 2);
                     }
                 }
                 this.loadData();
             }
-            Taro.hideLoading();
+            Portal.remove(this.loading);
             this.refs.surePayDialog.hide();
         },(error)=>{
             callback([]);
-            alert(JSON.stringify(error));
+            console.error(error);
         });
 
     }
@@ -654,7 +634,7 @@ export default class OrderList extends Component {
                     }
                 }
             },(error)=>{
-                alert(JSON.stringify(error));
+                console.error(error);
             });
         } else {
             this.retry = 0;
@@ -684,13 +664,9 @@ export default class OrderList extends Component {
                     this.goToLink(res.url,title);
                 } else {
                     this.refs.reAuthTrade.hide();
-                    Taro.showToast({
-                        title: '授权成功,正在同步订单，请稍候~',
-                        icon: 'none',
-                        duration: 2000
-                    });
+                    Toast.info('授权成功,正在同步订单，请稍候~', 2);
                     //同步下订单
-                    Taro.showLoading({ title: '加载中...' });
+                    this.loading = Toast.loading('加载中...');
                     Event.emit('App.reSynOrders',{});
                 }
             });
@@ -701,13 +677,9 @@ export default class OrderList extends Component {
             this.getAuthTrade(lastShopId,(res)=>{
                 if (res.code == 200) {
                     this.refs.reAuthTrade.hide();
-                    Taro.showToast({
-                        title: '授权成功,正在同步订单，请稍候~',
-                        icon: 'none',
-                        duration: 2000
-                    });
+                    Toast.info('授权成功,正在同步订单，请稍候~', 2);
                     //同步下订单
-                    Taro.showLoading({ title: '加载中...' });
+                    this.loading = Toast.loading('加载中...');
                     Event.emit('App.reSynOrders',{});
                 } else {
                     if (this.state.authType == "hasNoOrder" && res.msg == "hasNoAuth") {
@@ -717,11 +689,7 @@ export default class OrderList extends Component {
                         this.goToLink(res.url,"授权爱用交易");
                     } else {
                         this.refs.reAuthTrade.hide();
-                        Taro.showToast({
-                            title: '授权失败',
-                            icon: 'none',
-                            duration: 2000
-                        });
+                        Toast.info('授权失败', 2);
                     }
                 }
             });
@@ -756,24 +724,16 @@ export default class OrderList extends Component {
                 if (callback) {
                     callback(res);
                 } else {
-                    Taro.showToast({
-                        title: '授权成功,正在同步订单，请稍候~',
-                        icon: 'none',
-                        duration: 2000
-                    });
+                    Toast.info('授权成功,正在同步订单，请稍候~', 2);
                     //同步下订单
-                    Taro.showLoading({ title: '加载中...' });
+                    this.loading = Toast.loading('加载中...');
                     Event.emit('App.reSynOrders',{});
                 }
             }else{
                 if (callback) {
                     callback(res);
                 } else {
-                    Taro.showToast({
-                        title: '授权失败',
-                        icon: 'none',
-                        duration: 2000
-                    });
+                    Toast.info('授权失败', 2);
                 }
             }
         });
@@ -781,7 +741,7 @@ export default class OrderList extends Component {
 
     //发货
     sendGood = (tid) =>{
-        Taro.showLoading({ title: '加载中...' });
+        this.loading = Toast.loading('加载中...');
         if (IsEmpty(tid)) {
             tid = this.lastSendTid;
         }
@@ -804,42 +764,58 @@ export default class OrderList extends Component {
                     self.refs.orderHead.loadData();
                 });
                 if (res.code == '200') { //成功 刷新列表 
-                    Taro.showToast({
-                        title: '发货成功',
-                        icon: 'none',
-                        duration: 2000
-                    });
+                    Toast.info('发货成功', 2);
                 } else {
-                    Taro.showToast({
-                        title: res.msg,
-                        icon: 'none',
-                        duration: 2000
-                    });
+                    Toast.info(res.msg, 2);
                 }
-                Taro.hideLoading();
+                Portal.remove(self.loading);
             } else {
-                Taro.showToast({
-                    title: '发货失败',
-                    icon: 'none',
-                    duration: 2000
-                });
+                Toast.info('发货失败', 2);
             }
         },(error)=>{
             console.error(error);
-            Taro.showToast({
-                title: '网络错误，请稍候重试',
-                icon: 'none',
-                duration: 2000
-            });
-            Taro.hideLoading();
+            Toast.info('网络错误，请稍候重试', 2);
+            Portal.remove(self.loading);
         });
 
     }
 
+    gotoAddShop = () =>{
+        GoToView({status:'DistributionShops',query:{fromPage:'orderList',isfromself:'1'}});
+    }
+
+    renderNull = (items) =>{
+        let index = items.index;
+        let item = items.item;
+        let {shopList} = this.state;
+        let noListType = 'normal';
+        if (IsEmpty(shopList)) {
+            noListType = 'noshops';
+        }
+
+        return (
+            <View style={[styles.content,{height:px(750)}]}>
+                <Image src='https://q.aiyongbao.com/1688/web/img/preview/orderNull.png'  style={{width:px(226),height:px(124)}}/>
+                {
+                    noListType == 'noshops' ?
+                    <View style={{alignItems:'center',marginTop:px(32)}}>
+                        <Text style={{fontSize:px(28),color:'#4a4a4a'}}>您还没有添加任何店铺</Text>
+                        <Text style={{fontSize:px(28),color:'#4a4a4a',marginTop:px(12)}}>添加店铺后，自动显示该店铺的代销订单</Text>
+                        <AyButton type="normal" onClick={()=>{this.gotoAddShop()}} style={[styles.addShopBtn,{marginTop:px(32)}]}>
+                            <Text style={{fontSize:px(28),color:'#ffffff'}}>添加店铺</Text>
+                        </AyButton>
+                    </View>
+                    :
+                    <Text style={{marginTop:px(20),fontSize:px(32),color:"#666666"}}>暂无相关订单</Text>
+                }
+            </View>
+        );
+    }
+
     render(){
-        const {tabStatus,dataSource,total,bonepng,isRefreshing,refreshText,shopList,keyWord,dialogMsg,lastShopId,shopType} = this.state;
+        let {tabStatus,dataSource,total,bonepng,isRefreshing,refreshText,shopList,keyWord,dialogMsg,lastShopId,shopType} = this.state;
         let type= 'order';
-        let list = '';
+        let list = null;
         if(bonepng){
             list = <Image src={'https://q.aiyongbao.com/1688/bone.png'} style={{width:px(750),height:px(1024)}}/>;
         }else{
@@ -848,30 +824,36 @@ export default class OrderList extends Component {
                 if (IsEmpty(shopList)) {
                     noListType = 'noshops';
                 }
-                list = <NoList isRefreshing={isRefreshing} type={noListType} refreshText={refreshText} onRefresh={this.handleRefresh}/>;
+                list = (
+                    <FlatList
+                    data={['null']}
+                    renderItem={this.renderNull}
+                    refreshing={isRefreshing}
+                    onRefresh={this.handleRefresh}
+                    keyExtractor={(item, index) => (index + '1')}
+                    />
+                );
             } else {
                 list = (
-                   <ListView
-                       ref="vscroller"
-                       style={styles.vscroller}
-                       renderHeader={this.renderHeader}
-                       renderFooter={this.renderFooter}
-                       renderRow={this.renderItem}
-                       dataSource={dataSource}
-                       onEndReached={this.getMore}
-                       onEndReachedThreshold={800}
-                   />
+                    <FlatList
+                    ref="vscroller"
+                    style={styles.vscroller}
+                    data={dataSource}
+                    horizontal={false}
+                    renderItem={this.renderRow}
+                    ListFooterComponent={this.renderFooter}
+                    refreshing={isRefreshing}
+                    onRefresh={this.handleRefresh}
+                    onEndReached={this.getMore}
+                    onEndReachedThreshold={800}
+                    keyExtractor={(item, index) => (index + '1')}
+                    />
                );
             }
         }
         return (
-            <View>
+            <View style={{flex:1,backgroundColor:'#f5f5f5'}}>
                 <View style={{flex:1,backgroundColor:'#f5f5f5'}}>
-                    {/* <View onClick={()=>{}} style={{backgroundColor:'#FFF1E6',paddingLeft:24,paddingRight:24,width:px(750),height:100,flexDirection:'row',justifyContent:'space-between',alignItems:'center'}}>
-                        <Text style={{fontSize:28,color:'#666666',paddingLeft:24}}>上次同步时间2018-12-24 15:10:32</Text>
-                        <Text style={{flex:1,fontSize:28,color:'blue',paddingLeft:24}}>下拉更新同步</Text>
-                        <ItemIcon code={"\ue69a"}  iconStyle={{fontSize:32,color:'#999999'}}/>
-                    </View> */}
                     <Header ref="orderHead" shopId={lastShopId}/>
                     <OrderStatus
                     tabStatus={tabStatus}

@@ -1,8 +1,5 @@
 import px from '../../../Biz/px.js';
 export default {
-    maskStyle:{
-        backgroundColor:'rgba(0,0,0,0.5)'
-    },
     modalStyle:{
         position: 'absolute',
         right: px(0),
@@ -184,6 +181,6 @@ export default {
         width:px(50),
         height:px(50),
         fontSize:px(50),
-        color:'rgba(0,0,0,0.5)'
+        opacity:0.5,
     }
 }

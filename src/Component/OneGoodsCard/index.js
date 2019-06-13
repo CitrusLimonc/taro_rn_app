@@ -25,7 +25,7 @@ export default class OneGoodsCard extends Component {
                                 <Text style={styles.tagText}>未代销</Text>
                             </View>
                             :
-                            ''
+                            null
                         }
                     </View>
                     <View style={{marginLeft:px(8)}}>
@@ -41,7 +41,7 @@ export default class OneGoodsCard extends Component {
                 </View>
             );
         } else {
-            return '';
+            return null;
         }
     }
 }

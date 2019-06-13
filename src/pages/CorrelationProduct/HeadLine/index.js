@@ -1,5 +1,6 @@
 import Taro, { Component, Config } from '@tarojs/taro';
-import { View, Text , Image,Button } from '@tarojs/components';
+import { View, Text , Image } from '@tarojs/components';
+import AyButton from '../../../Component/AyButton/index';
 import OneGoodsCard from '../../../Component/OneGoodsCard';
 import styles from './styles';
 import px from '../../../Biz/px.js';
@@ -33,10 +34,9 @@ export default class HeadLine extends Component {
                     </View>
                     <Text style={{fontSize:px(32),color:'#4a4a4a',marginLeft:px(12)}}>{dataSource.shopName}</Text>
                     <View style={{flex:1,flexDirection:'row',alignItems:'center',justifyContent:'flex-end'}}>
-                        <Button size="small"
-                        type="secondary">
+                        <AyButton type="primary">
                         关联商品设置
-                        </Button>
+                        </AyButton>
                     </View>
                 </View>
                 <OneGoodsCard productInfo={productInfo}/>

@@ -4,7 +4,7 @@ export default {
         alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: 'rgba(0,0,0,0.5)',
-        position:'fixed',
+        position:'absolute',
         left:px(0),
         right:px(0),
         top:px(0),

@@ -94,7 +94,7 @@ export default {
         justifyContent:'center'
     },
     footLine:{
-        position:'fixed',
+        position:'absolute',
         bottom:px(0),
         left:px(0),
         right:px(0),

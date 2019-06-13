@@ -1,5 +1,7 @@
 import Taro, { Component, Config } from '@tarojs/taro';
 import { View, Text } from '@tarojs/components';
+import { Toast } from '@ant-design/react-native';
+import px from '../../Biz/px.js';
 /**
  * @author cy
  * 字体图标
@@ -11,6 +13,20 @@ import { View, Text } from '@tarojs/components';
 export default class ItemIcon extends Component {
     constructor(props) {
         super(props);
+        this.state = {
+            platform:'ios'
+        }
+    }
+
+    componentWillMount(){
+        Taro.getSystemInfo({
+            success:(result)=>{
+                platform = result.platform;
+                this.setState({
+                    platform:platform
+                });
+            }
+        });
     }
 
     render(){
@@ -28,15 +44,20 @@ export default class ItemIcon extends Component {
             iconStyle={};
         }
 
-        let content='';//内容部分
+        let content=null;//内容部分
+        let platformStyle = {};
+        if (this.state.platform == "android") {
+            platformStyle = {'marginTop':px(-24)};
+        }
+        
         if (this.props.onClick) {
             content=
-            <View style={boxStyle} onClick={this.props.onClick}>
+            <View style={[boxStyle,platformStyle]} onClick={this.props.onClick}>
                 <Text style={[iconStyle,{'fontFamily':'iconfont','fontStyle':'normal'}]}>{this.props.code}</Text>
             </View>;
         } else {
             content=
-            <View style={boxStyle}>
+            <View style={[boxStyle,platformStyle]}>
                 <Text style={[iconStyle,{'fontFamily':'iconfont','fontStyle':'normal'}]}>{this.props.code}</Text>
             </View>;
         }

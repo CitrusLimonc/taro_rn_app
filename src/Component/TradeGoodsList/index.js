@@ -81,13 +81,13 @@ export default class GoodsList extends Component {
     render(){
         const { cht,itemA } = this.state;
         const { refund,tabStatus,status,key,isLastOne } = this.props;
-        let confirmRefund='';//原先做的退款协议
+        let confirmRefund=null;//原先做的退款协议
         let tab_retxt = '';//特殊状态文字
         let tab_color = '';//特殊状态颜色
         let had_refund = false;//是否退款相关
         let spetid = false;//是否在发货页面
         let ws_hs = false;//是否待发货列表中的已发货
-        let opview = '';//特殊状态的底部栏
+        let opview = null;//特殊状态的底部栏
         if(tabStatus == '退款中'){
             tab_retxt = types[status];
             tab_color = colors[tab_retxt];

@@ -1,10 +1,13 @@
 'use strict';
 
 import Taro, { Component, Config } from '@tarojs/taro';
-import { View, Text,Image,Button,NumberPicker} from '@tarojs/components';
+import { View , Text , Image } from '@tarojs/components';
+import { Toast , Portal } from '@ant-design/react-native';
+import AyButton from '../../../../Component/AyButton/index';
 import Event from 'ay-event';
 import {IsEmpty} from '../../../../Public/Biz/IsEmpty.js';
 import ItemIcon from '../../../../Component/ItemIcon';
+import NumberPicker from '../../../../Component/NumberPicker';
 import TradeNick from '../../../../Component/TradeNick';
 import ChooseSkuDialog from '../../../../Component/ChooseSkuDialog';
 import {LocalStore} from '../../../../Public/Biz/LocalStore.js';
@@ -41,7 +44,8 @@ export default class SubCard extends Component {
             orders:this.props.orders,//当前订单信息
             offerId:'',//当前商品id
             specId:''//当前sku的specid
-        }
+        };
+        this.loading = '';
     }
 
     componentWillMount(){
@@ -111,22 +115,22 @@ export default class SubCard extends Component {
                 case 'waitbuyerpay':
                     return (
                         <View style={styles.footLine}>
-                            <Button
-                            type="secondary"
+                            <AyButton
+                            type="primary"
                             onClick={()=>{this.btnOptions('取消订单')}}
                             style={[styles.footBtns,{borderColor:'#DCDEE3',color:'#5F646E'}]}>
                             取消订单
-                            </Button>
+                            </AyButton>
                             {
                                 tabStatus == '已关闭' ?
-                                ''
+                                null
                                 :
-                                <Button
-                                type="secondary"
+                                <AyButton
+                                type="primary"
                                 onClick={()=>{this.btnOptions('付款采购')}}
                                 style={styles.footBtns}>
                                 付款采购
-                                </Button>
+                                </AyButton>
                             }
                         </View>
                     );
@@ -134,18 +138,18 @@ export default class SubCard extends Component {
                 case 'waitsellersend':
                     return (
                         <View style={styles.footLine}>
-                            <Button
+                            <AyButton
                             type="normal"
                             onClick={()=>{this.btnOptions('申请退款')}}
                             style={styles.footBtns}>
                             申请退款
-                            </Button>
-                            <Button
+                            </AyButton>
+                            <AyButton
                             type="normal"
                             onClick={()=>{this.btnOptions('提醒发货',tradeNick)}}
                             style={styles.footBtns}>
                             提醒发货
-                            </Button>
+                            </AyButton>
                         </View>
                     );
                     break;
@@ -156,18 +160,18 @@ export default class SubCard extends Component {
                 case 'confirm_goods':
                     return (
                         <View style={styles.footLine}>
-                            <Button
+                            <AyButton
                             type="normal"
                             onClick={()=>{this.btnOptions('申请退款')}}
                             style={styles.footBtns}>
                             申请退款
-                            </Button>
-                            <Button
+                            </AyButton>
+                            <AyButton
                             type="normal"
                             onClick={()=>{this.btnOptions('确认收货')}}
                             style={styles.footBtns}>
                             确认收货
-                            </Button>
+                            </AyButton>
                         </View>
                     );
                     break;
@@ -175,12 +179,12 @@ export default class SubCard extends Component {
                 case 'terminated':{
                     return (
                         <View style={styles.footLine}>
-                            <Button
+                            <AyButton
                             type="normal"
                             onClick={()=>{this.btnOptions('查看详情')}}
                             style={styles.footBtns}>
                             查看详情
-                            </Button>
+                            </AyButton>
                         </View>
                     );
                 } break;
@@ -188,29 +192,29 @@ export default class SubCard extends Component {
                     if ((tabStatus == '待采购' || tabStatus == '待发货')) {
                         return (
                             <View style={styles.footLine}>
-                                <Button
+                                <AyButton
                                 type="normal"
                                 onClick={()=>{this.btnOptions('查看详情')}}
                                 style={styles.footBtns}>
                                 查看详情
-                                </Button>
-                                <Button
+                                </AyButton>
+                                <AyButton
                                 type="normal"
                                 onClick={()=>{this.btnOptions('重新采购')}}
                                 style={styles.footBtns}>
                                 重新采购
-                                </Button>
+                                </AyButton>
                             </View>
                         );
                     } else {
                         return (
                             <View style={styles.footLine}>
-                                <Button
+                                <AyButton
                                 type="normal"
                                 onClick={()=>{this.btnOptions('查看详情')}}
                                 style={styles.footBtns}>
                                 查看详情
-                                </Button>
+                                </AyButton>
                             </View>
                         );
                     }
@@ -224,25 +228,27 @@ export default class SubCard extends Component {
                     isMate = false;
                 }
             });
-            let but = (<View style={styles.footLine}>
-                        <Button
-                        type="secondary"
-                        style={[styles.footBtns,{backgroundColor:'#F5F5F5',borderColor:'#E6E6E6',color:'#BFBFBF'}]}>
-                        确认采购单
-                        </Button>
-                    </View>);
+            let but = (
+                <View style={styles.footLine}>
+                    <AyButton
+                    type="primary"
+                    style={[styles.footBtns,{backgroundColor:'#F5F5F5',borderColor:'#E6E6E6',color:'#BFBFBF'}]}>
+                    确认采购单
+                    </AyButton>
+                </View>
+            );
             if (isMate) {
                 if(this.state.shopType == 'wc' && IsEmpty(this.state.data.pay_time)){
                     return but;
                 }else{
                     return (
                         <View style={styles.footLine}>
-                            <Button
-                            type="secondary"
+                            <AyButton
+                            type="primary"
                             onClick={()=>{this.btnOptions('确认采购单')}}
                             style={styles.footBtns}>
                             确认采购单
-                            </Button>
+                            </AyButton>
                         </View>
                     );
                 }
@@ -286,11 +292,7 @@ export default class SubCard extends Component {
                             // let ofurls = RAP.biz.getBizInfoUrl('orderDetail', { 'orderId': orderIdList[0], 'sys_page': 1 });
                             // RAP.navigator.push({url: ofurls});
                         } else {
-                            Taro.showToast({
-                                title: '暂无可付款的订单',
-                                icon: 'none',
-                                duration: 2000
-                            });
+                            Toast.info('暂无可付款的订单', 2);
                         }
                         // RAP.navigator.push({
                         //     url:'',
@@ -376,7 +378,7 @@ export default class SubCard extends Component {
                 // RAP.navigator.push({url: ofurls});
             } break;
             case '重新采购':{
-                Taro.showLoading({ title: '加载中...' });
+                this.loading = Toast.loading('加载中...');
                 NetWork.Get({
                     url:'Orderreturn/rebuildSubOrder',
                     data:{
@@ -387,20 +389,16 @@ export default class SubCard extends Component {
                 },(rsp)=>{
                     console.log('Orderreturn/rebuildSubOrder',rsp);
                     //有结果
-                    Taro.hideLoading();
+                    Portal.remove(this.loading);
                     if (!IsEmpty(rsp.code) && rsp.code == 200) {
                         //重新加载订单
                         Event.emit('App.redetail',{});
                         Event.emit('App.update_shop_orders',{});
-                        Taro.showToast({
-                            title: '成功',
-                            icon: 'none',
-                            duration: 2000
-                        });
+                        Toast.info('成功', 2);
                     }
                 },(error)=>{
-                    Taro.hideLoading();
-                    alert(JSON.stringify(error));
+                    Portal.remove(this.loading);
+                    console.error(error);
                 });
             } break;
             default: break;
@@ -477,11 +475,7 @@ export default class SubCard extends Component {
             }
         }
         if(tokennum==0){
-            Taro.showToast({
-                title: '采购单数量总和不能为0',
-                icon: 'none',
-                duration: 2000
-            });
+            Toast.info('采购单数量总和不能为0', 2);
         }else{
             this.setState({
                 itemlist:itemlist,
@@ -528,7 +522,7 @@ export default class SubCard extends Component {
                                 }
                             </View>
                             :
-                            ''
+                            null
                         }
                         <View style={styles.logistCard}>
                             <View style={{flexDirection:'row'}}>
@@ -597,7 +591,7 @@ export default class SubCard extends Component {
 
     render() {
         let {isPurchaseOrder,tabStatus,lastSubOrder,offerId,specId} = this.state;
-        let card = '';
+        let card = null;
         if (isPurchaseOrder == '0') {
             let {item,payment,totalCount,tradeNick,orders} = this.state;
             card = (
@@ -683,7 +677,7 @@ export default class SubCard extends Component {
                                                     !IsEmpty(sku) ?
                                                     <Text style={{fontSize:px(24),color:'#ff6000'}}>{sku}</Text>
                                                     :
-                                                    ''
+                                                    null
                                                 }
                                                 <View style={{flexDirection:'row',flex:1,justifyContent:'flex-end'}}>
                                                     <Text style={{fontSize:px(24),color:'#ff6000'}}>x{number}</Text>
@@ -774,7 +768,7 @@ export default class SubCard extends Component {
                                                         <ItemIcon code={"\ue6a6"} iconStyle={{fontSize:px(24),color:'#9a9a9a'}}/>
                                                     </View>
                                                     :
-                                                    <Button style={styles.littleBtn} onClick={()=>{this.chooseSku(product,product.offerId)}}>匹配规格</Button>
+                                                    <AyButton style={styles.littleBtn} onClick={()=>{this.chooseSku(product,product.offerId)}}>匹配规格</AyButton>
                                                 }
                                                 <View style={{flex:1,flexDirection:'row',justifyContent:'flex-end'}}>
                                                     {/* <Text style={{fontSize:px(24),color:'#9a9a9a'}}>x{product.buyAmount}</Text> */}
@@ -818,8 +812,8 @@ export default class SubCard extends Component {
                 lastSubOrder={lastSubOrder}
                 updateStates={this.updateStates}
                 updateOrder={this.props.updateOrder}
-                showLoading={()=>{Taro.showLoading({ title: '加载中...' });}}
-                hideLoading={()=>{Taro.hideLoading();}}
+                showLoading={()=>{this.loading = Toast.loading('加载中...');}}
+                hideLoading={()=>{Portal.remove(this.loading);}}
                 from="one"
                 />
             </View>

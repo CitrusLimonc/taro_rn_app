@@ -1,5 +1,8 @@
 import Taro, { Component, Config } from '@tarojs/taro';
-import {ScrollView,View,Text,Checkbox,Image,Button,Dialog,Radio,Input} from '@tarojs/components';
+import {ScrollView,View,Text,Checkbox,Image,Radio,Input,RadioGroup,CheckboxGroup} from '@tarojs/components';
+import { Toast , Portal } from '@ant-design/react-native';
+import AyButton from '../../Component/AyButton/index';
+import Dialog from '../../Component/Dialog';
 import Event from 'ay-event';
 import SureDialog from '../../Component/SureDialog';
 import ItemIcon from '../../Component/ItemIcon';
@@ -99,6 +102,7 @@ export default class DistributionSetting extends Component {
         this.willShowShop="";
         this.from = '';
         this.authorizationLink = '';
+        this.loading = '';
 
 
         let self = this;
@@ -119,24 +123,24 @@ export default class DistributionSetting extends Component {
         });
     }
 
-    // config: Config = {
-    //     navigationBarTitleText: '铺货设置'
-    // }
+    config = {
+        navigationBarTitleText: '铺货设置'
+    }
 
 
     componentDidMount(){
-        let shopId = GetQueryString({name:'query'});
+        let shopId = GetQueryString({name:'query',self:this});
         let batchChanges = [];
         if (IsEmpty(shopId)) {
-            shopId = GetQueryString({name:'resShopId'});
-            this.offerId = GetQueryString({name:'offerId'});
+            shopId = GetQueryString({name:'resShopId',self:this});
+            this.offerId = GetQueryString({name:'offerId',self:this});
             if (!IsEmpty(shopId)) {
                 batchChanges = shopId.split(',');
                 shopId = batchChanges[0];
             }
         }
         let self = this;
-        Taro.showLoading({ title: '加载中...' });
+        self.loading = Toast.loading('加载中...');
         self.getAllSettings(shopId,batchChanges);
     }
     
@@ -415,13 +419,13 @@ export default class DistributionSetting extends Component {
                         batchChanges:batchChanges,
                         pddChooseCat:pddChooseCat
                     });
-                    Taro.hideLoading();
+                    Portal.remove(self.loading);
                 },(error)=>{
-                    alert(JSON.stringify(error));
+                    console.error(error);
                 });
             }
         },(error)=>{
-            alert(JSON.stringify(error));
+            console.error(error);
         });
     }
 
@@ -447,18 +451,18 @@ export default class DistributionSetting extends Component {
                     if(rsp.code=='200'){
                         //完成
                         if (callback) {
-                            Taro.showLoading({ title: '加载中...' });
+                            self.loading = Toast.loading('加载中...');
                             callback(true);
                         }
                     } else if (rsp.code == '404') {
-                        Taro.hideLoading();
+                        Portal.remove(self.loading);
                         self.refs.sureDialog.show();
                         self.authorizationLink = rsp;
                         GoToView({status:rsp.authorLink,page_status:'special'});
                     }
                 }
             },(error)=>{
-                alert(JSON.stringify(error));
+                console.error(error);
             });
         } else {
             this.retry = 0;
@@ -481,7 +485,7 @@ export default class DistributionSetting extends Component {
             });
             self.refs.submitDialog.show();
         } else {
-            Taro.showLoading({ title: '加载中...' });
+            self.loading = Toast.loading('加载中...');
             // 获取铺货设置  加loading
             self.getAllSettings(item.id);
         }
@@ -543,13 +547,13 @@ export default class DistributionSetting extends Component {
         });
 
         if (flag == 'temp' && lastShopType != 'wc' && lastShopType != 'pdd' && lastShopType != 'taobao') {
-            Taro.showLoading({ title: '加载中...' });
+            self.loading = Toast.loading('加载中...');
             this.getTemplateModel(1,lastShopType,shopName,chooseShop,flag,(rsp)=>{
                 this.setState({
                     tempList:rsp,
                     dialogFlag:flag
                 });
-                Taro.hideLoading();
+                Portal.remove(self.loading);
                 this.refs.chooseDialog.show();
             });
             return ;
@@ -565,7 +569,7 @@ export default class DistributionSetting extends Component {
                 self.getAuthorization(chooseShop,lastShopType,batchChanges,false,(result)=>{
                     if (result) {
                         if (flag == 'category') {
-                            Taro.showLoading({ title: '加载中...' });
+                            self.loading = Toast.loading('加载中...');
                             NetWork.Get({
                                 url:'Distributeproxy/getSellerCats',
                                 data:{}
@@ -637,22 +641,22 @@ export default class DistributionSetting extends Component {
                                         dialogFlag:flag
                                     });
                                 }
-                                Taro.hideLoading();
+                                Portal.remove(this.loading);
                                 this.refs.categryDialog.show();
                             },(error)=>{
-                                alert(JSON.stringify(error));
+                                console.error(error);
                             });
                         } else if (flag == 'pddcategory') {
                             this.refs.categryPddDialog.show(chooseShop,lastShopType);
-                            Taro.hideLoading();
+                            Portal.remove(this.loading);
                         } else if(flag == 'temp' || flag == 'tempPdd'){
-                            Taro.showLoading({ title: '加载中...' });
+                            self.loading = Toast.loading('加载中...');
                             this.getTemplateModel(1,lastShopType,shopName,chooseShop,flag,(rsp)=>{
                                 this.setState({
                                     tempList:rsp,
                                     dialogFlag:flag
                                 });
-                                Taro.hideLoading();
+                                Portal.remove(this.loading);
                                 this.refs.chooseDialog.show();
                             });
                         }
@@ -693,7 +697,7 @@ export default class DistributionSetting extends Component {
             }
         },(error)=>{
             callback(tempList);
-            alert(JSON.stringify(error));
+            console.error(error);
         });
     }
 
@@ -830,11 +834,7 @@ export default class DistributionSetting extends Component {
 
         if (lastShopType == 'pdd') {
             if (IsEmpty(pddCateSet) && pddChooseCat == '1') {
-                Taro.showToast({
-                    title: '请至少选择发布商品分类',
-                    icon: 'none',
-                    duration: 2000
-                });
+                Toast.info('请至少选择发布商品分类', 2);
                 return ;
             }
         }
@@ -873,18 +873,10 @@ export default class DistributionSetting extends Component {
         }
 
         if (!MatchNumber.isPositiveNumber(groupBuySet.mulNum) || !MatchNumber.isPositiveNumber(singleBuySet.mulNum)|| !MatchNumber.isPositiveNumber(beforSet.mulNum)|| !MatchNumber.isPositiveNumber(sellSet.mulNum)|| !MatchNumber.isPositiveNumber(sellSet.onlypercent)) {
-            Taro.showToast({
-                title: '价格的百分比只可是正数',
-                icon: 'none',
-                duration: 2000
-            });
+            Toast.info('价格的百分比只可是正数', 2);
             return ;
         } else if (!MatchNumber.isNumber(groupBuySet.addNum) || !MatchNumber.isNumber(singleBuySet.addNum)|| !MatchNumber.isNumber(beforSet.addNum)|| !MatchNumber.isNumber(sellSet.addNum)) {
-            Taro.showToast({
-                title: '价格的增减只可是数字',
-                icon: 'none',
-                duration: 2000
-            });
+            Toast.info('价格的增减只可是数字', 2);
             return ;
         }
 
@@ -893,11 +885,7 @@ export default class DistributionSetting extends Component {
         console.log(singlePrice - groupPrice);
 
         if (singlePrice - groupPrice < 1) {
-            Taro.showToast({
-                title: '单买价至少比团购价多一元',
-                icon: 'none',
-                duration: 2000
-            });
+            Toast.info('单买价至少比团购价多一元', 2);
             return ;
         }
 
@@ -1015,17 +1003,9 @@ export default class DistributionSetting extends Component {
         console.log('保存的数据',rule)
         //保存铺货设置
         if(sellSet.priceWay == '0'&&sellSet.mulNum==0&&sellSet.addNum==0){
-            Taro.showToast({
-                title: '售价设置不能为0',
-                icon: 'none',
-                duration: 2000
-            });
+            Toast.info('售价设置不能为0', 2);
         }else if(sellSet.priceWay == '1'&&sellSet.onlypercent==0){
-            Taro.showToast({
-                title: '售价设置不能为0',
-                icon: 'none',
-                duration: 2000
-            });
+            Toast.info('售价设置不能为0', 2);
         }else{
             NetWork.Get({
                 url:'Distributeproxy/saveProxySetting',
@@ -1037,11 +1017,7 @@ export default class DistributionSetting extends Component {
             },(rsp)=>{
                 console.log(rsp);
                 if (rsp.code == '200') {
-                    Taro.showToast({
-                        title: '保存成功',
-                        icon: 'none',
-                        duration: 2000
-                    });
+                    Toast.info('保存成功', 2);
                     self.setState({
                         hasChanged:false,
                         groupBuySet:groupBuySet,
@@ -1055,7 +1031,7 @@ export default class DistributionSetting extends Component {
                     }
                     if (isReturn) {
                         if (isReturn == 'changeShop') {
-                            Taro.showLoading({ title: '加载中...' });
+                            self.loading = Toast.loading('加载中...');
                             // 获取铺货设置  加loading
                             self.getAllSettings(self.willShowShop);
                         } else {
@@ -1070,7 +1046,7 @@ export default class DistributionSetting extends Component {
                 }
                 //setState
             },(error)=>{
-                alert(JSON.stringify(error));
+                console.error(error);
             });
         }
 
@@ -1120,11 +1096,7 @@ export default class DistributionSetting extends Component {
             });
             this.refs.categryDialog.hide();
         } else {
-            Taro.showToast({
-                title: '请先选择分类或点击空白处关闭',
-                icon: 'none',
-                duration: 2000
-            });
+            Toast.info('请先选择分类或点击空白处关闭', 2);
         }
 
     }
@@ -1239,31 +1211,19 @@ export default class DistributionSetting extends Component {
             case 'mulNum':{
                 setting.mulNum = value;
                 if (!MatchNumber.isPositiveNumber(value)) {
-                    Taro.showToast({
-                        title: '请输入一个正数',
-                        icon: 'none',
-                        duration: 2000
-                    });
+                    Toast.info('请输入一个正数', 2);
                 }
             } break;
             case 'onlypercent':{
                 setting.onlypercent = value;
                 if (!MatchNumber.isPositiveNumber(value)) {
-                    Taro.showToast({
-                        title: '请输入一个正数',
-                        icon: 'none',
-                        duration: 2000
-                    });
+                    Toast.info('请输入一个正数', 2);
                 }
             } break;
             case 'addNum':{
                 setting.addNum = value;
                 if (!MatchNumber.isNumber(value)) {
-                    Taro.showToast({
-                        title: '请输入一个数',
-                        icon: 'none',
-                        duration: 2000
-                    });
+                    Toast.info('请输入一个数', 2);
                 }
             } break;
             case 'point':{
@@ -1350,11 +1310,7 @@ export default class DistributionSetting extends Component {
     //修改运费
     changeSend=(e)=>{
         if(e<0){
-            Taro.showToast({
-                title: '运费需大于0元',
-                icon: 'none',
-                duration: 2000
-            });
+            Toast.info('运费需大于0元', 2);
         }else{
             this.setState({
                 changeSend:e
@@ -1368,7 +1324,7 @@ export default class DistributionSetting extends Component {
             GoToView({page_status:'pop'});
         } else if (this.state.confirmBtns.okText == '保存') {
             this.refs.submitDialog.hide();
-            Taro.showLoading({ title: '加载中...' });
+            this.loading = Toast.loading('加载中...');
             // 获取铺货设置  加loading
             this.getAllSettings(this.willShowShop);
         } else {
@@ -1447,7 +1403,7 @@ export default class DistributionSetting extends Component {
         }
 
         return (
-            <View>
+            <View style={{backgroundColor:'#f5f5f5',flex:1}}>
                 <ScrollView style={{backgroundColor:'#f5f5f5',flex:1,paddingBottom:px(96)}}>
                     <View style={styles.topLine}>
                         <Text style={{fontSize:px(32),color:'#787993'}}>选择店铺</Text>
@@ -1465,13 +1421,13 @@ export default class DistributionSetting extends Component {
                                 callback = {()=>{this.chooseSetting('category')}}
                             />
                             :
-                            ''
+                            null
                         }
                         {
                             lastShopType == 'pdd' ?
                             <View>
                                 <View><Text style={{fontSize:px(32),color:'#030303',marginLeft:px(24),marginTop:px(24)}}>发布商品类目设置</Text></View>
-                                <Radio.Group
+                                <RadioGroup
                                 value={pddChooseCat}
                                 onChange={(value)=>{this.changePddChooseCat(value)}}>
                                     <View style={styles.catLine} onClick={()=>{this.changePddChooseCat("0")}}>
@@ -1503,10 +1459,10 @@ export default class DistributionSetting extends Component {
                                             />
                                         </View>
                                     </View>
-                                </Radio.Group>
+                                </RadioGroup>
                             </View>
                             :
-                            ''
+                            null
                         }
                         {
                             lastShopType == 'pdd' || isOthor? 
@@ -1520,7 +1476,7 @@ export default class DistributionSetting extends Component {
                                 callback = {this.callback}
                             />
                             :
-                            ''
+                            null
                         }
                         {
                             lastShopType == 'pdd' || isOthor? 
@@ -1534,7 +1490,7 @@ export default class DistributionSetting extends Component {
                                 callback = {this.callback}
                             />
                             :
-                            ''
+                            null
                         }
                         {
                             lastShopType == 'wc' ?
@@ -1550,13 +1506,13 @@ export default class DistributionSetting extends Component {
                                 onlypercent = {sellSet.onlypercent}
                             />
                             :
-                            ''
+                            null
                         }
                         {
                             lastShopType == 'pdd' ?
                             <View style={styles.columnLine}>
                                 <Text style={{fontSize:px(32),color:'#030303'}}>承诺发货时间设置</Text>
-                                <Radio.Group
+                                <RadioGroup
                                 style={{flexDirection:'row',alignItems:'center'}}
                                 value={deliveryTime}
                                 onChange={(value)=>{this.changeDeliveryTime(value)}}>
@@ -1568,10 +1524,10 @@ export default class DistributionSetting extends Component {
                                         <Radio size="small" value={"2"} type="dot" style={{width:px(40),height:px(40)}}></Radio>
                                         <Text style={{fontSize:px(28),color:'#333333'}}>48小时</Text>
                                     </View>
-                                </Radio.Group>
+                                </RadioGroup>
                             </View>
                             :
-                            ''
+                            null
                         }
                         {
                             isOthor ? 
@@ -1584,7 +1540,7 @@ export default class DistributionSetting extends Component {
                                 }}
                             />
                             :
-                            ''
+                            null
                         }
                         {
                             lastShopType == 'wc' ? 
@@ -1622,17 +1578,17 @@ export default class DistributionSetting extends Component {
                                 callback = {()=>{this.chooseSetting('amount')}}
                             />
                             :
-                            ''
+                            null
                         }
                         {
                             isOthor ? 
-                            ''
+                            null
                             :
                             <View style={{paddingTop:px(24)}}>
                                 <View style={{paddingLeft:px(24)}}>
                                     <Text style={{fontSize:px(32),color:'#030303'}}>详情描述设置</Text>
                                     <View style={{marginLeft:px(40)}}>
-                                        <Checkbox.Group value={this.state.describeSet} onChange={(value)=>{this.changeDesccribeSet(value,'group')}}>
+                                        <CheckboxGroup value={this.state.describeSet} onChange={(value)=>{this.changeDesccribeSet(value,'group')}}>
                                             <View style={{flexDirection:'row',alignItems:'center'}} onClick={()=>{this.changeDesccribeSet("1",'list')}}>
                                                 <Checkbox value={"1"}
                                                 size="small"
@@ -1647,7 +1603,7 @@ export default class DistributionSetting extends Component {
                                                 checkedStyle={{borderRadius:px(4),width:px(40),height:px(40)}}/>
                                                 <Text style={{fontSize:px(28),color:'#333333'}}>自动过滤标题与描述中违规词</Text>
                                             </View>
-                                        </Checkbox.Group>
+                                        </CheckboxGroup>
                                     </View>
                                 </View>
                             </View>
@@ -1661,7 +1617,7 @@ export default class DistributionSetting extends Component {
                                 callback = {()=>{this.chooseSetting('publish')}}
                             />
                             :
-                            ''
+                            null
                         }
                         {
                             lastShopType == 'pdd' ?
@@ -1673,7 +1629,7 @@ export default class DistributionSetting extends Component {
                                 callback = {this.changeSwitch}
                             />
                             :
-                            ''
+                            null
                         }
                         {
                             lastShopType == 'pdd' ?
@@ -1685,7 +1641,7 @@ export default class DistributionSetting extends Component {
                                 callback = {this.changeSwitch}
                             />
                             :
-                            ''
+                            null
                         }
                         {
                             lastShopType == 'pdd' ?
@@ -1697,41 +1653,41 @@ export default class DistributionSetting extends Component {
                                 callback = {this.changeSwitch}
                             />
                             :
-                            ''
+                            null
                         }
                     </View>
                 </ScrollView>
-                <View style={{position:'fixed',bottom:px(0),left:px(0),right:px(0),backgroundColor:'#ff6000',height:px(96),alignItems:'center',justifyContent:'center'}}
+                <View style={{position:'absolute',bottom:px(0),left:px(0),right:px(0),backgroundColor:'#ff6000',height:px(96),alignItems:'center',justifyContent:'center'}}
                 onClick={()=>{this.saveDistribute()}}>
                     <Text style={{color:'#ffffff',fontSize:px(32)}}>保存铺货设置</Text>
                 </View>
-                <Dialog ref="chooseDialog" duration={1000} maskClosable={true} maskStyle={styles.mask} contentStyle={styles.categoryModel}>
+                <Dialog ref="chooseDialog" maskClosable={true} contentStyle={styles.categoryModel}>
                     <View style={styles.body}>
                         <View style={styles.head}><Text style={styles.textHead}>{dialogTitle}</Text></View>
                         <ScrollView style={{flex:1}} onEndReached={()=>{this.tempEndReached()}}>
-                            <Radio.Group style={{flex:1}} value={raidoSet} onChange={(value)=>{this.changeRadio(value)}}>
+                            <RadioGroup style={{flex:1}} value={raidoSet} onChange={(value)=>{this.changeRadio(value)}}>
                                 {this.getRadios()}
-                            </Radio.Group>
+                            </RadioGroup>
                         </ScrollView>
                     </View>
                     <View style={styles.footer}>
-                        <Button rect block style={styles.dlgBtn} type="primary" size="large" onClick={()=>{this.changeSet()}}>确定</Button>
+                        <AyButton style={styles.dlgBtn} type="primary" onClick={()=>{this.changeSet()}}>确定</AyButton>
                     </View>
                 </Dialog>
-                <Dialog ref="categryDialog" duration={1000} maskClosable={true} maskStyle={styles.mask} contentStyle={styles.categoryModel}>
+                <Dialog ref="categryDialog" maskClosable={true} contentStyle={styles.categoryModel}>
                     <View style={styles.body}>
                         <View style={styles.cateTopLine}>
                             <Text style={{color:'#9B9B9B',fontSize:px(28)}}>为铺货商品添加店铺的自定义分类:已选</Text>
                             <Text style={{color:'#E41010',fontSize:px(28)}}>{choosedCategory.length}</Text>
                         </View>
                         <ScrollView style={{flex:1}}>
-                            <Checkbox.Group value={choosedCategory} onChange={(value)=>{this.chooseCategory(value,'group')}}>
+                            <CheckboxGroup value={choosedCategory} onChange={(value)=>{this.chooseCategory(value,'group')}}>
                                 {this.renderCategorys()}
-                            </Checkbox.Group>
+                            </CheckboxGroup>
                         </ScrollView>
                     </View>
                     <View style={styles.footer}>
-                        <Button rect block style={styles.dlgBtn} type="primary" size="large" onClick={()=>{this.changeCategory()}}>确定</Button>
+                        <AyButton style={styles.dlgBtn} type="primary" onClick={()=>{this.changeCategory()}}>确定</AyButton>
                     </View>
                 </Dialog>
                 <PddCateDialog 
@@ -1746,7 +1702,7 @@ export default class DistributionSetting extends Component {
                     lastShopType={lastShopType}
                     authorizationLink={this.authorizationLink}
                 />
-                <Dialog ref={"submitDialog"} duration={1000} maskStyle={styles.maskStyle} contentStyle={styles.modal2Style}>
+                <Dialog ref={"submitDialog"} contentStyle={styles.modal2Style}>
                     <View style={styles.dialogContent}>
                         <View style={{flexDirection:'row',justifyContent:'center'}}>
                             <Text style={{marginTop:px(15),fontSize:px(38),color:'#4A4A4A'}}>{confirmTitle}</Text>
@@ -1773,9 +1729,8 @@ export default class DistributionSetting extends Component {
                                     <Text style={[styles.fontStyle,{color:"#ffffff"}]}>{confirmBtns.okText ? confirmBtns.okText : '确定'}</Text>
                                 </View>
                                 :
-                                ''
+                                null
                             }
-
                         </View>
                     </View>
                 </Dialog>

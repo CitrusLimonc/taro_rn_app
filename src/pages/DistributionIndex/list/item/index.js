@@ -2,6 +2,7 @@
 
 import Taro, { Component, Config } from '@tarojs/taro';
 import { View,Text,Image } from '@tarojs/components';
+import { Toast , Portal } from '@ant-design/react-native';
 import Event from 'ay-event';
 import { IsEmpty } from '../../../../Public/Biz/IsEmpty.js';
 import { GoToView } from '../../../../Public/Biz/GoToView.js';
@@ -33,6 +34,7 @@ export default class Item extends Component{
         };
         this.tokenall = 0;
         this.retry = 0;
+        this.loading = '';
         this.authorizationLink = '';
         let emitName = 'APP.render_shop_card';
         let self = this;
@@ -68,16 +70,18 @@ export default class Item extends Component{
             GetOrderInfo({
                 shopId:data.id,
                 SuccessCallBack:(res)=>{
-                    self.setState({
-                        trade:[
-                            {num:res.waittobuy,text:'待采购'},
-                            {num:res.waittosend,text:'待发货'},
-                        ],
-                        item:[
-                            {num:res.spnumber,text:'代销中'},
-                            {num:res.notspnum,text:'缺货中'},
-                        ],
-                    });
+                    if (!IsEmpty(res.waittobuy)) {
+                        self.setState({
+                            trade:[
+                                {num:res.waittobuy,text:'待采购'},
+                                {num:res.waittosend,text:'待发货'},
+                            ],
+                            item:[
+                                {num:res.spnumber,text:'代销中'},
+                                {num:res.notspnum,text:'缺货中'},
+                            ],
+                        });
+                    }
                 }
             });
             if(data.hasAuth){
@@ -107,29 +111,34 @@ export default class Item extends Component{
                                         GetOrderState({
                                             shopId:data.id,
                                             SuccessCallBack:(res)=>{
-                                                console.log(res)
-                                                if(res.isend){
+                                                console.log(res);
+                                                if (IsEmpty(res.isend)) {
                                                     clearInterval(self.interval);
-                                                    // this.loadData();
-                                                    GetOrderInfo({
-                                                        shopId:data.id,
-                                                        SuccessCallBack:(res)=>{
-                                                            console.log('kankanasyn',res)
-                                                            self.setState({
-                                                                trade:[
-                                                                    {num:res.waittobuy,text:'待采购'},
-                                                                    {num:res.waittosend,text:'待发货'},
-                                                                ],
-                                                                item:[
-                                                                    {num:res.spnumber,text:'代销中'},
-                                                                    {num:res.notspnum,text:'缺货中'},
-                                                                ],
-                                                            });
-                                                        }
-                                                    });
-                                                    Event.emit('APP.reload_headorderlist');
-                                                    console.log('kankanloadmore')
                                                     self.setState({syncstate:true});
+                                                } else {
+                                                    if(res.isend){
+                                                        clearInterval(self.interval);
+                                                        // this.loadData();
+                                                        GetOrderInfo({
+                                                            shopId:data.id,
+                                                            SuccessCallBack:(res)=>{
+                                                                console.log('kankanasyn',res)
+                                                                self.setState({
+                                                                    trade:[
+                                                                        {num:res.waittobuy,text:'待采购'},
+                                                                        {num:res.waittosend,text:'待发货'},
+                                                                    ],
+                                                                    item:[
+                                                                        {num:res.spnumber,text:'代销中'},
+                                                                        {num:res.notspnum,text:'缺货中'},
+                                                                    ],
+                                                                });
+                                                            }
+                                                        });
+                                                        Event.emit('APP.reload_headorderlist');
+                                                        console.log('kankanloadmore')
+                                                        self.setState({syncstate:true});
+                                                    }
                                                 }
                                             }
                                         })
@@ -140,7 +149,7 @@ export default class Item extends Component{
                                     changeAuth(data.id,false);
                                 break;
                                 case 101:
-                                    alert('同步订单消息发送失败');
+                                    // alert('同步订单消息发送失败');
                                     changeAuth(data.id,false);
                                 break;
                                 default:
@@ -152,18 +161,22 @@ export default class Item extends Component{
                         }
                     });
                 } else {
-                    self.interval = setInterval(() => {
-                        GetOrderState({
-                            shopId:data.id,
-                            SuccessCallBack:(res)=>{
-                                console.log(res)
-                                if(res.isend){
-                                    clearInterval(self.interval);
-                                    self.setState({syncstate:true});
+                    if (!IsEmpty(res.isend)) {
+                        self.interval = setInterval(() => {
+                            GetOrderState({
+                                shopId:data.id,
+                                SuccessCallBack:(res)=>{
+                                    console.log(res)
+                                    if(res.isend){
+                                        clearInterval(self.interval);
+                                        self.setState({syncstate:true});
+                                    }
                                 }
-                            }
-                        })
-                    },1000)
+                            })
+                        },1000)
+                    } else {
+                        self.setState({syncstate:true});
+                    }
                 }
             }
         })
@@ -180,14 +193,14 @@ export default class Item extends Component{
             shopId:data.id,
         };
         self.refs.sureDialog.hide();
-        Taro.showLoading({ title: '加载中...' });
+        this.loading = Toast.loading('加载中...');
         if (self.retry <= 3) {
             self.retry++;
             NetWork.Get({
                 url:'Distributeproxy/proxyGetAiyongAuthorization',
                 data:params
             },(rsp)=>{
-                Taro.hideLoading();
+                Portal.remove(self.loading);
                 if (!IsEmpty(rsp)) {
                     if(rsp.code=='200'){
                         self.retry = 0;
@@ -200,11 +213,11 @@ export default class Item extends Component{
                     }
                 }
             },(error)=>{
-                Taro.hideLoading();
-                alert(JSON.stringify(error));
+                Portal.remove(self.loading);
+                console.error(error);
             });
         } else {
-            Taro.hideLoading();
+            Portal.remove(self.loading);
             self.retry = 0;
         }
     }

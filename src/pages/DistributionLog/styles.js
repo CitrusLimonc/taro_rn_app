@@ -368,7 +368,6 @@ export default {
         flexDirection:'row',
         justifyContent:'center',
         alignItems:'flex-start',
-        fontFamily:"Microsoft YaHei",
         backgroundColor:'#ffaa3a',
         transform:'rotate(-45deg)'
     },

@@ -1,7 +1,8 @@
 import Taro, { Component, Config } from '@tarojs/taro';
-import { View,Text,ScrollView } from '@tarojs/components';
-// import Event from 'ay-event';
-// import { ListView } from 'antd-mobile';
+import { View , Text , ScrollView } from '@tarojs/components';
+import { Toast , Portal } from '@ant-design/react-native';
+import { FlatList , RefreshControl}  from 'react-native';
+import Event from 'ay-event';
 import { IsEmpty } from '../../Public/Biz/IsEmpty.js';
 import AiyongDialog from '../../Component/AiyongDialog';
 import Back from './back';
@@ -14,7 +15,7 @@ import { NetWork } from '../../Public/Common/NetWork/NetWork.js';
 // import {ToQueryString} from '../../Public/Biz/ToQueryString';
 // import AlertBanner from '../../Public/Components/AlertBanner/index.js';
 // import Floattop from '../../Public/Components/Floattop';
-// import { Modal } from '../../Public/Components/Modal/index.js';
+import { Modal } from '../../Public/Components/Modal/index.js';
 import { LocalStore } from '../../Public/Biz/LocalStore.js';
 import GetTimeString from '../../Public/Biz/GetTimeString.js';
 // import {DoBeacon} from '../../Public/Biz/DoBeacon.js';
@@ -25,30 +26,32 @@ import px from '../../Biz/px.js';
  @aythor lzy
   首页
 */
-export default class DistributionIndex extends Component <{}, {}>{
+export default class DistributionIndex extends Component{
     constructor(props) {
         super(props);
+        this.state = {
+            loginId:'', //用户名
+            isRefreshing: false, //是否下拉刷新
+            refreshText: '↓ 下拉刷新', //下拉刷新文字
+            dialogMsg:{
+                'title':'',
+                'cancelText':'',
+                'okText':'',
+                'content':''
+            },
+            authType:''
+        }
+        this.vipflag = '';
+        this.loading = '';
     }
-    public state = {
-        loginId:'', //用户名
-        isRefreshing: false, //是否下拉刷新
-        refreshText: '↓ 下拉刷新', //下拉刷新文字
-        dialogMsg:{
-            'title':'',
-            'cancelText':'',
-            'okText':'',
-            'content':''
-        },
-        authType:''
-    }
-    public vipflag = '';
 
-    config: Config = {
+    config = {
         navigationBarTitleText: '首页'
     }
 
     componentWillMount(){
         let self = this;
+        
         //获取用户基本信息
         // let params = info.extraInfo.result;
         // params.from = mobile;
@@ -83,36 +86,21 @@ export default class DistributionIndex extends Component <{}, {}>{
     }
 
     componentDidMount(){
+        Event.on('APP.testShowEvent',(data)=>{
+            Toast.info('componentDidMount', 1);
+        });
+        // Event.emit('APP.testShowEvent',{});
         // let currentPages = Taro.getCurrentPages();
         // let lastPage = currentPages[currentPages.length];
-        // Taro.showToast({
-        //     title:JSON.stringify(this.props),
-        //     icon:'none',
-        //     duration:3000
-        // });
-        Taro.showLoading({
-            title: '加载中',
-        });
         
+        this.loading = Toast.loading('加载中...');
+        let self = this;
         setTimeout(function(){
-            Taro.hideLoading();
+            Portal.remove(self.loading);
         },2000);
 
-        // Taro.setNavigationBarTitle({
-        //    title: '当前页面'
-        // });
-
-        // Taro.showModal({
-        //     title: '提示',
-        //     content: '这是一个模态弹窗',
-        //     success: function(res) {
-        //         if (res.confirm) {
-        //             console.log('用户点击确定')
-        //         } else if (res.cancel) {
-        //             console.log('用户点击取消')
-        //         }
-        //     }
-        // });
+        
+       
     }
 
     //获取两个日期间相差的天数
@@ -129,30 +117,30 @@ export default class DistributionIndex extends Component <{}, {}>{
         this.getAuthTrade('null',(res)=>{
             //没有交易授权
             if (res.code != 200) {
-                // Modal.alert({
-                //     element:this.refs.aydialog,
-                //     pic_url:'https://q.aiyongbao.com/1688/web/img/authTradeTao.png',
-                //     type:'AD',
-                //     onClick:()=>{
-                //         this.refs.aydialog.hide();
-                //         this.setState({
-                //             authType:res.msg,
-                //             dialogMsg:{
-                //                 'title':'是否完成授权？',
-                //                 'cancelText':'遇到问题',
-                //                 'okText':'完成授权',
-                //                 'content':'授权完成后，请根据情况点击下面按钮'
-                //             }
-                //         });
-                //         this.refs.reAuthTrade.show();
-                //         let title = '授权爱用交易';
-                //         if (res.msg = 'hasNoOrder') {
-                //             title = '订购爱用交易';
-                //         }
-                //         this.goToLink(res.url,title);
-                //     },
-                //     onCancel:()=>{}
-                // });
+                Modal.alert({
+                    element:this.refs.aydialog,
+                    pic_url:'https://q.aiyongbao.com/1688/web/img/authTradeTao.png',
+                    type:'AD',
+                    onClick:()=>{
+                        this.refs.aydialog.hide();
+                        this.setState({
+                            authType:res.msg,
+                            dialogMsg:{
+                                'title':'是否完成授权？',
+                                'cancelText':'遇到问题',
+                                'okText':'完成授权',
+                                'content':'授权完成后，请根据情况点击下面按钮'
+                            }
+                        });
+                        this.refs.reAuthTrade.show();
+                        let title = '授权爱用交易';
+                        if (res.msg = 'hasNoOrder') {
+                            title = '订购爱用交易';
+                        }
+                        this.goToLink(res.url,title);
+                    },
+                    onCancel:()=>{}
+                });
             }
         });
     }
@@ -170,21 +158,13 @@ export default class DistributionIndex extends Component <{}, {}>{
                 if (callback) {
                     callback(res);
                 } else {
-                    Taro.showToast({
-                        title: '授权成功',
-                        icon: 'none',
-                        duration: 2000
-                    });
+                    Toast.info('授权成功', 2);
                 }
             }else{
                 if (callback) {
                     callback(res);
                 } else {
-                    Taro.showToast({
-                        title: '授权失败',
-                        icon: 'none',
-                        duration: 2000
-                    });
+                    Toast.info('授权失败', 2);
                 }
             }
         });
@@ -192,6 +172,9 @@ export default class DistributionIndex extends Component <{}, {}>{
 
     //下拉刷新操作
     handleRefresh = () => {
+
+        Toast.info('加载中', 1);
+
         this.setState({
             isRefreshing: true,
             refreshText: '加载中...',
@@ -202,7 +185,7 @@ export default class DistributionIndex extends Component <{}, {}>{
         this.refs.listView.refs.homeHead.loadData();
         this.refs.listView.refs.homeBody.loadData();
         this.refs.listView.refs.homeList.loadData();
-        // Event.emit('APP.render_shop_card',{});
+        Event.emit('APP.render_shop_card',{});
         let self = this;
         setTimeout(() => {
             self.setState({
@@ -214,11 +197,15 @@ export default class DistributionIndex extends Component <{}, {}>{
 
     //渲染头部
     renderHeader = () =>{
-        // return (
-        //     <RefreshControl refreshing={this.state.isRefreshing} style={{width:px(750),height:px(100),alignItems:'center',justifyContent:'center'}} onRefresh={this.handleRefresh}>
-        //         <Text style={{fontSize:px(28),color:"#3089dc"}}>{this.state.refreshText}</Text>
-        //     </RefreshControl>
-        // );
+        return (
+            <RefreshControl 
+            refreshing={this.state.isRefreshing} 
+            style={{width:px(750),height:px(100),alignItems:'center',justifyContent:'center'}} 
+            onRefresh={this.handleRefresh}
+            title={this.state.refreshText}
+            titleColor="#ff6000"
+            />
+        );
     }
     //打开vip弹窗
     openvip=()=>{
@@ -246,11 +233,7 @@ export default class DistributionIndex extends Component <{}, {}>{
             this.getAuthTrade('null',(res)=>{
                 if (res.code == 200) {
                     this.refs.reAuthTrade.hide();
-                    Taro.showToast({
-                        title: '授权成功',
-                        icon: 'none',
-                        duration: 2000
-                    });
+                    Toast.info('授权成功', 2);
                 } else {
                     if (this.state.authType == "hasNoOrder" && res.msg == "hasNoAuth") {
                         this.setState({
@@ -259,11 +242,7 @@ export default class DistributionIndex extends Component <{}, {}>{
                         this.goToLink(res.url);
                     } else {
                         this.refs.reAuthTrade.hide();
-                        Taro.showToast({
-                            title: '授权失败',
-                            icon: 'none',
-                            duration: 2000
-                        });
+                        Toast.info('授权失败', 2);
                     }
                 }
             });
@@ -283,31 +262,63 @@ export default class DistributionIndex extends Component <{}, {}>{
         GoToView({status:url,page_status:'specail'});
     }
 
+    renderItem = (item) =>{
+        let doms = [];
+        let key = item.index;
+        let value = item.item;
+
+        doms.push(
+            <Back key={0} ref="Back"/>
+        );
+        doms.push(
+            <Head key={1} ref="homeHead"/>
+        );
+        doms.push(
+            <View key={2} style={{marginLeft: px(24),marginRight: px(24),marginTop: px(24)}}>
+                <Body ref="homeBody"/>
+            </View>
+        );
+        doms.push(
+            <Text key={3} style={{fontSize:px(28),color:'#222',marginTop:px(42),marginLeft:px(56)}}>我的店铺</Text>
+        );
+        doms.push(
+            <View key={4} style={{paddingLeft:px(24),paddingRight:px(24)}}>
+                <List ref="homeList"/>
+            </View>
+        );
+        doms.push(
+            <View key={5} style={{paddingLeft:px(24),paddingRight:px(24)}}>
+                <Tool ref="tool" vipflag={this.vipflag} openvip={this.openvip}/>
+            </View>
+        );
+        doms.push(
+            <View key={6} style={{paddingLeft:px(24),paddingRight:px(24)}}>
+                <Course ref="course"/>
+            </View>
+        );
+        doms.push(
+            <View key={7} style={{height:px(30)}}></View>
+        );
+
+        return doms;
+    }
+
     render(){
         let {dialogMsg} = this.state;
         return (
-            <View>
+            <View style={{flex:1,backgroundColor:'#f5f5f5'}}>
                 {/* <Floattop /> */}
                 {/* <AlertBanner where='index'/> */}
-                <ScrollView scrollY = {true} style={{flex:1,backgroundColor:'#f5f5f5'}} scrollWithAnimation>
-                    <Back ref="Back" key={0}/>
-                    <Head ref="homeHead" key={1}/>
-                    <View key={2} style={{marginLeft: px(24),marginRight: px(24),marginTop: px(24)}}>
-                        <Body ref="homeBody"/>
-                    </View>
-                    <Text key={3} style={{fontSize:px(28),color:'#222',marginTop:px(42),marginLeft:px(56)}}>我的店铺</Text>
-                    <View key={4} style={{paddingLeft:px(24),paddingRight:px(24)}}>
-                        <List ref="homeList"/>
-                    </View>
-                    <View key={5} style={{paddingLeft:px(24),paddingRight:px(24)}}>
-                        <Tool ref="tool" vipflag={this.vipflag} openvip={this.openvip}/>
-                    </View>
-                    <View key={6} style={{paddingLeft:px(24),paddingRight:px(24)}}>
-                        <Course ref="course"/>
-                    </View>
-                    <View key={7} style={{height:px(30)}}></View>
-                </ScrollView>
-                {/* <AiyongDialog
+                <FlatList
+                    ref="listView"
+                    data={['null']}
+                    horizontal={false}
+                    renderItem={this.renderItem}
+                    refreshing={this.state.isRefreshing}
+                    onRefresh={this.handleRefresh}
+                    keyExtractor={(item, index) => (index + '1')}
+                />
+                <AiyongDialog
                     ref={"vipDialog"}
                     title={"该功能是付费功能"}
                     cancelText={'取消'}
@@ -325,7 +336,7 @@ export default class DistributionIndex extends Component <{}, {}>{
                 content={dialogMsg.content}
                 onSubmit={()=>{this.submitSend();}}
                 onCancel={()=>{this.cancelSend();}}
-                /> */}
+                />
                 {/* <Modal.AyDialog ref='aydialog'/> */}
             </View>
         );

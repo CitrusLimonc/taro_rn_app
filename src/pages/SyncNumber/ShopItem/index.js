@@ -1,7 +1,8 @@
 import Taro, { Component, Config } from '@tarojs/taro';
-import {View,Text,Checkbox,Image,Button} from '@tarojs/components';
+import {View,Text,Checkbox,Image} from '@tarojs/components';
 import styles from './styles';
 import px from '../../../Biz/px.js';
+import AyButton from '../../../Component/AyButton/index';
 /*
 * @author cy
 * 店铺卡片
@@ -22,7 +23,7 @@ export default class ShopItem extends Component {
                             <Text style={{fontSize:px(24),color:'#ff6000'}}>店铺授权失效，请授权后再选择</Text>
                         </View>
                         :
-                        ''
+                        null
                     }
                     <Checkbox size="small" style={checkboxStyle} checked={isChecked} disabled={diaabledone} onChange={()=>{this.props.checkboxOnChange(item.id)}}/>
                     <View style={{flexDirection:'row',alignItems:'center'}} onClick={()=>{
@@ -33,7 +34,7 @@ export default class ShopItem extends Component {
                     </View>
                     <View style={{flex:1,flexDirection:'row',justifyContent:'flex-end'}}>
                     {
-                        hasAuth == false ?<Button type="secondary" style={{width:px(152),height:px(56)}} onClick={()=>{this.props.sureAccess(item.shop_type,false,false,item.id)}}>去授权</Button>:''
+                        hasAuth == false ?<AyButton type="primary" style={{width:px(152),height:px(56)}} onClick={()=>{this.props.sureAccess(item.shop_type,false,false,item.id)}}>去授权</AyButton>:null
                     }
                     </View>
                 </View>

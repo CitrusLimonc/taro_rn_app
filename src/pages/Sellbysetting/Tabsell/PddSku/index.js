@@ -1,5 +1,6 @@
 import Taro, { Component, Config } from '@tarojs/taro';
 import { View, Text ,Input} from '@tarojs/components';
+import { Toast , Portal } from '@ant-design/react-native';
 import styles from './styles';
 import ItemIcon from '../../../../Component/ItemIcon';
 import {IsEmpty} from '../../../../Public/Biz/IsEmpty';
@@ -49,21 +50,13 @@ export default class PddSku extends Component {
         if(pandun.test(price)){
             item.price = price;
         }else{
-            Taro.showToast({
-                title: '单买价需为大于0的小数或整数',
-                icon: 'none',
-                duration: 2000
-            });
+            Toast.info('单买价需为大于0的小数或整数', 2);
             return ;
         }
         if(pandun.test(multi_price)){
             item.multi_price = multi_price;
         }else{
-            Taro.showToast({
-                title: '团购价需为大于0的小数或整数',
-                icon: 'none',
-                duration: 2000
-            });
+            Toast.info('团购价需为大于0的小数或整数', 2);
             return ;
         }
         //判断可售数量是否合法
@@ -71,11 +64,7 @@ export default class PddSku extends Component {
         if(pandunNum.test(defect_num)){
             item.defect_num = defect_num;
         }else{
-            Taro.showToast({
-                title: '请输入大于等于0的整数',
-                icon: 'none',
-                duration: 2000
-            });
+            Toast.info('请输入大于等于0的整数', 2);
             return ;
         }
 
@@ -175,21 +164,13 @@ export default class PddSku extends Component {
                         msg = '修改成功';
                     }
                 }
-                Taro.showToast({
-                    title: msg,
-                    icon: 'none',
-                    duration: 2000
-                });
+                Toast.info(msg, 2);
                 self.setState({
                     changeing:false,
                 });
             });
         } else {
-            Taro.showToast({
-                title: msg,
-                icon: 'none',
-                duration: 2000
-            });
+            Toast.info(msg, 2);
             self.setState({
                 changeing:false,
             });

@@ -1,10 +1,11 @@
 var Modal = {};
 import Taro, { Component, Config } from '@tarojs/taro';
-import { Dialog,View,Text,ScrollView,Image } from '@tarojs/components';
+import { View,Text,ScrollView,Image } from '@tarojs/components';
 import Event from 'ay-event';
 import { IsEmpty } from '../../Biz/IsEmpty';
 import { GoToView } from '../../Biz/GoToView';
 import ItemIcon  from '../../../Component/ItemIcon';
+import Dialog from '../../../Component/Dialog';
 import px from '../../Biz/px.js';
 /**
 * @author lzy
@@ -78,7 +79,7 @@ class AyDialog extends Component{
         let refstr = type=='normal'?"hello":"modal1";
         if(type=='normal'){
             return(
-                <Dialog ref={refstr} duration={1000}  contentStyle={[styles.modalStyle,contstytle]} >
+                <Dialog ref={refstr} contentStyle={[styles.modalStyle,contstytle]} >
                     {isValidElement(head)?(
                         head
                     ):(
@@ -113,7 +114,7 @@ class AyDialog extends Component{
             );
         }else{
             return (
-                <Dialog ref={refstr} duration={1000} maskStyle={[styles.maskStyle,maskStyle]} contentStyle={[styles.adStyle,contstytle]} >
+                <Dialog ref={refstr} contentStyle={[styles.adStyle,contstytle]} >
                     <Image onClick={()=>{
                         if(IsEmpty(link)){
                             onClick();

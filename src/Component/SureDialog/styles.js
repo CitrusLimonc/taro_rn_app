@@ -4,7 +4,7 @@ export default {
         alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: 'rgba(0,0,0,0.5)',
-        position:'fixed',
+        position:'absolute',
         left:px(0),
         right:px(0),
         top:px(0),
@@ -14,7 +14,8 @@ export default {
         borderRadius: px(8),
         backgroundColor: '#ffffff',
         paddingTop:px(20),
-        width: px(612)
+        width: px(612),
+        minHeight:px(348)
     },
     foot:{
         width:px(612),
@@ -46,7 +47,7 @@ export default {
         color:'#272636'
     },
     tokenBody:{
-        minHeight:px(216),
+        // minHeight:px(216),
         paddingLeft:px(40),
         paddingRight:px(40),
         alignItems:'center',

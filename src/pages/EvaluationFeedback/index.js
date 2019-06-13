@@ -1,5 +1,6 @@
 import Taro, { Component, Config } from '@tarojs/taro';
 import {View,Text,Input,ScrollView} from '@tarojs/components';
+import { Toast , Portal } from '@ant-design/react-native';
 import Event from 'ay-event';
 import {GoToView} from '../../Public/Biz/GoToView.js';
 import {NetWork} from '../../Public/Common/NetWork/NetWork.js';
@@ -39,9 +40,9 @@ export default class EvaluationFeedback extends Component {
 		this.showValue;
 	}
 
-	// config: Config = {
-    //     navigationBarTitleText: '反馈'
-    // }
+	config = {
+        navigationBarTitleText: '反馈'
+    }
 
 	componentWillMount() {
 		let self = this;
@@ -101,29 +102,21 @@ export default class EvaluationFeedback extends Component {
 					showValue:self.state.showValue
 				}
 			}, (data) => {
-				Taro.showToast({
-					title: '评价完成',
-					icon: 'none',
-					duration: 2000
-				});
+				Toast.info('评价完成', 2);
 				GoToView({
 					page_status: 'pop'
 				});
 			}, (error) => {
-				// alert(JSON.stringify(error));
+				console.error(error);
 			})
 		}else{
-			Taro.showToast({
-				title: '请填写服务态度差评原因',
-				icon: 'none',
-				duration: 2000
-			});
+			Toast.info('请填写服务态度差评原因', 2);
 		}
 	}
 
 	render(){
 		let submit_style = { 
-			position: 'fixed',
+			position: 'absolute',
 			bottom: px(0),
 			left: px(0),
 			right: px(0),

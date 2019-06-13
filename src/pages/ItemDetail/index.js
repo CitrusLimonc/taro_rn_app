@@ -1,9 +1,12 @@
 import Taro, { Component, Config } from '@tarojs/taro';
-import { View, Text, ScrollView, Image,Dialog,Button} from '@tarojs/components';
+import { View, Text, ScrollView, Image} from '@tarojs/components';
+import { Toast , Portal } from '@ant-design/react-native';
+import AyButton from '../../Component/AyButton/index';
 import Event from 'ay-event';
 import BasicInfo from './BasicInfo';
 import SellSpec from './SellSpec';
 import ItemIcon from '../../Component/ItemIcon';
+import Dialog from '../../Component/Dialog';
 import { GoToView } from '../../Public/Biz/GoToView.js';
 import {GetQueryString} from '../../Public/Biz/GetQueryString.js';
 import {IsEmpty} from '../../Public/Biz/IsEmpty.js';
@@ -36,6 +39,7 @@ export default class ItemDetail extends Component{
             },
             numIid:'',
         };
+        this.loading = '';
         let self=this;
         //返回操作
         Event.on('App.detail_back',(data)=>{
@@ -43,22 +47,21 @@ export default class ItemDetail extends Component{
         });
     }
 
-    // config: Config = {
-    //     navigationBarTitleText: '1688商品详情'
-    // }
+    config = {
+        navigationBarTitleText: '1688商品详情'
+    }
 
     componentDidMount(){
-        // SetTitle({text:'1688商品详情'});
         this.initData();
     }
 
     //初始化数据
     initData = () => {
-        Taro.showLoading({ title: '加载中...' });
-        let productID = GetQueryString({name:'productID'});
-        let supplierMemberId = GetQueryString({name:'supplierMemberId'});
-        let supplierLoginId = GetQueryString({name:'supplierLoginId'});
-        let numIid = GetQueryString({name:'numIid'});
+        this.loading = Toast.loading('加载中...');
+        let productID = GetQueryString({name:'productID',self:this});
+        let supplierMemberId = GetQueryString({name:'supplierMemberId',self:this});
+        let supplierLoginId = GetQueryString({name:'supplierLoginId',self:this});
+        let numIid = GetQueryString({name:'numIid',self:this});
         supplierLoginId = decodeURI(supplierLoginId);
         if (!IsEmpty(productID)) {
             let self = this;
@@ -77,7 +80,7 @@ export default class ItemDetail extends Component{
                                 numIid:numIid,
                             });
                         }
-                        Taro.hideLoading();
+                        Portal.remove(self.loading);
                     });
                 } else {
                     self.setState({
@@ -89,7 +92,7 @@ export default class ItemDetail extends Component{
                         imageList:rsp.newImageList,
                         numIid:numIid,
                     });
-                    Taro.hideLoading();
+                    Portal.remove(self.loading);
                 }
             });
         }
@@ -260,11 +263,7 @@ export default class ItemDetail extends Component{
     //复制商品标题
     copy = (title) =>{
         UitlsRap.clipboard(title,()=>{
-            Taro.showToast({
-                title: '商品标题已复制',
-                icon: 'none',
-                duration: 2000
-            });  
+            Toast.info('商品标题已复制', 2);
         });
     }
     //确认操作
@@ -293,15 +292,11 @@ export default class ItemDetail extends Component{
                         //有结果
                         if (!IsEmpty(rsp)) {
                             Event.emit('App.product_list_reload',{});
-                            Taro.showToast({
-                                title: '同步成功~',
-                                icon: 'none',
-                                duration: 2000
-                            }); 
+                            Toast.info('同步成功~', 2);
                         }
                         this.refs.sureDialog.hide();
                     },(error)=>{
-                        alert(JSON.stringify(error));
+                        console.error(error);
                     });
                 } else {
                     //弹出错误信息
@@ -362,10 +357,10 @@ export default class ItemDetail extends Component{
                 price = '¥' + productInfo.referencePrice;
             }
         }
-        let body = '';
+        let body = null;
         if (this.state.isLoading) {
             console.log('productInfo',2);
-            return '';
+            return null;
         } else {
             if (!IsEmpty(productInfo)) {
                 console.log('productInfo',3);
@@ -402,7 +397,7 @@ export default class ItemDetail extends Component{
                                         <Text style={{fontSize:px(28),color:'#FF4400',lineHeight:px(50)}}>¥{parseFloat(productInfo.saleInfo.retailprice).toFixed(2)}</Text>
                                     </View>
                                     :
-                                    ''
+                                    null
                                 }
                             </View>
                             <View style={{flex:1,flexDirection:'row'}}>
@@ -412,9 +407,9 @@ export default class ItemDetail extends Component{
                                 {
                                     amountOnSale == '申请分销后查看' ?
                                     <View style={{flex:1,justifyContent:'flex-end',height:px(50),alignItems:'center',flexDirection:'row'}}>
-                                        <Button type="secondary"
+                                        <AyButton type="primary"
                                         style={{width:px(152),height:px(48)}}
-                                        onClick={()=>{this.footPress('申请分销')}}>申请分销</Button>
+                                        onClick={()=>{this.footPress('申请分销')}}>申请分销</AyButton>
                                     </View>
                                     :
                                     <View style={{flex:1,justifyContent:'flex-end',height:px(50),alignItems:'center',flexDirection:'row'}}>
@@ -457,11 +452,11 @@ export default class ItemDetail extends Component{
                                         </View>
                                     </View>
                                     :
-                                    ''
+                                    null
                                 }
                             </View>
                             :
-                            ''
+                            null
                         }
                         <View style={styles.midLine}>
                             <Text style={{fontSize:px(28),color:'#333333'}}>基本信息</Text>
@@ -497,12 +492,10 @@ export default class ItemDetail extends Component{
                         </View>
                     </View>
                     :
-                    ''
+                    null
                 }
-                {/* <Dialog ref="attrDialog"
-                duration={1000}
+                <Dialog ref="attrDialog"
                 maskClosable={true}
-                maskStyle={styles.mask}
                 contentStyle={styles.categoryModel}>
                     <View style={styles.body}>
                         <View style={styles.head}><Text style={styles.textHead}>产品属性</Text></View>
@@ -510,11 +503,11 @@ export default class ItemDetail extends Component{
                         {this.renderAttributes()}
                         </ScrollView>
                         <View style={styles.footer}>
-                            <Button rect block style={styles.dlgBtn} type="primary" size="large" onClick={()=>{this.refs.attrDialog.hide()}}>关闭</Button>
+                            <AyButton style={styles.dlgBtn} type="normal" onClick={()=>{this.refs.attrDialog.hide()}}>关闭</AyButton>
                         </View>
                     </View>
                 </Dialog>
-                <Dialog ref={"sureDialog"} duration={1000} maskStyle={styles.maskStyle} contentStyle={styles.modal2Style}>
+                <Dialog ref={"sureDialog"} contentStyle={styles.modal2Style}>
                     <View style={styles.dialogContent}>
                         <Text style={{marginTop:px(15),fontSize:px(38),fontWeight:'300',color:'#4A4A4A',textAlign:'center',width:px(612)}}>{dialogSet.dialogTitle}</Text>
                         <View style={{width:px(612),marginTop:px(24),minHeight:px(200),paddingLeft:px(24)}}>
@@ -531,7 +524,7 @@ export default class ItemDetail extends Component{
                             </View>
                         </View>
                     </View>
-                </Dialog> */}
+                </Dialog>
             </View>
         );
     }

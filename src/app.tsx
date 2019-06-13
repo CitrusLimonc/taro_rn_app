@@ -1,5 +1,6 @@
 import Taro, { Component, Config } from '@tarojs/taro';
-import Index from './pages/index'
+import Index from './pages/index';
+import 'antd-mobile/dist/antd-mobile.css';
 
 import './app.scss'
 
@@ -57,7 +58,6 @@ class App extends Component {
         window: {
             backgroundTextStyle: 'light',
             navigationBarBackgroundColor: '#fff',
-            navigationBarTitleText: 'WeChat',
             navigationBarTextStyle: 'black'
         },
         tabBar: {

@@ -78,10 +78,7 @@ export default {
         width:px(168),
         height:px(48),
         borderRadius:px(24),
-        borderColor:'#ff6000',
         borderWidth:px(2),
-        color:'#ff6000',
-        fontSize:px(24)
     },
     priceLine:{
         flexDirection:'row',
@@ -105,7 +102,7 @@ export default {
         justifyContent:'center'
     },
     footLine:{
-        position:'fixed',
+        position:'absolute',
         bottom:px(0),
         left:px(0),
         right:px(0),

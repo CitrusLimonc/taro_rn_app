@@ -22,7 +22,7 @@ export default class Floattop extends Component {
         };
     }
     componentWillMount(){
-        this.getSetting();
+        // this.getSetting();
     }
 
     getSetting = () =>{
@@ -39,7 +39,7 @@ export default class Floattop extends Component {
                 });
             }
         },(error)=>{
-            alert(JSON.stringify(error));
+            console.error(error);
         });
     }
 
@@ -84,12 +84,12 @@ export default class Floattop extends Component {
                         setting.needDelete == '1' ?
                         <ItemIcon code={"\ue69a"}  iconStyle={{fontSize:px(32),color:'#999999'}}/>
                         :
-                        ''
+                        null
                     }
                 </View>
             );
         } else {
-            return '';
+            return null;
         }
 
     }

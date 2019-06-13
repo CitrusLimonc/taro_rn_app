@@ -65,7 +65,7 @@ export default class AiyongDialog extends Component {
                             this.props.title ?
                             <Text style={{marginTop:px(15),fontSize:px(38),color:'#4A4A4A',marginLeft:px(25)}}>{this.props.title}</Text>
                             :
-                            ''
+                            null
                         }
                         <View style={styles.tokenBody}>
                             <Text style={{fontSize:px(32),color:'#333333',width:px(564)}}>{this.props.content}</Text>
@@ -82,7 +82,7 @@ export default class AiyongDialog extends Component {
                 </View>
             );
         } else {
-            return '';
+            return null;
         }
 
     }

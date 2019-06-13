@@ -13,12 +13,13 @@
  * @Last Modified time: 2018-03-01 16:04:29
  */
 import Taro, { Component, Config } from '@tarojs/taro';
-import { View, Text, Dialog } from '@tarojs/components';
+import { View, Text } from '@tarojs/components';
+import Dialog from '../Dialog';
 import styles from './styles';
 import ItemIcon from '../ItemIcon';
 import px from '../../Biz/px.js';
 
-export default class Toast extends Component {
+export default class AyToast extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -27,7 +28,7 @@ export default class Toast extends Component {
             title: this.props.title || '温馨提示',
             button: this.props.button || '我知道了',
             duration: this.props.duration || -1,
-            callback: this.props.callback || function(){},
+            callback: this.props.callback || function(){}
         };
         this.setTimeout;    /* 定时器 */
     }
@@ -83,7 +84,7 @@ export default class Toast extends Component {
 
     render(){
         let contentStyle = this.state.type == 'fail' ? styles.dialogContainer : styles.dialogContainer2;
-        let body = '';
+        let body = null;
         
         switch(this.state.type){
             case 'fail':
@@ -128,7 +129,11 @@ export default class Toast extends Component {
         }
 
         return (
-            <Dialog ref='toast' contentStyle={contentStyle} maskClosable={false}>
+            <Dialog 
+            ref='toast'
+            contentStyle={contentStyle}
+            maskClosable={false}
+            >
                 {body}
             </Dialog>
         );

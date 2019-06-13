@@ -29,7 +29,7 @@ export default class ChooseLine extends Component {
                     type == 'normal' ?
                     <ItemIcon code={"\ue6a7"} iconStyle={{fontSize:px(32),color:'#979797'}}/>
                     :
-                    <Switch defaultChecked={this.props.switch} onValueChange={(value)=>{callback(value,title)}}/>
+                    <Switch checked={this.props.switch} onValueChange={(value)=>{callback(value,title)}}/>
                 }
                 </View>
             </View>

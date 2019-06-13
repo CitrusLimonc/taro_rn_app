@@ -7,8 +7,8 @@ let Domain = {
 	ITEM_URL:'https://itemdetail.aiyongbao.com/',
 	// ITEM_URL:'https://iyitemtest.aiyongbao.com/',
 	ITEM_TEST_URL:'https://iyitemtest.aiyongbao.com/',
-	WEB_URL:'https://zk1688.aiyongbao.com/',
-	// WEB_URL:'https://devweb1688.aiyongbao.com/',
+	// WEB_URL:'https://zk1688.aiyongbao.com/',
+	WEB_URL:'https://devweb1688.aiyongbao.com/',
 	WECHART_URL:'https://wechat.aiyongbao.com/',
 	// WECHART_URL:'https://devwechat.aiyongbao.com/',
 

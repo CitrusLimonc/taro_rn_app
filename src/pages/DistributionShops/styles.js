@@ -65,7 +65,6 @@ export default {
         backgroundColor:'transparent',
     },
     dialogContent:{
-        flex:1,
         borderRadius: px(8),
         backgroundColor: '#fff',
         paddingTop:px(20),
